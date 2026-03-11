@@ -47,9 +47,14 @@ namespace WebApplication2
 
         private bool ValidarUsuario(string usuario, string password)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["TorneoConnection"].ConnectionString;
+            string dbPath = Server.MapPath("~/Database/Torneo.accdb");
 
-            using (OleDbConnection conn = new OleDbConnection(connectionString))
+            string connString = "Provider=Microsoft.ACE.OLEDB.12.0;" +
+                                "Data Source=" + dbPath + ";" +
+                                "Persist Security Info=False;";
+
+            
+            using (OleDbConnection conn = new OleDbConnection(connString))
             {
                 try
                 {
