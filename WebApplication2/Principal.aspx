@@ -16,19 +16,11 @@
 
             <!-- Título -->
             <div id="TitleText">
-                <h1>Torneo de Golf - Equipo</h1>
+                <h1>Torneo: <asp:Label ID="lblTituloTorneo" runat="server"></asp:Label> - Equipo: <asp:Label ID="lblTituloEquipo" runat="server"></asp:Label></h1>
+                <div class="torneo-comentario">
+                    <asp:Label ID="lblComentarioTorneo" runat="server"></asp:Label>
+                </div>
             </div>
-
-            <!-- Información del torneo y equipo -->
-            <asp:Panel ID="pnlUserInfo" runat="server" CssClass="user-info" Visible="true">
-                <div>
-                    <strong>Nombre del torneo:</strong> <asp:Label ID="lblNombreTorneo" runat="server"></asp:Label>
-                </div>
-                <div>
-                    <strong>Nombre del equipo:</strong> <asp:Label ID="lblNombreEquipo" runat="server"></asp:Label>
-                    <asp:Label ID="lblCapitanBadge" runat="server" CssClass="capitan-badge" Visible="false">CAPITÁN</asp:Label>
-                </div>
-            </asp:Panel>
 
             <!-- Mensajes -->
             <asp:Panel ID="pnlMensajeExito" runat="server" CssClass="mensaje mensaje-exito" Visible="false">
@@ -43,7 +35,7 @@
 
             <!-- Lista de integrantes -->
             <div id="lista-container">
-                <asp:Repeater ID="rptIntegrantes" runat="server" OnItemCommand="rptIntegrantes_ItemCommand" OnItemDataBound="rptIntegrantes_ItemDataBound">
+                <asp:Repeater ID="rptIntegrantes" runat="server" OnItemCommand="rptIntegrantes_ItemCommand">
                     <HeaderTemplate>
                         <ul class="integrantes-lista">
                     </HeaderTemplate>
@@ -51,82 +43,53 @@
                         <li class="integrante-item">
                             <!-- Vista de solo lectura -->
                             <asp:Panel ID="pnlView" runat="server" CssClass="integrante-view">
-                                <div class="integrante-linea"><strong>Apellido:</strong> <%# Eval("Apellido") %></div>
-                                <div class="integrante-linea"><strong>Nombre:</strong> <%# Eval("Nombre") %></div>
-                                <div class="integrante-linea"><strong>Teléfono:</strong> <%# Eval("Telefono") %></div>
-                                <div class="integrante-linea"><strong>Transporte:</strong> <%# Eval("Transporte") %></div>
-                                <div class="integrante-linea"><strong>Segundo:</strong> <%# Eval("Segundo") %></div>
-                                <div class="integrante-linea"><strong>Alergias:</strong> <%# Eval("Alergias") %></div>
-                                <div class="integrante-linea"><strong>Asistencia:</strong> <%# (bool)Eval("Asistencia") ? "Sí" : "No" %></div>
-                                <div class="integrante-linea"><strong>Comentario:</strong> <%# Eval("Comentario") %></div>
+                                <div class="integrante-linea"><strong>Nombre:</strong> <%# Eval("p_nombre") %></div>
+                                <div class="integrante-linea">
+                                    <strong>Asiste:</strong> 
+                                    <span><%# Convert.ToBoolean(Eval("p_asistencia")) ? "Sí" : "No" %></span>
+                                </div>
+                                <div class="integrante-linea">
+                                    <strong>Usará autobús:</strong> 
+                                    <span><%# Convert.ToBoolean(Eval("p_transporte")) ? "Sí" : "No" %></span>
+                                </div>
+                                <div class="integrante-linea">
+                                    <strong>Alergias:</strong> 
+                                    <span><%# Eval("p_alergia") %></span>
+                                </div>
 
-                                <asp:Panel ID="pnlAcciones" runat="server" CssClass="integrante-acciones" Visible="false">
+                                <asp:Panel ID="pnlAcciones" runat="server" CssClass="integrante-acciones" Visible="true">
                                     <asp:Button ID="btnEditar" runat="server" Text="Editar" CssClass="btn-editar" 
-                                        CommandName="Editar" CommandArgument='<%# Eval("Id") %>' CausesValidation="false" />
-                                    <asp:Button ID="btnBorrar" runat="server" Text="Borrar" CssClass="btn-borrar" 
-                                        CommandName="Borrar" CommandArgument='<%# Eval("Id") %>' 
-                                        OnClientClick="return confirm('¿Está seguro de eliminar este integrante?');" CausesValidation="false" />
+                                        CommandName="Editar" CommandArgument='<%# Eval("p_contador") %>' CausesValidation="false" />
                                 </asp:Panel>
                             </asp:Panel>
 
                             <!-- Vista de edición inline -->
                             <asp:Panel ID="pnlEdit" runat="server" CssClass="integrante-edit" Visible="false">
                                 <div class="integrante-edit-grid">
-                                    <!-- Apellido y Nombre NO editables -->
-                                    <div class="form-group">
-                                        <label><strong>Apellido:</strong></label>
-                                        <asp:Label ID="lblEditApellido" runat="server" Text='<%# Eval("Apellido") %>' CssClass="readonly-field"></asp:Label>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label><strong>Nombre:</strong></label>
-                                        <asp:Label ID="lblEditNombre" runat="server" Text='<%# Eval("Nombre") %>' CssClass="readonly-field"></asp:Label>
-                                    </div>
-
-                                    <!-- Campos editables -->
-                                    <div class="form-group">
-                                        <label>Teléfono:</label>
-                                        <asp:TextBox ID="txtEditTelefono" runat="server" Text='<%# Eval("Telefono") %>'></asp:TextBox>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Transporte:</label>
-                                        <asp:DropDownList ID="ddlEditTransporte" runat="server">
-                                            <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
-                                            <asp:ListItem Text="No" Value="No"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Segundo:</label>
-                                        <asp:TextBox ID="txtEditSegundo" runat="server" Text='<%# Eval("Segundo") %>'></asp:TextBox>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Alergias:</label>
-                                        <asp:TextBox ID="txtEditAlergias" runat="server" Text='<%# Eval("Alergias") %>'></asp:TextBox>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>
-                                            <asp:CheckBox ID="chkEditAsistencia" runat="server" Checked='<%# Eval("Asistencia") %>' />
-                                            Confirmar asistencia
-                                        </label>
-                                    </div>
-
+                                    <!-- Nombre NO editable -->
                                     <div class="form-group full">
-                                        <label>Comentario:</label>
-                                        <asp:TextBox ID="txtEditComentario" runat="server" TextMode="MultiLine" 
-                                            Rows="3" Text='<%# Eval("Comentario") %>'></asp:TextBox>
+                                        <label><strong>Nombre:</strong></label>
+                                        <asp:Label ID="lblEditNombre" runat="server" Text='<%# Eval("p_nombre") %>' CssClass="readonly-field"></asp:Label>
+                                    </div>
+
+                                    <!-- Campos editables (checkboxes) -->
+                                    <div class="form-group">
+                                        <asp:CheckBox ID="chkEditAsistencia" runat="server" Checked='<%# Convert.ToBoolean(Eval("p_asistencia")) %>' />
+                                        <label style="display:inline; margin-left:5px;">Asiste</label>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <asp:CheckBox ID="chkEditTransporte" runat="server" Checked='<%# Convert.ToBoolean(Eval("p_transporte")) %>' />
+                                        <label style="display:inline; margin-left:5px;">Usará autobús</label>
                                     </div>
 
                                     <!-- Botones de edición -->
                                     <div class="form-group full">
                                         <div class="integrante-acciones">
                                             <asp:Button ID="btnGuardarEdit" runat="server" Text="Guardar" CssClass="btn-editar" 
-                                                CommandName="GuardarEdit" CommandArgument='<%# Eval("Id") %>' CausesValidation="false" />
+                                                CommandName="GuardarEdit" CommandArgument='<%# Eval("p_contador") %>' CausesValidation="false" />
                                             <asp:Button ID="btnCancelarEdit" runat="server" Text="Cancelar" CssClass="btn-cancelar" 
-                                                CommandName="CancelarEdit" CommandArgument='<%# Eval("Id") %>' CausesValidation="false" />
+                                                CommandName="CancelarEdit" CommandArgument='<%# Eval("p_contador") %>' CausesValidation="false" />
                                         </div>
                                     </div>
                                 </div>
@@ -143,93 +106,19 @@
                 </asp:Panel>
             </div>
 
-            <!-- Botones de acción (solo para capitanes) -->
-            <div class="buttons-container">
-                <asp:Button ID="btnMostrarFormulario" runat="server" Text="+ Agregar Integrante al Equipo" 
-                    CssClass="btn-mostrar-form" OnClick="btnMostrarFormulario_Click" Visible="false" />
-                <asp:Button ID="btnGuardarCambios" runat="server" Text="💾 Guardar cambios en BD" 
-                    CssClass="btn-guardar-cambios" OnClick="btnGuardarCambios_Click" Visible="false" />
-            </div>
-
-            <!-- Formulario para agregar integrantes -->
-            <asp:Panel ID="pnlFormAgregar" runat="server" CssClass="form-agregar" Visible="false">
-                <h2><asp:Label ID="lblFormTitulo" runat="server" Text="Agregar Integrante"></asp:Label></h2>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Código de Equipo:</label>
-                        <asp:TextBox ID="txtCodigoEquipo" runat="server" ReadOnly="true" Enabled="false"></asp:TextBox>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Teléfono:</label>
-                        <asp:TextBox ID="txtTelefono" runat="server" TextMode="Phone"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="rfvTelefono" runat="server" 
-                            ControlToValidate="txtTelefono" ErrorMessage="El teléfono es requerido" 
-                            CssClass="error" Display="Dynamic" ValidationGroup="FormIntegrante">*</asp:RequiredFieldValidator>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Apellido:</label>
-                        <asp:TextBox ID="txtApellido" runat="server"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="rfvApellido" runat="server" 
-                            ControlToValidate="txtApellido" ErrorMessage="El apellido es requerido" 
-                            CssClass="error" Display="Dynamic" ValidationGroup="FormIntegrante">*</asp:RequiredFieldValidator>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nombre:</label>
-                        <asp:TextBox ID="txtNombre" runat="server"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="rfvNombre" runat="server" 
-                            ControlToValidate="txtNombre" ErrorMessage="El nombre es requerido" 
-                            CssClass="error" Display="Dynamic" ValidationGroup="FormIntegrante">*</asp:RequiredFieldValidator>
-                    </div>
-                </div>
-
+            <!-- Sección de Comentarios -->
+            <div class="comentarios-section">
+                <h2>Comentarios o Sugerencias</h2>
                 <div class="form-group">
-                    <label>Transporte:</label>
-                    <asp:DropDownList ID="ddlTransporte" runat="server">
-                        <asp:ListItem Text="Sí" Value="Si" Selected="True"></asp:ListItem>
-                        <asp:ListItem Text="No" Value="No"></asp:ListItem>
-                    </asp:DropDownList>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Segundo (Plato de comida):</label>
-                        <asp:TextBox ID="txtSegundo" runat="server" placeholder="Ej: Pollo asado"></asp:TextBox>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Alergias:</label>
-                        <asp:TextBox ID="txtAlergias" runat="server" placeholder="Ej: Mariscos"></asp:TextBox>
-                    </div>
-
-                    <div class="form-group">
-                        <label>
-                            <asp:CheckBox ID="chkAsistencia" runat="server" />
-                            Confirmar asistencia
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Comentario:</label>
                     <asp:TextBox ID="txtComentario" runat="server" TextMode="MultiLine" 
-                        Rows="3" placeholder="Observaciones adicionales..."></asp:TextBox>
+                        Rows="5" placeholder="Escribe aquí tus comentarios o sugerencias..." 
+                        CssClass="comentario-textbox"></asp:TextBox>
                 </div>
-
-                <div class="form-buttons">
-                    <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" 
-                        CssClass="btn-cancelar" OnClick="btnCancelar_Click" CausesValidation="false" />
-                    <asp:Button ID="btnGuardar" runat="server" Text="Agregar a tabla" 
-                        CssClass="btn-agregar" OnClick="btnGuardar_Click" ValidationGroup="FormIntegrante" />
+                <div class="form-group">
+                    <asp:Button ID="btnEnviarComentario" runat="server" Text="Enviar" 
+                        CssClass="btn-enviar-comentario" OnClick="btnEnviarComentario_Click" />
                 </div>
-
-                <asp:HiddenField ID="hdnIntegranteId" runat="server" Value="0" />
-            </asp:Panel>
+            </div>
 
         </div>
     </form>

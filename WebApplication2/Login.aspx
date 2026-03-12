@@ -9,12 +9,12 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            /* Imagen de fondo */
-            background-image: url('images/FondoGolf.jpeg'); /* Aquí ponemos la ruta */
+         
+            background-image: url('images/FondoGolf.jpeg');
             background-size: cover; 
             background-position: center; 
             background-repeat: no-repeat; 
-            background-attachment: fixed; /* Con esto, al hacer scroll la imagen no se mueve */
+            background-attachment: fixed;
             
             display: flex;
             justify-content: center;
@@ -23,7 +23,6 @@
             margin: 0;
         }
         
-        /*Capa de transparencia para la imagen de fondo, de esta forma no tapa el contenido*/
         body::before {
             content: '';
             position: absolute;
