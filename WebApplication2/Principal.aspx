@@ -19,10 +19,15 @@
                 <h1>Torneo de Golf - Equipo</h1>
             </div>
 
-            <!-- Información del usuario -->
+            <!-- Información del torneo y equipo -->
             <asp:Panel ID="pnlUserInfo" runat="server" CssClass="user-info" Visible="true">
-                <strong>Usuario:</strong> <asp:Label ID="lblUsuarioNombre" runat="server"></asp:Label>
-                <asp:Label ID="lblCapitanBadge" runat="server" CssClass="capitan-badge" Visible="false">CAPITÁN</asp:Label>
+                <div>
+                    <strong>Nombre del torneo:</strong> <asp:Label ID="lblNombreTorneo" runat="server"></asp:Label>
+                </div>
+                <div>
+                    <strong>Nombre del equipo:</strong> <asp:Label ID="lblNombreEquipo" runat="server"></asp:Label>
+                    <asp:Label ID="lblCapitanBadge" runat="server" CssClass="capitan-badge" Visible="false">CAPITÁN</asp:Label>
+                </div>
             </asp:Panel>
 
             <!-- Mensajes -->

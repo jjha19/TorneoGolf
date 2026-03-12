@@ -10,7 +10,7 @@
         body {
             font-family: Arial, sans-serif;
             /* Imagen de fondo */
-            background-image: url('images/FondoGolf.jpeg');*/ /* Aquí ponemos la ruta */
+            background-image: url('images/FondoGolf.jpeg'); /* Aquí ponemos la ruta */
             background-size: cover; 
             background-position: center; 
             background-repeat: no-repeat; 

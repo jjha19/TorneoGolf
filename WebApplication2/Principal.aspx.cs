@@ -64,11 +64,13 @@ namespace WebApplication2
         private void InicializarPagina()
         {
             // Obtener datos del usuario desde Session
-            string nombreUsuario = Session["Usuario"]?.ToString() ?? "Usuario";
+            string nombreTorneo = Session["NombreTorneo"]?.ToString() ?? "Torneo de Golf 2026";
+            string nombreEquipo = Session["NombreEquipo"]?.ToString() ?? "Equipo Sin Nombre";
             string codigoEquipo = Session["CodigoEquipo"]?.ToString() ?? "EQ001";
             bool esCapitan = Session["EsCapitan"] != null && (bool)Session["EsCapitan"];
 
-            lblUsuarioNombre.Text = nombreUsuario;
+            lblNombreTorneo.Text = nombreTorneo;
+            lblNombreEquipo.Text = nombreEquipo;
             lblCapitanBadge.Visible = esCapitan;
 
             // Mostrar/ocultar controles según rol

@@ -32,7 +32,7 @@ namespace WebApplication2
             // Validamos usuario y contraseña contra la base de datos
             if (ValidarUsuario(usuario, password))
             {
-                // Login exitoso
+                // Login exitoso, nos vamos a la web en la que se ven los participantes del grupo
                 Session["Usuario"] = usuario;
                 Response.Redirect("Principal.aspx");
             }
@@ -53,23 +53,54 @@ namespace WebApplication2
                                 "Data Source=" + dbPath + ";" +
                                 "Persist Security Info=False;";
 
-            
+
             using (OleDbConnection conn = new OleDbConnection(connString))
             {
                 try
                 {
                     conn.Open();
 
-                    // Consulta con parámetros para evitar inyección SQL
-                    string query = "SELECT COUNT(*) FROM Torneos WHERE t_usuario = ? AND t_contra = ?";
+                    // Consulta para obtener el nombre del torneo y el móvil
+                    string query = "SELECT t_nombre, t_movil FROM Torneos WHERE t_usuario = ? AND t_contra = ?";
 
                     using (OleDbCommand cmd = new OleDbCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("?", usuario);
                         cmd.Parameters.AddWithValue("?", password);
 
-                        int count = (int)cmd.ExecuteScalar();
-                        return count > 0;
+                        using (OleDbDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // Guardar el nombre del torneo y el móvil en la sesión
+                                Session["NombreTorneo"] = reader["t_nombre"].ToString().Trim();
+                                string movil = reader["t_movil"].ToString().Trim();
+                                Session["Movil"] = movil;
+
+                                // Buscar el nombre del equipo en la tabla Equipo usando el móvil
+                                string queryEquipo = "SELECT e_nombre FROM Equipo WHERE e_movil = ?";
+                                using (OleDbCommand cmdEquipo = new OleDbCommand(queryEquipo, conn))
+                                {
+                                    cmdEquipo.Parameters.AddWithValue("?", movil);
+                                    
+                                    using (OleDbDataReader readerEquipo = cmdEquipo.ExecuteReader())
+                                    {
+                                        if (readerEquipo.Read())
+                                        {
+                                            Session["NombreEquipo"] = readerEquipo["e_nombre"].ToString().Trim();
+                                        }
+                                        else
+                                        {
+                                            // Si no se encuentra el equipo, guardar un valor por defecto
+                                            Session["NombreEquipo"] = "Equipo Sin Nombre";
+                                        }
+                                    }
+                                }
+
+                                return true;
+                            }
+                            return false;
+                        }
                     }
                 }
                 catch (Exception ex)
