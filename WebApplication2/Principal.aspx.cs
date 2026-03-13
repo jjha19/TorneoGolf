@@ -24,12 +24,14 @@ namespace WebApplication2
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Verificar si el usuario está logueado
+            // Comentamos la verificación del login de momento
+            /* 
             if (Session["Usuario"] == null)
             {
                 Response.Redirect("Login.aspx");
                 return;
             }
+            */
 
             if (!IsPostBack)
             {
@@ -40,95 +42,88 @@ namespace WebApplication2
 
         private void InicializarPagina()
         {
-            // Código de equipo fijo (más adelante se obtendrá por parámetro de URL)
-            string codigoEquipo = "AB124";
+            string nombreTorneo = "Torneo no encontrado";
+            string comentarioTorneo = "Sin comentario disponible";
+            string nombreEquipo = "Equipo no encontrado";
+            string codigoEquipo = "AB124"; // Valor por defecto
+            string torneoVinculado = "";
 
-            // Obtener el nombre del equipo desde la BD
-            string nombreEquipo = ObtenerNombreEquipo(codigoEquipo);
+            // Obtener el contador del equipo desde la URL (e_contador), por defecto 1
+            int equipoContador = 1;
+            if (!string.IsNullOrEmpty(Request.QueryString["index"]))
+            {
+                int.TryParse(Request.QueryString["index"], out equipoContador);
+                if (equipoContador < 1) equipoContador = 1;
+            }
 
-            // Obtener el nombre del torneo (puede venir de Session o ser fijo)
-            string nombreTorneo = Session["NombreTorneo"]?.ToString() ?? "Torneo de Golf 2026";
+            try
+            {
+                using (OleDbConnection conn = new OleDbConnection(connectionString))
+                {
+                    conn.Open();
 
-            // DEBUG: Mostrar qué nombre de torneo estamos usando
-            System.Diagnostics.Debug.WriteLine($"Buscando torneo: '{nombreTorneo}'");
+                    // 1. Buscar primero en la tabla Equipo usando el e_contador
+                    string queryEquipo = "SELECT e_nombre, e_codigo, e_torneo FROM Equipo WHERE e_contador = ?";
+                    using (OleDbCommand cmdEquipo = new OleDbCommand(queryEquipo, conn))
+                    {
+                        cmdEquipo.Parameters.AddWithValue("?", equipoContador);
+                        using (OleDbDataReader readerEquipo = cmdEquipo.ExecuteReader())
+                        {
+                            if (readerEquipo.Read())
+                            {
+                                nombreEquipo = readerEquipo["e_nombre"].ToString().Trim();
+                                codigoEquipo = readerEquipo["e_codigo"]?.ToString().Trim();
+                                torneoVinculado = readerEquipo["e_torneo"]?.ToString().Trim();
+                                
+                                Session["NombreEquipo"] = nombreEquipo;
+                                Session["CodigoEquipo"] = codigoEquipo; // Importante para CargarIntegrantes()
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"No existe el equipo con e_contador = {equipoContador}");
+                            }
+                        }
+                    }
 
-            // Obtener el comentario del torneo desde la BD usando el nombre del torneo
-            string comentarioTorneo = ObtenerComentarioTorneo(nombreTorneo);
-
-            // DEBUG: Mostrar qué comentario obtuvimos
-            System.Diagnostics.Debug.WriteLine($"Comentario obtenido: '{comentarioTorneo}'");
+                    // 2. Si encontramos el torneo vinculado (código del torneo), buscamos su información en la tabla Torneos
+                    if (!string.IsNullOrEmpty(torneoVinculado))
+                    {
+                        // IMPORTANTE: Buscamos por t_codigo usando el e_torneo
+                        string queryTorneo = "SELECT t_nombre, t_comen FROM Torneos WHERE t_codigo = ?";
+                        using (OleDbCommand cmdTorneo = new OleDbCommand(queryTorneo, conn))
+                        {
+                            cmdTorneo.Parameters.AddWithValue("?", torneoVinculado);
+                            using (OleDbDataReader readerTorneo = cmdTorneo.ExecuteReader())
+                            {
+                                if (readerTorneo.Read())
+                                {
+                                    // Asignamos el t_nombre a la variable que se mostrará
+                                    nombreTorneo = readerTorneo["t_nombre"].ToString().Trim();
+                                    comentarioTorneo = readerTorneo["t_comen"]?.ToString().Trim();
+                                    
+                                    // Guardar en sesión para usarlo en otras partes si es necesario
+                                    Session["NombreTorneo"] = nombreTorneo;
+                                }
+                                else
+                                {
+                                    // Fallback: Si no está en la tabla Torneos
+                                    nombreTorneo = "Código no encontrado: " + torneoVinculado;
+                                    System.Diagnostics.Debug.WriteLine($"No se encontró información extra para el torneo con código: {torneoVinculado}");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al inicializar la página: {ex.Message}");
+            }
 
             // Asignar valores a los labels del título
-            lblTituloTorneo.Text = nombreTorneo;
-            lblTituloEquipo.Text = nombreEquipo;
-            lblComentarioTorneo.Text = comentarioTorneo;
-        }
-
-        private string ObtenerComentarioTorneo(string nombreTorneo)
-        {
-            try
-            {
-                using (OleDbConnection conn = new OleDbConnection(connectionString))
-                {
-                    conn.Open();
-
-                    // Primero intentar buscar por nombre exacto
-                    string query = "SELECT t_comen FROM Torneos WHERE t_nombre = ?";
-                    OleDbCommand cmd = new OleDbCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@t_nombre", nombreTorneo);
-
-                    object resultado = cmd.ExecuteScalar();
-
-                    if (resultado != null && !string.IsNullOrWhiteSpace(resultado.ToString()))
-                    {
-                        return resultado.ToString().Trim();
-                    }
-
-                    // Si no encuentra por nombre, intentar obtener el primer registro
-                    query = "SELECT TOP 1 t_comentario FROM Torneos";
-                    cmd = new OleDbCommand(query, conn);
-                    resultado = cmd.ExecuteScalar();
-
-                    if (resultado != null && !string.IsNullOrWhiteSpace(resultado.ToString()))
-                    {
-                        return resultado.ToString().Trim();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Mostrar el error específico para debugging
-                MostrarMensajeError($"Error al obtener el comentario del torneo: {ex.Message}");
-            }
-
-            return "Sin comentario disponible"; // Retornar mensaje informativo
-        }
-
-        private string ObtenerNombreEquipo(string codigoEquipo)
-        {
-            try
-            {
-                using (OleDbConnection conn = new OleDbConnection(connectionString))
-                {
-                    string query = "SELECT e_nombre FROM Equipo WHERE e_codigo = ?";
-                    OleDbCommand cmd = new OleDbCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@e_codigo", codigoEquipo);
-
-                    conn.Open();
-                    object resultado = cmd.ExecuteScalar();
-
-                    if (resultado != null)
-                    {
-                        return resultado.ToString().Trim();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MostrarMensajeError("Error al obtener el nombre del equipo: " + ex.Message);
-            }
-
-            return "Equipo Sin Nombre";
+            lblTituloTorneo.Text = nombreTorneo; 
+            lblTituloEquipo.Text = nombreEquipo; 
+            lblComentarioTorneo.Text = comentarioTorneo; 
         }
 
         private void CargarIntegrantes()
@@ -137,11 +132,14 @@ namespace WebApplication2
             {
                 DataTable dt = new DataTable();
 
+                // Obtener el código de equipo de la sesión (seteado en InicializarPagina)
+                string codigoEquipo = Session["CodigoEquipo"]?.ToString() ?? "AB124";
+
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
                     string query = "SELECT p_contador, p_nombre, p_asistencia, p_transporte, p_alergia FROM Equipo_participa WHERE e_codigo = ?";
                     OleDbCommand cmd = new OleDbCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@e_codigo", "AB124");
+                    cmd.Parameters.AddWithValue("@e_codigo", codigoEquipo);
 
                     conn.Open();
                     OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
