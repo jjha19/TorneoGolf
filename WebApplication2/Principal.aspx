@@ -16,7 +16,7 @@
 
             <!-- Título -->
             <div id="TitleText">
-                <h1>Torneo: <asp:Label ID="lblTituloTorneo" runat="server"></asp:Label> - Equipo: <asp:Label ID="lblTituloEquipo" runat="server"></asp:Label></h1>
+                <h1><asp:Label ID="lblTituloTorneo" runat="server"></asp:Label> - Equipo: <asp:Label ID="lblTituloEquipo" runat="server"></asp:Label></h1>
                 <div class="torneo-comentario">
                     <asp:Label ID="lblComentarioTorneo" runat="server"></asp:Label>
                 </div>
@@ -41,59 +41,34 @@
                     </HeaderTemplate>
                     <ItemTemplate>
                         <li class="integrante-item">
-                            <!-- Vista de solo lectura -->
-                            <asp:Panel ID="pnlView" runat="server" CssClass="integrante-view">
-                                <div class="integrante-linea"><strong>Nombre:</strong> <%# Eval("p_nombre") %></div>
-                                <div class="integrante-linea">
-                                    <strong>Asiste:</strong> 
-                                    <span><%# Convert.ToBoolean(Eval("p_asistencia")) ? "Sí" : "No" %></span>
-                                </div>
-                                <div class="integrante-linea">
-                                    <strong>Usará autobús:</strong> 
-                                    <span><%# Convert.ToBoolean(Eval("p_transporte")) ? "Sí" : "No" %></span>
-                                </div>
-                                <div class="integrante-linea">
-                                    <strong>Alergias:</strong> 
-                                    <span><%# Eval("p_alergia") %></span>
+                            <div class="integrante-contenido">
+                                <!-- Nombre grande y destacado (solo lectura) -->
+                                <div class="integrante-nombre-grande" style="font-size: 26px !important; font-weight: 600 !important; text-align: center !important; color: black !important;">
+                                    <%# Eval("p_nombre") %>
                                 </div>
 
-                                <asp:Panel ID="pnlAcciones" runat="server" CssClass="integrante-acciones" Visible="true">
-                                    <asp:Button ID="btnEditar" runat="server" Text="Editar" CssClass="btn-editar" 
-                                        CommandName="Editar" CommandArgument='<%# Eval("p_contador") %>' CausesValidation="false" />
-                                </asp:Panel>
-                            </asp:Panel>
-
-                            <!-- Vista de edición inline -->
-                            <asp:Panel ID="pnlEdit" runat="server" CssClass="integrante-edit" Visible="false">
-                                <div class="integrante-edit-grid">
-                                    <!-- Nombre NO editable -->
-                                    <div class="form-group full">
-                                        <label><strong>Nombre:</strong></label>
-                                        <asp:Label ID="lblEditNombre" runat="server" Text='<%# Eval("p_nombre") %>' CssClass="readonly-field"></asp:Label>
+                                <!-- Checkboxes editables directamente -->
+                                <div class="integrante-campos">
+                                    <div class="campo-checkbox">
+                                        <asp:CheckBox ID="chkAsistencia" runat="server" Checked='<%# Convert.ToBoolean(Eval("p_asistencia")) %>' />
+                                        <label>Asistirá</label>
                                     </div>
 
-                                    <!-- Campos editables (checkboxes) -->
-                                    <div class="form-group">
-                                        <asp:CheckBox ID="chkEditAsistencia" runat="server" Checked='<%# Convert.ToBoolean(Eval("p_asistencia")) %>' />
-                                        <label style="display:inline; margin-left:5px;">Asiste</label>
+                                    <div class="campo-checkbox">
+                                        <asp:CheckBox ID="chkTransporte" runat="server" Checked='<%# Convert.ToBoolean(Eval("p_transporte")) %>' />
+                                        <label>Usará autobús</label>
                                     </div>
 
-                                    <div class="form-group">
-                                        <asp:CheckBox ID="chkEditTransporte" runat="server" Checked='<%# Convert.ToBoolean(Eval("p_transporte")) %>' />
-                                        <label style="display:inline; margin-left:5px;">Usará autobús</label>
-                                    </div>
-
-                                    <!-- Botones de edición -->
-                                    <div class="form-group full">
-                                        <div class="integrante-acciones">
-                                            <asp:Button ID="btnGuardarEdit" runat="server" Text="Guardar" CssClass="btn-editar" 
-                                                CommandName="GuardarEdit" CommandArgument='<%# Eval("p_contador") %>' CausesValidation="false" />
-                                            <asp:Button ID="btnCancelarEdit" runat="server" Text="Cancelar" CssClass="btn-cancelar" 
-                                                CommandName="CancelarEdit" CommandArgument='<%# Eval("p_contador") %>' CausesValidation="false" />
-                                        </div>
+                                    <div class="campo-alergia">
+                                        <strong>Alergias:</strong>
+                                        <asp:TextBox ID="txtAlergia" runat="server" Text='<%# Eval("p_alergia") %>' 
+                                            placeholder="Ej. Mariscos"></asp:TextBox>
                                     </div>
                                 </div>
-                            </asp:Panel>
+
+                                <!-- HiddenField para guardar el ID -->
+                                <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
+                            </div>
                         </li>
                     </ItemTemplate>
                     <FooterTemplate>
@@ -114,8 +89,8 @@
                         Rows="5" placeholder="Escribe aquí tus comentarios o sugerencias..." 
                         CssClass="comentario-textbox"></asp:TextBox>
                 </div>
-                <div class="form-group">
-                    <asp:Button ID="btnEnviarComentario" runat="server" Text="Enviar" 
+                <div class="form-group" style="text-align: center !important;">
+                    <asp:Button ID="btnEnviarComentario" runat="server" Text="Guardar y Enviar" 
                         CssClass="btn-enviar-comentario" OnClick="btnEnviarComentario_Click" />
                 </div>
             </div>

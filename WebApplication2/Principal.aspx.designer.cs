@@ -51,42 +51,6 @@ namespace WebApplication2
         protected global::System.Web.UI.WebControls.Label lblComentarioTorneo;
 
         /// <summary>
-        /// Control pnlUserInfo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlUserInfo;
-
-        /// <summary>
-        /// Control lblNombreTorneo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNombreTorneo;
-
-        /// <summary>
-        /// Control lblNombreEquipo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNombreEquipo;
-
-        /// <summary>
-        /// Control lblCapitanBadge.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCapitanBadge;
-
-        /// <summary>
         /// Control pnlMensajeExito.
         /// </summary>
         /// <remarks>

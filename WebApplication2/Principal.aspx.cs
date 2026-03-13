@@ -73,7 +73,7 @@ namespace WebApplication2
                     conn.Open();
 
                     // Primero intentar buscar por nombre exacto
-                    string query = "SELECT t_comentario FROM Torneos WHERE t_nombre = ?";
+                    string query = "SELECT t_comen FROM Torneos WHERE t_nombre = ?";
                     OleDbCommand cmd = new OleDbCommand(query, conn);
                     cmd.Parameters.AddWithValue("@t_nombre", nombreTorneo);
 
@@ -169,64 +169,72 @@ namespace WebApplication2
 
         protected void rptIntegrantes_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            int id = Convert.ToInt32(e.CommandArgument);
-
-            if (e.CommandName == "Editar")
-            {
-                MostrarModoEdicion(e.Item, true);
-            }
-            else if (e.CommandName == "CancelarEdit")
-            {
-                MostrarModoEdicion(e.Item, false);
-            }
-            else if (e.CommandName == "GuardarEdit")
-            {
-                GuardarEdicionInline(e.Item, id);
-            }
+            // Ya no se usa porque eliminamos los botones individuales
         }
 
-        private void MostrarModoEdicion(RepeaterItem item, bool editar)
-        {
-            Panel pnlView = (Panel)item.FindControl("pnlView");
-            Panel pnlEdit = (Panel)item.FindControl("pnlEdit");
-
-            if (pnlView != null && pnlEdit != null)
-            {
-                pnlView.Visible = !editar;
-                pnlEdit.Visible = editar;
-            }
-        }
-
-        private void GuardarEdicionInline(RepeaterItem item, int id)
+        // Manejador para enviar comentarios Y guardar todos los cambios
+        protected void btnEnviarComentario_Click(object sender, EventArgs e)
         {
             try
             {
-                // Obtener valores de los controles
-                CheckBox chkEditAsistencia = (CheckBox)item.FindControl("chkEditAsistencia");
-                CheckBox chkEditTransporte = (CheckBox)item.FindControl("chkEditTransporte");
+                int cambiosGuardados = 0;
 
-                // Actualizar en la BD directamente
-                using (OleDbConnection conn = new OleDbConnection(connectionString))
+                // 1. Guardar todos los cambios de los integrantes
+                foreach (RepeaterItem item in rptIntegrantes.Items)
                 {
-                    string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ? WHERE p_contador = ?";
-                    OleDbCommand cmd = new OleDbCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@p_asistencia", chkEditAsistencia.Checked);
-                    cmd.Parameters.AddWithValue("@p_transporte", chkEditTransporte.Checked);
-                    cmd.Parameters.AddWithValue("@p_contador", id);
+                    if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
+                    {
+                        CheckBox chkAsistencia = (CheckBox)item.FindControl("chkAsistencia");
+                        CheckBox chkTransporte = (CheckBox)item.FindControl("chkTransporte");
+                        TextBox txtAlergia = (TextBox)item.FindControl("txtAlergia");
+                        HiddenField hdnContador = (HiddenField)item.FindControl("hdnContador");
 
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
+                        if (chkAsistencia != null && chkTransporte != null && txtAlergia != null && hdnContador != null)
+                        {
+                            int id = Convert.ToInt32(hdnContador.Value);
+
+                            using (OleDbConnection conn = new OleDbConnection(connectionString))
+                            {
+                                string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ? WHERE p_contador = ?";
+                                OleDbCommand cmd = new OleDbCommand(query, conn);
+                                cmd.Parameters.AddWithValue("@p_asistencia", chkAsistencia.Checked);
+                                cmd.Parameters.AddWithValue("@p_transporte", chkTransporte.Checked);
+                                cmd.Parameters.AddWithValue("@p_alergia", txtAlergia.Text.Trim());
+                                cmd.Parameters.AddWithValue("@p_contador", id);
+
+                                conn.Open();
+                                cmd.ExecuteNonQuery();
+                                cambiosGuardados++;
+                            }
+                        }
+                    }
                 }
 
-                MostrarMensajeExito("Cambios guardados exitosamente.");
+                // 2. Guardar el comentario (si hay algo escrito)
+                string comentario = txtComentario.Text.Trim();
+                string mensajeComentario = "";
 
-                // Volver a modo vista
-                MostrarModoEdicion(item, false);
-                CargarIntegrantes();
+                if (!string.IsNullOrEmpty(comentario))
+                {
+                    // Aquí puedes guardar el comentario en la BD o enviarlo por email
+                    mensajeComentario = $" Comentario enviado: \"{comentario}\"";
+                    txtComentario.Text = string.Empty;
+                }
+
+                // 3. Mostrar mensaje de éxito
+                if (cambiosGuardados > 0 || !string.IsNullOrEmpty(comentario))
+                {
+                    MostrarMensajeExito($"✓ {cambiosGuardados} integrante(s) actualizado(s).{mensajeComentario}");
+                    CargarIntegrantes();
+                }
+                else
+                {
+                    MostrarMensajeError("No hay cambios para guardar.");
+                }
             }
             catch (Exception ex)
             {
-                MostrarMensajeError("Error al guardar la edición: " + ex.Message);
+                MostrarMensajeError("Error al guardar: " + ex.Message);
             }
         }
 
@@ -242,32 +250,6 @@ namespace WebApplication2
             lblMensajeError.Text = mensaje;
             pnlMensajeError.Visible = true;
             pnlMensajeExito.Visible = false;
-        }
-
-        // Manejador para enviar comentarios
-        protected void btnEnviarComentario_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string comentario = txtComentario.Text.Trim();
-
-                if (string.IsNullOrEmpty(comentario))
-                {
-                    MostrarMensajeError("Por favor, escribe un comentario antes de enviar.");
-                    return;
-                }
-
-                // Aquí puedes guardar el comentario en la BD o enviarlo por email
-                // Por ahora solo mostramos un mensaje de éxito
-                MostrarMensajeExito($"Comentario enviado exitosamente: \"{comentario}\"");
-
-                // Limpiar el campo de comentario
-                txtComentario.Text = string.Empty;
-            }
-            catch (Exception ex)
-            {
-                MostrarMensajeError("Error al enviar el comentario: " + ex.Message);
-            }
         }
     }
 }
