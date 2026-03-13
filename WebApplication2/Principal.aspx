@@ -7,6 +7,24 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Torneo de Golf - Equipo</title>
     <link href="Content/styles.css" rel="stylesheet" type="text/css" />
+    <style>
+        .radio-list-responsive {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        /* Forzamos que las columnas de la tabla que genera el RadioButtonList ocupen exactamente la mitad (50%) */
+        .radio-list-responsive td {
+            width: 50%;
+            text-align: center; /* Opcional: Centra el circulo y el texto dentro de su mitad */
+        }
+
+        /* Opcional: Agregamos un poco de espacio entre el circulito y el texto "Sí" / "No" */
+        .radio-list-responsive label {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <img src="/images/FondoGolf.jpeg" alt="Fondo de Golf" id="bg_image" />
@@ -41,33 +59,48 @@
                     </HeaderTemplate>
                     <ItemTemplate>
                         <li class="integrante-item">
-                            <div class="integrante-contenido">
-                                <!-- Nombre grande y destacado (solo lectura) -->
-                                <div class="integrante-nombre-grande" style="font-size: 26px !important; font-weight: 600 !important; text-align: center !important; color: black !important;">
-                                    <%# Eval("p_nombre") %>
+                            <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
+                            
+                            <div class="integrante-edit-grid">
+                                <!-- Nombre NO editable -->
+                                <div class="form-group full">
+                                    <label><strong>Nombre:</strong></label>
+                                    <asp:Label ID="lblEditNombre" runat="server" Text='<%# Eval("p_nombre") %>' CssClass="readonly-field"></asp:Label>
                                 </div>
 
-                                <!-- Checkboxes editables directamente -->
-                                <div class="integrante-campos">
-                                    <div class="campo-checkbox">
-                                        <asp:CheckBox ID="chkAsistencia" runat="server" Checked='<%# Convert.ToBoolean(Eval("p_asistencia")) %>' />
-                                        <label>Asistirá</label>
-                                    </div>
-
-                                    <div class="campo-checkbox">
-                                        <asp:CheckBox ID="chkTransporte" runat="server" Checked='<%# Convert.ToBoolean(Eval("p_transporte")) %>' />
-                                        <label>Usará autobús</label>
-                                    </div>
-
-                                    <div class="campo-alergia">
-                                        <strong>Alergias:</strong>
-                                        <asp:TextBox ID="txtAlergia" runat="server" Text='<%# Eval("p_alergia") %>' 
-                                            placeholder="Ej. Mariscos"></asp:TextBox>
-                                    </div>
+                                <!-- Asistencia RadioButtonList -->
+                                <div class="form-group">
+                                    <label><strong>Asiste:</strong></label>
+                                    <asp:RadioButtonList ID="rblAsistencia" runat="server" RepeatDirection="Horizontal" 
+                                        SelectedValue='<%# Convert.ToBoolean(Eval("p_asistencia")) ? "true" : "false" %>' 
+                                        CssClass="radio-list-responsive" Width="100%">
+                                        <asp:ListItem Text="Sí" Value="true"></asp:ListItem>
+                                        <asp:ListItem Text="No" Value="false"></asp:ListItem>
+                                    </asp:RadioButtonList>
+                                    <asp:RequiredFieldValidator ID="rfvAsistencia" runat="server" 
+                                        ControlToValidate="rblAsistencia" ErrorMessage="Requerido" 
+                                        Display="Dynamic" CssClass="mensaje-error">*</asp:RequiredFieldValidator>
                                 </div>
 
-                                <!-- HiddenField para guardar el ID -->
-                                <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
+                                <!-- Transporte RadioButtonList -->
+                                <div class="form-group">
+                                    <label><strong>Usará autobús:</strong></label>
+                                    <asp:RadioButtonList ID="rblTransporte" runat="server" RepeatDirection="Horizontal" 
+                                        SelectedValue='<%# Convert.ToBoolean(Eval("p_transporte")) ? "true" : "false" %>' 
+                                        CssClass="radio-list-responsive" Width="100%">
+                                        <asp:ListItem Text="Sí" Value="true"></asp:ListItem>
+                                        <asp:ListItem Text="No" Value="false"></asp:ListItem>
+                                    </asp:RadioButtonList>
+                                    <asp:RequiredFieldValidator ID="rfvTransporte" runat="server" 
+                                        ControlToValidate="rblTransporte" ErrorMessage="Requerido" 
+                                        Display="Dynamic" CssClass="mensaje-error">*</asp:RequiredFieldValidator>
+                                </div>
+
+                                <!-- Alergias -->
+                                <div class="form-group">
+                                    <label><strong>Alergias / Intolerancias:</strong></label>
+                                    <asp:TextBox ID="txtAlergia" runat="server" Text='<%# Eval("p_alergia") %>' CssClass="textbox-alergia"></asp:TextBox>
+                                </div>
                             </div>
                         </li>
                     </ItemTemplate>

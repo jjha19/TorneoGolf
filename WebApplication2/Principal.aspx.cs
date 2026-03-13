@@ -173,6 +173,12 @@ namespace WebApplication2
         // Manejador para enviar comentarios Y guardar todos los cambios
         protected void btnEnviarComentario_Click(object sender, EventArgs e)
         {
+            if (!Page.IsValid)
+            {
+                MostrarMensajeError("Por favor, complete todos los campos obligatorios (Asistencia y Transporte) de todos los integrantes.");
+                return;
+            }
+
             try
             {
                 int cambiosGuardados = 0;
@@ -182,21 +188,26 @@ namespace WebApplication2
                 {
                     if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
                     {
-                        CheckBox chkAsistencia = (CheckBox)item.FindControl("chkAsistencia");
-                        CheckBox chkTransporte = (CheckBox)item.FindControl("chkTransporte");
+                        // Encontrar los nuevos controles RadioButtonList
+                        RadioButtonList rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
+                        RadioButtonList rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
                         TextBox txtAlergia = (TextBox)item.FindControl("txtAlergia");
                         HiddenField hdnContador = (HiddenField)item.FindControl("hdnContador");
 
-                        if (chkAsistencia != null && chkTransporte != null && txtAlergia != null && hdnContador != null)
+                        if (rblAsistencia != null && rblTransporte != null && txtAlergia != null && hdnContador != null)
                         {
                             int id = Convert.ToInt32(hdnContador.Value);
+                            
+                            // Extraer los booleanos de los RadioButtons
+                            bool asistencia = rblAsistencia.SelectedValue == "true";
+                            bool transporte = rblTransporte.SelectedValue == "true";
 
                             using (OleDbConnection conn = new OleDbConnection(connectionString))
                             {
                                 string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ? WHERE p_contador = ?";
                                 OleDbCommand cmd = new OleDbCommand(query, conn);
-                                cmd.Parameters.AddWithValue("@p_asistencia", chkAsistencia.Checked);
-                                cmd.Parameters.AddWithValue("@p_transporte", chkTransporte.Checked);
+                                cmd.Parameters.AddWithValue("@p_asistencia", asistencia);
+                                cmd.Parameters.AddWithValue("@p_transporte", transporte);
                                 cmd.Parameters.AddWithValue("@p_alergia", txtAlergia.Text.Trim());
                                 cmd.Parameters.AddWithValue("@p_contador", id);
 
@@ -220,15 +231,10 @@ namespace WebApplication2
                 }
 
                 // 3. Mostrar mensaje de éxito
-                if (cambiosGuardados > 0 || !string.IsNullOrEmpty(comentario))
-                {
-                    MostrarMensajeExito($"✓ {cambiosGuardados} integrante(s) actualizado(s).{mensajeComentario}");
-                    CargarIntegrantes();
-                }
-                else
-                {
-                    MostrarMensajeError("No hay cambios para guardar.");
-                }
+                MostrarMensajeExito($"✓ {cambiosGuardados} integrante(s) actualizado(s).{mensajeComentario}");
+                
+                // Refrescamos los datos para mostrarlos actualizados
+                CargarIntegrantes();
             }
             catch (Exception ex)
             {
