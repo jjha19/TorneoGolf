@@ -79,7 +79,7 @@
                                     </asp:RadioButtonList>
                                     <asp:RequiredFieldValidator ID="rfvAsistencia" runat="server" 
                                         ControlToValidate="rblAsistencia" ErrorMessage="Requerido" 
-                                        Display="Dynamic" CssClass="mensaje-error">*</asp:RequiredFieldValidator>
+                                        Display="Dynamic" CssClass="mensaje-error">Este campo es Obligatorio</asp:RequiredFieldValidator>
                                 </div>
 
                                 <!-- Transporte RadioButtonList -->
@@ -93,7 +93,7 @@
                                     </asp:RadioButtonList>
                                     <asp:RequiredFieldValidator ID="rfvTransporte" runat="server" 
                                         ControlToValidate="rblTransporte" ErrorMessage="Requerido" 
-                                        Display="Dynamic" CssClass="mensaje-error">*</asp:RequiredFieldValidator>
+                                        Display="Dynamic" CssClass="mensaje-error">Este campo es Obligatorio</asp:RequiredFieldValidator>
                                 </div>
 
                                 <!-- Alergias -->
