@@ -72,10 +72,10 @@
                                 <div class="form-group">
                                     <label><strong>Asiste:</strong></label>
                                     <asp:RadioButtonList ID="rblAsistencia" runat="server" RepeatDirection="Horizontal" 
-                                        SelectedValue='<%# Convert.ToBoolean(Eval("p_asistencia")) ? "true" : "false" %>' 
+                                        SelectedValue='<%# Convert.ToString(Eval("p_asistencia")) == "Si" || Convert.ToString(Eval("p_asistencia")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_asistencia")) == "No" ? "No" : null) %>' 
                                         CssClass="radio-list-responsive" Width="100%">
-                                        <asp:ListItem Text="Sí" Value="true"></asp:ListItem>
-                                        <asp:ListItem Text="No" Value="false"></asp:ListItem>
+                                        <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                                        <asp:ListItem Text="No" Value="No"></asp:ListItem>
                                     </asp:RadioButtonList>
                                     <asp:RequiredFieldValidator ID="rfvAsistencia" runat="server" 
                                         ControlToValidate="rblAsistencia" ErrorMessage="Requerido" 
@@ -86,10 +86,10 @@
                                 <div class="form-group">
                                     <label><strong>Usará autobús:</strong></label>
                                     <asp:RadioButtonList ID="rblTransporte" runat="server" RepeatDirection="Horizontal" 
-                                        SelectedValue='<%# Convert.ToBoolean(Eval("p_transporte")) ? "true" : "false" %>' 
+                                        SelectedValue='<%# Convert.ToString(Eval("p_transporte")) == "Si" || Convert.ToString(Eval("p_transporte")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_transporte")) == "No" ? "No" : null) %>' 
                                         CssClass="radio-list-responsive" Width="100%">
-                                        <asp:ListItem Text="Sí" Value="true"></asp:ListItem>
-                                        <asp:ListItem Text="No" Value="false"></asp:ListItem>
+                                        <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                                        <asp:ListItem Text="No" Value="No"></asp:ListItem>
                                     </asp:RadioButtonList>
                                     <asp:RequiredFieldValidator ID="rfvTransporte" runat="server" 
                                         ControlToValidate="rblTransporte" ErrorMessage="Requerido" 
