@@ -311,27 +311,6 @@ h2 {
     font-weight: normal;
 }
 
-/* Borde redondeado y verde oscuro para todos los form-group */
-.form-group {
-    border: 2px solid darkgreen;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
-}
-
-/* Evitar que el botón de enviar tenga este borde */
-.comentarios-section .form-group:last-child {
-    border: none;
-    padding: 0;
-}
-
-/* Centrar campo de alergias */
-.textbox-alergia {
-    width: 80%;
-    margin: 0 auto;
-    display: block;
-}
-
 /* Sección de Comentarios */
 .comentarios-section {
     background-color: white;
@@ -469,8 +448,8 @@ h2 {
     margin-top: 0;
 }
 
+/* Estilo base de form-group (solo margen); los bordes se controlan arriba para no duplicar reglas */
 .form-group {
-    border: 1px solid #ddd;
     margin-bottom: 15px;
 }
 
@@ -715,4 +694,86 @@ h2 {
     .radio-label {
         font-size: 14px;
     }
+}
+
+/* ----------- RADIO BUTTON LAYOUT Y ESTILO PERSONALIZADO ----------- */
+
+/* Distribución del RadioButtonList (tabla) */
+.radio-list-responsive {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.radio-list-responsive td {
+    width: 50%;
+    text-align: center;
+}
+
+.radio-list-responsive label {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* Estilo visual tipo radio-wrapper-15 */
+.radio-wrapper-15 input[type="radio"] {
+    position: relative;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+}
+
+.radio-wrapper-15 input[type="radio"]:before,
+.radio-wrapper-15 input[type="radio"]:after {
+    content: "";
+    position: absolute;
+}
+
+    .radio-wrapper-15 input[type="radio"]:before {
+        width: 100%;
+        height: 100%;
+        border-radius: 30px;
+        background-color: #f2f2f2;
+        box-shadow: 0 0 0 1px #f2f2f2;
+        -moz-transition: all 0.25s ease-in-out;
+        -o-transition: all 0.25s ease-in-out;
+        -webkit-transition: all 0.25s ease-in-out;
+        transition: all 0.25s ease-in-out;
+    }
+
+.radio-wrapper-15 input[type="radio"]:after {
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    background-color: #15202a;
+    -moz-transform: scale(0, 0);
+    -ms-transform: scale(0, 0);
+    -webkit-transform: scale(0, 0);
+    transform: scale(0, 0);
+    -moz-transition: all 0.25s cubic-bezier(0.75, 0.01, 0.48, 2);
+    -o-transition: all 0.25s cubic-bezier(0.75, 0.01, 0.48, 2);
+    -webkit-transition: all 0.25s cubic-bezier(0.75, 0.01, 0.48, 2);
+    transition: all 0.25s cubic-bezier(0.75, 0.01, 0.48, 2);
+}
+
+.radio-wrapper-15 input[type="radio"]:checked:after {
+    -moz-transform: scale(0.75, 0.75);
+    -ms-transform: scale(0.75, 0.75);
+    -webkit-transform: scale(0.75, 0.75);
+    transform: scale(0.75, 0.75);
+}
+
+.radio-wrapper-15 input[type="radio"]:checked:before {
+    background-color: #85ff7a;
+    box-shadow: 0 0 0 1px #85ff7a;
+}
+
+.radio-wrapper-15 * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
