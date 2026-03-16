@@ -183,41 +183,48 @@ namespace WebApplication2
             {
                 int cambiosGuardados = 0;
 
-                // 1. Guardar todos los cambios de los integrantes
-                foreach (RepeaterItem item in rptIntegrantes.Items)
+                // Abrir la conexión una sola vez fuera del bucle para mejorar el rendimiento
+                using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
-                    if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
+                    conn.Open();
+                    string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ? WHERE p_contador = ?";
+
+                    // 1. Guardar todos los cambios de los integrantes
+                    foreach (RepeaterItem item in rptIntegrantes.Items)
                     {
-                        // Encontrar los nuevos controles RadioButtonList
-                        RadioButtonList rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
-                        RadioButtonList rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
-                        TextBox txtAlergia = (TextBox)item.FindControl("txtAlergia");
-                        HiddenField hdnContador = (HiddenField)item.FindControl("hdnContador");
-
-                        if (rblAsistencia != null && rblTransporte != null && txtAlergia != null && hdnContador != null)
+                        if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
                         {
-                            int id = Convert.ToInt32(hdnContador.Value);
-                            
-                            // Extraer los booleanos de los RadioButtons
-                            bool asistencia = rblAsistencia.SelectedValue == "true";
-                            bool transporte = rblTransporte.SelectedValue == "true";
+                            // Encontrar los nuevos controles
+                            RadioButtonList rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
+                            RadioButtonList rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
+                            TextBox txtAlergia = (TextBox)item.FindControl("txtAlergia");
+                            HiddenField hdnContador = (HiddenField)item.FindControl("hdnContador");
 
-                            using (OleDbConnection conn = new OleDbConnection(connectionString))
+                            if (rblAsistencia != null && rblTransporte != null && txtAlergia != null && hdnContador != null)
                             {
-                                string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ? WHERE p_contador = ?";
-                                OleDbCommand cmd = new OleDbCommand(query, conn);
-                                cmd.Parameters.AddWithValue("@p_asistencia", asistencia);
-                                cmd.Parameters.AddWithValue("@p_transporte", transporte);
-                                cmd.Parameters.AddWithValue("@p_alergia", txtAlergia.Text.Trim());
-                                cmd.Parameters.AddWithValue("@p_contador", id);
+                                int id = Convert.ToInt32(hdnContador.Value);
+                                
+                                // Extraer los strings en lugar de booleanos ("Si" o "No")
+                                string asistencia = rblAsistencia.SelectedValue;
+                                string transporte = rblTransporte.SelectedValue;
+                                string alergia = txtAlergia.Text.Trim();
 
-                                conn.Open();
-                                cmd.ExecuteNonQuery();
-                                cambiosGuardados++;
+                                using (OleDbCommand cmd = new OleDbCommand(query, conn))
+                                {
+                                    // Los parámetros en OleDb se asignan estrictamente por orden posicional (?)
+                                    // Usamos DBNull.Value en caso de que lleguen vacíos
+                                    cmd.Parameters.AddWithValue("@p_asistencia", string.IsNullOrEmpty(asistencia) ? (object)DBNull.Value : asistencia);
+                                    cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(transporte) ? (object)DBNull.Value : transporte);
+                                    cmd.Parameters.AddWithValue("@p_alergia", string.IsNullOrEmpty(alergia) ? (object)DBNull.Value : alergia);
+                                    cmd.Parameters.AddWithValue("@p_contador", id);
+
+                                    cmd.ExecuteNonQuery();
+                                    cambiosGuardados++;
+                                }
                             }
                         }
                     }
-                }
+                } // Fin del using de la conexión (se cierra automáticamente)
 
                 // 2. Guardar el comentario (si hay algo escrito)
                 string comentario = txtComentario.Text.Trim();
