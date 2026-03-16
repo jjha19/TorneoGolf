@@ -259,6 +259,22 @@ h2 {
     margin-bottom: 8px;
 }
 
+/* Aumentar tamaño y centrar el nombre */
+.integrante-edit-grid .form-group.full {
+    text-align: center;
+}
+
+.integrante-edit-grid .form-group.full label {
+    font-size: 1.2em;
+}
+
+.integrante-edit-grid .form-group.full .readonly-field {
+    display: block;
+    font-size: 1.5em; /* Fuente más grande */
+    font-weight: bold;
+    margin-top: 8px;
+}
+
 .integrante-edit-grid .form-group label {
     display: block;
     margin-bottom: 3px;
@@ -293,6 +309,27 @@ h2 {
     border-radius: 4px;
     color: #666;
     font-weight: normal;
+}
+
+/* Borde redondeado y verde oscuro para todos los form-group */
+.form-group {
+    border: 2px solid darkgreen;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+/* Evitar que el botón de enviar tenga este borde */
+.comentarios-section .form-group:last-child {
+    border: none;
+    padding: 0;
+}
+
+/* Centrar campo de alergias */
+.textbox-alergia {
+    width: 80%;
+    margin: 0 auto;
+    display: block;
 }
 
 /* Sección de Comentarios */
@@ -433,6 +470,7 @@ h2 {
 }
 
 .form-group {
+    border: 1px solid #ddd;
     margin-bottom: 15px;
 }
 
@@ -594,4 +632,87 @@ h2 {
     color: #dc3545;
     font-weight: bold;
     margin-left: 5px;
+}
+
+/* ----------- RADIO BUTTON CUSTOM ----------- */
+
+
+.radio-list-responsive {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.radio-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.radio-input {
+    display: none;
+}
+
+.radio-label {
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 16px;
+    color: #333;
+}
+
+.radio-label::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #2c5f2d;
+    border-radius: 50%;
+    background-color: white;
+    transition: background-color 0.3s, border-color 0.3s;
+    transform: translateY(-50%);
+}
+
+.radio-input:checked + .radio-label::before {
+    background-color: #2c5f2d;
+    border-color: #2c5f2d;
+}
+
+.radio-input:checked + .radio-label::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+}
+
+/* Tamaño de fuente y color para mensajes de éxito y error */
+.mensaje-exito, .mensaje-error {
+    font-size: 16px;
+}
+
+/* Ajustes para campos de texto en pantallas pequeñas */
+@media (max-width: 768px) {
+    .integrante-edit-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-agregar, .btn-cancelar {
+        width: 100%;
+    }
+
+    .radio-label {
+        font-size: 14px;
+    }
 }

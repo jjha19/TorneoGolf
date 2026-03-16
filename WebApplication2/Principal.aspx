@@ -24,10 +24,38 @@
             margin-left: 5px;
             cursor: pointer;
         }
+
+        /* Aumentar tamaño y centrar el nombre */
+        .integrante-edit-grid .form-group.full {
+            text-align: center;
+        }
+        .integrante-edit-grid .form-group.full label {
+            font-size: 1.2em;
+        }
+        .integrante-edit-grid .form-group.full .readonly-field {
+            display: block;
+            font-size: 1.5em; /* Fuente más grande */
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        /* Borde redondeado y verde oscuro para todos los form-group */
+        .form-group {
+            border: 2px solid darkgreen;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* Evitar que el botón de enviar tenga este borde */
+        .comentarios-section .form-group:last-child {
+            border: none;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
-    <img src="/images/FondoGolf.jpeg" alt="Fondo de Golf" id="bg_image" />
+    <img src="/images/golfMadridA.jpg" alt="Fondo de Golf" id="bg_image" />
 
     <form id="form1" runat="server">
         <div class="container">
@@ -71,12 +99,14 @@
                                 <!-- Asistencia RadioButtonList -->
                                 <div class="form-group">
                                     <label><strong>Asiste:</strong></label>
-                                    <asp:RadioButtonList ID="rblAsistencia" runat="server" RepeatDirection="Horizontal" 
-                                        SelectedValue='<%# Convert.ToString(Eval("p_asistencia")) == "Si" || Convert.ToString(Eval("p_asistencia")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_asistencia")) == "No" ? "No" : null) %>' 
-                                        CssClass="radio-list-responsive" Width="100%">
+                                    <div class="radio-wrapper-15 radio-list-responsive">
+                                        <asp:RadioButtonList ID="rblAsistencia" runat="server" RepeatDirection="Horizontal" 
+                                            SelectedValue='<%# Convert.ToString(Eval("p_asistencia")) == "Si" || Convert.ToString(Eval("p_asistencia")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_asistencia")) == "No" ? "No" : null) %>' 
+                                            CssClass="" Width="100%">
                                         <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
                                         <asp:ListItem Text="No" Value="No"></asp:ListItem>
-                                    </asp:RadioButtonList>
+                                        </asp:RadioButtonList>
+                                    </div>
                                     <asp:RequiredFieldValidator ID="rfvAsistencia" runat="server" 
                                         ControlToValidate="rblAsistencia" ErrorMessage="Requerido" 
                                         Display="Dynamic" CssClass="mensaje-error">Este campo es Obligatorio</asp:RequiredFieldValidator>
@@ -85,12 +115,14 @@
                                 <!-- Transporte RadioButtonList -->
                                 <div class="form-group">
                                     <label><strong>Usará autobús:</strong></label>
-                                    <asp:RadioButtonList ID="rblTransporte" runat="server" RepeatDirection="Horizontal" 
-                                        SelectedValue='<%# Convert.ToString(Eval("p_transporte")) == "Si" || Convert.ToString(Eval("p_transporte")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_transporte")) == "No" ? "No" : null) %>' 
-                                        CssClass="radio-list-responsive" Width="100%">
+                                    <div class="radio-wrapper-15 radio-list-responsive">
+                                        <asp:RadioButtonList ID="rblTransporte" runat="server" RepeatDirection="Horizontal" 
+                                            SelectedValue='<%# Convert.ToString(Eval("p_transporte")) == "Si" || Convert.ToString(Eval("p_transporte")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_transporte")) == "No" ? "No" : null) %>' 
+                                            CssClass="" Width="100%">
                                         <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
                                         <asp:ListItem Text="No" Value="No"></asp:ListItem>
-                                    </asp:RadioButtonList>
+                                        </asp:RadioButtonList>
+                                    </div>
                                     <asp:RequiredFieldValidator ID="rfvTransporte" runat="server" 
                                         ControlToValidate="rblTransporte" ErrorMessage="Requerido" 
                                         Display="Dynamic" CssClass="mensaje-error">Este campo es Obligatorio</asp:RequiredFieldValidator>
