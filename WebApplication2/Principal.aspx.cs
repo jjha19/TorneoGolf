@@ -182,14 +182,18 @@ namespace WebApplication2
             try
             {
                 int cambiosGuardados = 0;
+                
+                // Extraer el comentario antes de entrar al bucle para tenerlo disponible
+                string comentario = txtComentario.Text.Trim();
 
                 // Abrir la conexión una sola vez fuera del bucle para mejorar el rendimiento
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
                     conn.Open();
-                    string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ? WHERE p_contador = ?";
+                    // Modificamos la consulta para incluir p_comentario
+                    string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ?, p_comentario = ? WHERE p_contador = ?";
 
-                    // 1. Guardar todos los cambios de los integrantes
+                    // 1. Guardar todos los cambios de los integrantes junto con el comentario
                     foreach (RepeaterItem item in rptIntegrantes.Items)
                     {
                         if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
@@ -216,6 +220,7 @@ namespace WebApplication2
                                     cmd.Parameters.AddWithValue("@p_asistencia", string.IsNullOrEmpty(asistencia) ? (object)DBNull.Value : asistencia);
                                     cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(transporte) ? (object)DBNull.Value : transporte);
                                     cmd.Parameters.AddWithValue("@p_alergia", string.IsNullOrEmpty(alergia) ? (object)DBNull.Value : alergia);
+                                    cmd.Parameters.AddWithValue("@p_comentario", string.IsNullOrEmpty(comentario) ? (object)DBNull.Value : comentario);
                                     cmd.Parameters.AddWithValue("@p_contador", id);
 
                                     cmd.ExecuteNonQuery();
@@ -226,14 +231,12 @@ namespace WebApplication2
                     }
                 } // Fin del using de la conexión (se cierra automáticamente)
 
-                // 2. Guardar el comentario (si hay algo escrito)
-                string comentario = txtComentario.Text.Trim();
+                // 2. Comprobamos si había comentario para el mensaje
                 string mensajeComentario = "";
-
                 if (!string.IsNullOrEmpty(comentario))
                 {
-                    // Aquí puedes guardar el comentario en la BD o enviarlo por email
-                    mensajeComentario = $" Comentario enviado: \"{comentario}\"";
+                    mensajeComentario = $" Comentario guardado: \"{comentario}\"";
+                    // Vaciamos la caja de texto después de guardarlo con éxito
                     txtComentario.Text = string.Empty;
                 }
 
