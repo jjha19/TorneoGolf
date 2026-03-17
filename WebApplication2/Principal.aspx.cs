@@ -139,13 +139,28 @@ namespace WebApplication2
 
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
-                    string query = "SELECT p_contador, p_nombre, p_asistencia, p_transporte, p_alergia FROM Equipo_participa WHERE e_codigo = ?";
+                    string query = "SELECT p_contador, p_nombre, p_asistencia, p_transporte, p_alergia, p_practica FROM Equipo_participa WHERE e_codigo = ?";
                     OleDbCommand cmd = new OleDbCommand(query, conn);
                     cmd.Parameters.AddWithValue("@e_codigo", codigoEquipo);
 
                     conn.Open();
                     OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
                     adapter.Fill(dt);
+
+                    // Usar el primer registro para rellenar la pregunta de práctica
+                    if (dt.Rows.Count > 0)
+                    {
+                        object practicaValor = dt.Rows[0]["p_practica"];
+                        string practica = practicaValor == DBNull.Value ? null : practicaValor.ToString().Trim();
+
+                        if (!string.IsNullOrEmpty(practica) && rblPractica != null)
+                        {
+                            // Normalizamos "Sí" y "Si" a "Si" para SelectedValue
+                            if (practica.Equals("Sí", StringComparison.OrdinalIgnoreCase))
+                                practica = "Si";
+                            rblPractica.SelectedValue = practica;
+                        }
+                    }
                 }
 
                 if (dt.Rows.Count > 0)
@@ -189,11 +204,14 @@ namespace WebApplication2
                 string comentario = txtComentario.Text.Trim();
 
                 // Abrir la conexión una sola vez fuera del bucle para mejorar el rendimiento
+                // Valor común de práctica (Si/No) tomado del radio superior (puede ser null)
+                string practicaGlobal = rblPractica.SelectedValue;
+
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
                     conn.Open();
-                    // Modificamos la consulta para incluir p_comentario
-                    string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ?, p_comentario = ? WHERE p_contador = ?";
+                    // Modificamos la consulta para incluir p_comentario y p_practica
+                    string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ?, p_comentario = ?, p_practica = ? WHERE p_contador = ?";
 
                     // 1. Guardar todos los cambios de los integrantes junto con el comentario
                     foreach (RepeaterItem item in rptIntegrantes.Items)
@@ -223,6 +241,7 @@ namespace WebApplication2
                                     cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(transporte) ? (object)DBNull.Value : transporte);
                                     cmd.Parameters.AddWithValue("@p_alergia", string.IsNullOrEmpty(alergia) ? (object)DBNull.Value : alergia);
                                     cmd.Parameters.AddWithValue("@p_comentario", string.IsNullOrEmpty(comentario) ? (object)DBNull.Value : comentario);
+                                    cmd.Parameters.AddWithValue("@p_practica", string.IsNullOrEmpty(practicaGlobal) ? (object)DBNull.Value : practicaGlobal);
                                     cmd.Parameters.AddWithValue("@p_contador", id);
 
                                     cmd.ExecuteNonQuery();

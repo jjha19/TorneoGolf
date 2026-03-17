@@ -326,6 +326,9 @@ h2 {
     border-radius: 8px;
     border: 1px solid #e0e0e0;
     margin-top: 30px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
 }
 
 .comentarios-section h2 {
@@ -334,11 +337,39 @@ h2 {
     text-align: center;
 }
 
+/* Centrar texto y radios de la pregunta de práctica */
+.comentarios-section .form-group:first-child {
+    text-align: center;
+    width: 100%;
+}
+
+.comentarios-section .form-group:first-child .radio-list-responsive {
+    width: auto;
+    display: inline-block;
+}
+
+.comentarios-section .form-group:first-child .radio-list-responsive table {
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+}
+
+/* Cajitas con borde verde oscuro para form-group */
+.integrante-edit-grid .form-group,
+.comentarios-section .form-group {
+    border: 2px solid darkgreen;
+    border-radius: 10px;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
 /* FORZAR CENTRADO DEL BOTÓN */
 .comentarios-section .form-group:last-child {
     text-align: center !important;
     display: block !important;
     width: 100% !important;
+    border: none;
+    padding: 0;
 }
 
 .comentarios-section div[style*="text-align"] {
