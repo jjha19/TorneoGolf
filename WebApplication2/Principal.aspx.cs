@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -46,7 +48,7 @@ namespace WebApplication2
             string comentarioTorneo = "Sin comentario disponible";
             string nombreEquipo = "Equipo no encontrado";
             string codigoEquipo = "AB124"; // Valor por defecto
-            string torneoVinculado = "";
+            string torneoVinculado = "";        
 
             // Obtener el contador del equipo desde la URL (e_contador), por defecto 1
             int equipoContador = 1;
@@ -114,7 +116,7 @@ namespace WebApplication2
                         }
                     }
                 }
-            }
+            }           
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error al inicializar la página: {ex.Message}");
@@ -166,7 +168,7 @@ namespace WebApplication2
         }
 
         protected void rptIntegrantes_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
+        {       
             // Ya no se usa porque eliminamos los botones individuales
         }
 
@@ -215,7 +217,7 @@ namespace WebApplication2
 
                                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                                 {
-                                    // Los parámetros en OleDb se asignan estrictamente por orden posicional (?)
+                                    // Los parámetros en OleDb se asignan estrictamente por orden posicional (?
                                     // Usamos DBNull.Value en caso de que lleguen vacíos
                                     cmd.Parameters.AddWithValue("@p_asistencia", string.IsNullOrEmpty(asistencia) ? (object)DBNull.Value : asistencia);
                                     cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(transporte) ? (object)DBNull.Value : transporte);
@@ -240,7 +242,11 @@ namespace WebApplication2
                     txtComentario.Text = string.Empty;
                 }
 
-                // 3. Mostrar mensaje de éxito
+                // 3. Enviar el correo notificando los cambios
+                string nombreEquipo = Session["NombreEquipo"]?.ToString() ?? "Equipo Desconocido";
+                EnviarCorreo(nombreEquipo, cambiosGuardados, comentario);
+
+                // 4. Mostrar mensaje de éxito
                 MostrarMensajeExito($"✓ {cambiosGuardados} integrante(s) actualizado(s).{mensajeComentario}");
                 
                 // Refrescamos los datos para mostrarlos actualizados
@@ -249,6 +255,49 @@ namespace WebApplication2
             catch (Exception ex)
             {
                 MostrarMensajeError("Error al guardar: " + ex.Message);
+            }
+        }
+
+        private void EnviarCorreo(string nombreEquipo, int integrantesActualizados, string comentario)
+        {
+            try
+            {
+                var fromAddress = new MailAddress("f.oliverosafonso2@gmail.com", "Torneo de Golf");
+                var toAddress = new MailAddress("f.oliverosafonso@gmail.com");
+                
+                const string fromPassword = "wtittjtuldcyorfb";
+                string subject = $"Cambios en la base de datos - Equipo: {nombreEquipo}";
+                
+                string body = $"Se han actualizado los datos de {integrantesActualizados} integrante(s) pertenecientes al equipo '{nombreEquipo}'.\n";
+                if (!string.IsNullOrEmpty(comentario))
+                {
+                    body += $"\nComentario adjunto:\n{comentario}";
+                }
+
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Credentials = new NetworkCredential(fromAddress.Address, fromPassword),
+                    Timeout = 20000,
+                };
+
+                using (var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body,
+                })
+                {
+                    smtp.Send(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Registramos el error de correo en consola de depuración para no romper la ejecución de la app
+                // Si el correo falla, los datos seguirán estando guardados en base de datos.
+                System.Diagnostics.Debug.WriteLine($"Error al intentar enviar el correo: {ex.Message}");
             }
         }
 
