@@ -281,6 +281,15 @@ namespace WebApplication2
         {
             try
             {
+                /*
+                 
+                    Aquí hay que quitar mi correo y poner el que se vaya a usar para enviar las notificaciones.
+                    También hay que cambiar el correo del recptor y modificar la fromPassword ya que solo funciona
+                    para mi correo f.oliverosafonso2@gmail.com.
+                    Funciona bien, de esta forma solo enviamos en el correo que se han realizado cambios y también 
+                    el comentario que se escriba, pero sin incluir los datos personales ni las opciones de coche ni asiste.
+                 
+                 */
                 var fromAddress = new MailAddress("f.oliverosafonso2@gmail.com", "Torneo de Golf");
                 var toAddress = new MailAddress("f.oliverosafonso@gmail.com");
                 
