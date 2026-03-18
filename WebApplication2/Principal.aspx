@@ -5,11 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Torneo de Golf - Equipo</title>
     <link href="Content/styles.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <img src="/images/golfMadridA.jpg" alt="Fondo de Golf" id="bg_image" />
+    <img src="images/golfMadridA.jpg" alt="Fondo de Golf" id="bg_image" />
 
     <form id="form1" runat="server">
         <div class="container">
