@@ -5,6 +5,7 @@ using System.Data.OleDb;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -26,15 +27,6 @@ namespace WebApplication2
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Comentamos la verificación del login de momento
-            /* 
-            if (Session["Usuario"] == null)
-            {
-                Response.Redirect("Login.aspx");
-                return;
-            }
-            */
-
             if (!IsPostBack)
             {
                 InicializarPagina();
@@ -202,6 +194,7 @@ namespace WebApplication2
                 
                 // Extraer el comentario antes de entrar al bucle para tenerlo disponible
                 string comentario = txtComentario.Text.Trim();
+                StringBuilder detalleIntegrantes = new StringBuilder();
 
                 // Abrir la conexión una sola vez fuera del bucle para mejorar el rendimiento
                 // Valor común de práctica (Si/No) tomado del radio superior (puede ser null)
@@ -222,6 +215,7 @@ namespace WebApplication2
                             RadioButtonList rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
                             RadioButtonList rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
                             TextBox txtAlergia = (TextBox)item.FindControl("txtAlergia");
+                            Label lblEditNombre = (Label)item.FindControl("lblEditNombre");
                             HiddenField hdnContador = (HiddenField)item.FindControl("hdnContador");
 
                             if (rblAsistencia != null && rblTransporte != null && txtAlergia != null && hdnContador != null)
@@ -232,6 +226,14 @@ namespace WebApplication2
                                 string asistencia = rblAsistencia.SelectedValue;
                                 string transporte = rblTransporte.SelectedValue;
                                 string alergia = txtAlergia.Text.Trim();
+                                string nombreIntegrante = lblEditNombre?.Text.Trim() ?? string.Empty;
+
+                                if (!string.IsNullOrEmpty(nombreIntegrante))
+                                {
+                                    string asistenciaTexto = asistencia == "Si" ? "Sí" : asistencia;
+                                    string transporteTexto = transporte == "Si" ? "Sí" : transporte;
+                                    detalleIntegrantes.AppendLine($"- {nombreIntegrante} | Alergia: {(string.IsNullOrEmpty(alergia) ? "(sin datos)" : alergia)} | Asiste: {asistenciaTexto} | Transporte: {transporteTexto}");
+                                }
 
                                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                                 {
@@ -263,7 +265,7 @@ namespace WebApplication2
 
                 // 3. Enviar el correo notificando los cambios
                 string nombreEquipo = Session["NombreEquipo"]?.ToString() ?? "Equipo Desconocido";
-                EnviarCorreo(nombreEquipo, cambiosGuardados, comentario);
+                EnviarCorreo(nombreEquipo, cambiosGuardados, comentario, detalleIntegrantes.ToString());
 
                 // 4. Mostrar mensaje de éxito
                 MostrarMensajeExito($"✓ {cambiosGuardados} integrante(s) actualizado(s).{mensajeComentario}");
@@ -277,7 +279,7 @@ namespace WebApplication2
             }
         }
 
-        private void EnviarCorreo(string nombreEquipo, int integrantesActualizados, string comentario)
+        private void EnviarCorreo(string nombreEquipo, int integrantesActualizados, string comentario, string detalleIntegrantes)
         {
             try
             {
@@ -291,12 +293,19 @@ namespace WebApplication2
                  
                  */
                 var fromAddress = new MailAddress("f.oliverosafonso2@gmail.com", "Torneo de Golf");
-                var toAddress = new MailAddress("f.oliverosafonso@gmail.com");
+                var toAddress = new MailAddress("juanjose.spider@gmail.com");
                 
                 const string fromPassword = "wtittjtuldcyorfb";
                 string subject = $"Cambios en la base de datos - Equipo: {nombreEquipo}";
-                
-                string body = $"Se han actualizado los datos de {integrantesActualizados} integrante(s) pertenecientes al equipo '{nombreEquipo}'.\n";
+
+                string body = $"Se han actualizado los datos de {integrantesActualizados} integrante(s) pertenecientes al equipo '{nombreEquipo}'.\n" +
+                    $"El equipo quedó así:\n";
+
+                if (!string.IsNullOrWhiteSpace(detalleIntegrantes))
+                {
+                    body += detalleIntegrantes + "\n \n";
+                }
+
                 if (!string.IsNullOrEmpty(comentario))
                 {
                     body += $"\nComentario adjunto:\n{comentario}";
