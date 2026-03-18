@@ -57,7 +57,7 @@
                                     <div class="radio-wrapper-15 radio-list-responsive">
                                         <asp:RadioButtonList ID="rblAsistencia" runat="server" RepeatDirection="Horizontal" 
                                             SelectedValue='<%# Convert.ToString(Eval("p_asistencia")) == "Si" || Convert.ToString(Eval("p_asistencia")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_asistencia")) == "No" ? "No" : null) %>' 
-                                            CssClass="rbl-asistencia" Width="100%">
+                                            CssClass="" Width="100%">
                                         <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
                                         <asp:ListItem Text="No" Value="No"></asp:ListItem>
                                         </asp:RadioButtonList>
@@ -73,7 +73,7 @@
                                     <div class="radio-wrapper-15 radio-list-responsive">
                                         <asp:RadioButtonList ID="rblTransporte" runat="server" RepeatDirection="Horizontal" 
                                             SelectedValue='<%# Convert.ToString(Eval("p_transporte")) == "Si" || Convert.ToString(Eval("p_transporte")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_transporte")) == "No" ? "No" : null) %>' 
-                                            CssClass="rbl-transporte" Width="100%">
+                                            CssClass="" Width="100%">
                                         <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
                                         <asp:ListItem Text="No" Value="No"></asp:ListItem>
                                         </asp:RadioButtonList>
@@ -127,35 +127,6 @@
             </div>
 
         </div>
-        <script type="text/javascript">
-            (function () {
-                function onReady() {
-                    var asistenciaInputs = document.querySelectorAll(".rbl-asistencia input[type='radio']");
-                    asistenciaInputs.forEach(function (input) {
-                        input.addEventListener("change", function () {
-                            if (input.checked && input.value === "No") {
-                                var item = input.closest(".integrante-item");
-                                if (!item) {
-                                    return;
-                                }
-                                var transporteInputs = item.querySelectorAll(".rbl-transporte input[type='radio']");
-                                transporteInputs.forEach(function (transporte) {
-                                    if (transporte.value === "No") {
-                                        transporte.checked = true;
-                                    }
-                                });
-                            }
-                        });
-                    });
-                }
-
-                if (document.readyState === "loading") {
-                    document.addEventListener("DOMContentLoaded", onReady);
-                } else {
-                    onReady();
-                }
-            })();
-        </script>
     </form>
 </body>
 </html>
