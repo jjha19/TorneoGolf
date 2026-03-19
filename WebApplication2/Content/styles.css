@@ -98,6 +98,16 @@ h2 {
     transition: box-shadow 0.3s;
 }
 
+.integrante-item.asistencia-si {
+    border-color: #2b6cb0;
+    background-color: rgba(219, 234, 254, 0.95);
+}
+
+.integrante-item.asistencia-no {
+    border-color: #c53030;
+    background-color: rgba(254, 215, 215, 0.95);
+}
+
 .integrante-item:hover {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
@@ -110,7 +120,7 @@ h2 {
 
 /* ESTILO DEL NOMBRE - MÁXIMA PRIORIDAD */
 .integrante-item .integrante-contenido .integrante-nombre-grande {
-    font-size: 36px !important;
+    font-size: 46px !important;
     font-weight: 900 !important;
     color: #2c5f2d !important;
     padding: 20px 0 15px 0 !important;

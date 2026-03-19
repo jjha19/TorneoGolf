@@ -9,6 +9,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace WebApplication2
@@ -211,6 +212,7 @@ namespace WebApplication2
             var pnlTransporte = (Panel)item.FindControl("pnlTransporte");
             var pnlAlergia = (Panel)item.FindControl("pnlAlergia");
             var rfvTransporte = (RequiredFieldValidator)item.FindControl("rfvTransporte");
+            var itemContainer = (HtmlGenericControl)item.FindControl("itemContainer");
 
             bool ocultarExtras = string.Equals(rblAsistencia?.SelectedValue, "No", StringComparison.OrdinalIgnoreCase);
 
@@ -227,6 +229,23 @@ namespace WebApplication2
             if (rfvTransporte != null)
             {
                 rfvTransporte.Enabled = !ocultarExtras;
+            }
+
+            if (itemContainer != null)
+            {
+                string baseClass = "integrante-item";
+                if (string.Equals(rblAsistencia?.SelectedValue, "Si", StringComparison.OrdinalIgnoreCase))
+                {
+                    itemContainer.Attributes["class"] = baseClass + " asistencia-si";
+                }
+                else if (string.Equals(rblAsistencia?.SelectedValue, "No", StringComparison.OrdinalIgnoreCase))
+                {
+                    itemContainer.Attributes["class"] = baseClass + " asistencia-no";
+                }
+                else
+                {
+                    itemContainer.Attributes["class"] = baseClass;
+                }
             }
 
             if (ocultarExtras)

@@ -17,7 +17,7 @@
 
             <!-- Título -->
             <div id="TitleText">
-                <h1><asp:Label ID="lblTituloTorneo" runat="server"></asp:Label> - Equipo: <asp:Label ID="lblTituloEquipo" runat="server"></asp:Label></h1>
+                <h1><asp:Label ID="lblTituloTorneo" runat="server"></asp:Label> - <asp:Label ID="lblTituloEquipo" runat="server"></asp:Label></h1>
                 <div class="torneo-comentario">
                     <asp:Label ID="lblComentarioTorneo" runat="server"></asp:Label>
                 </div>
@@ -32,7 +32,7 @@
                 <asp:Label ID="lblMensajeError" runat="server"></asp:Label>
             </asp:Panel>
 
-            <h2>Listado de Integrantes</h2>
+            <h2>Lista de Invitados</h2>
 
             <!-- Lista de integrantes -->
             <div id="lista-container">
@@ -41,7 +41,7 @@
                         <ul class="integrantes-lista">
                     </HeaderTemplate>
                     <ItemTemplate>
-                        <li class="integrante-item">
+                        <li id="itemContainer" runat="server" class="integrante-item">
                             <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
                             
                             <div class="integrante-edit-grid">
@@ -97,7 +97,7 @@
                 </asp:Repeater>
 
                 <asp:Panel ID="pnlNoData" runat="server" CssClass="no-data" Visible="false">
-                    No hay integrantes registrados en el equipo.
+                    No hay invitados registrados en el equipo.
                 </asp:Panel>
             </div>
 
