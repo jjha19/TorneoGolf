@@ -36,7 +36,7 @@
 
             <!-- Lista de integrantes -->
             <div id="lista-container">
-                <asp:Repeater ID="rptIntegrantes" runat="server" OnItemCommand="rptIntegrantes_ItemCommand">
+                <asp:Repeater ID="rptIntegrantes" runat="server" OnItemCommand="rptIntegrantes_ItemCommand" OnItemDataBound="rptIntegrantes_ItemDataBound">
                     <HeaderTemplate>
                         <ul class="integrantes-lista">
                     </HeaderTemplate>
@@ -47,15 +47,15 @@
                             <div class="integrante-edit-grid">
                                 <!-- Nombre NO editable -->
                                 <div class="form-group full">
-                                    <label><strong>Nombre:</strong></label>
-                                    <asp:Label ID="lblEditNombre" runat="server" Text='<%# Eval("p_nombre") %>' CssClass="readonly-field"></asp:Label>
+                                    <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido")) %>' CssClass="integrante-nombre-texto"></asp:Label>
                                 </div>
 
                                 <!-- Asistencia RadioButtonList -->
                                 <div class="form-group">
                                     <label><strong>Asiste:</strong></label>
                                     <div class="radio-wrapper-15 radio-list-responsive">
-                                        <asp:RadioButtonList ID="rblAsistencia" runat="server" RepeatDirection="Horizontal" 
+                                        <asp:RadioButtonList ID="rblAsistencia" runat="server" RepeatDirection="Horizontal"
+                                            AutoPostBack="true" CausesValidation="false" OnSelectedIndexChanged="rblAsistencia_SelectedIndexChanged"
                                             SelectedValue='<%# Convert.ToString(Eval("p_asistencia")) == "Si" || Convert.ToString(Eval("p_asistencia")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_asistencia")) == "No" ? "No" : null) %>' 
                                             CssClass="" Width="100%">
                                         <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
@@ -68,7 +68,7 @@
                                 </div>
 
                                 <!-- Transporte RadioButtonList -->
-                                <div class="form-group">
+                                <asp:Panel ID="pnlTransporte" runat="server" CssClass="form-group">
                                     <label><strong>Usará autobús:</strong></label>
                                     <div class="radio-wrapper-15 radio-list-responsive">
                                         <asp:RadioButtonList ID="rblTransporte" runat="server" RepeatDirection="Horizontal" 
@@ -81,13 +81,13 @@
                                     <asp:RequiredFieldValidator ID="rfvTransporte" runat="server" 
                                         ControlToValidate="rblTransporte" ErrorMessage="Requerido" 
                                         Display="Dynamic" CssClass="mensaje-error">Este campo es Obligatorio</asp:RequiredFieldValidator>
-                                </div>
+                                </asp:Panel>
 
                                 <!-- Alergias -->
-                                <div class="form-group">
+                                <asp:Panel ID="pnlAlergia" runat="server" CssClass="form-group">
                                     <label><strong>Alergias / Intolerancias:</strong></label>
                                     <asp:TextBox ID="txtAlergia" runat="server" Text='<%# Eval("p_alergia") %>' CssClass="textbox-alergia"></asp:TextBox>
-                                </div>
+                                </asp:Panel>
                             </div>
                         </li>
                     </ItemTemplate>

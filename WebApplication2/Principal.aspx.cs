@@ -132,7 +132,7 @@ namespace WebApplication2
 
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
-                    string query = "SELECT p_contador, p_nombre, p_asistencia, p_transporte, p_alergia, p_practica FROM Equipo_participa WHERE e_codigo = ?";
+                    string query = "SELECT p_contador, p_nombre, p_apellido, p_asistencia, p_transporte, p_alergia, p_practica FROM Equipo_participa WHERE e_codigo = ?";
                     OleDbCommand cmd = new OleDbCommand(query, conn);
                     cmd.Parameters.AddWithValue("@e_codigo", codigoEquipo);
 
@@ -178,6 +178,65 @@ namespace WebApplication2
         protected void rptIntegrantes_ItemCommand(object source, RepeaterCommandEventArgs e)
         {       
             // Ya no se usa porque eliminamos los botones individuales
+        }
+
+        protected void rptIntegrantes_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem)
+            {
+                return;
+            }
+
+            AplicarVisibilidadAsistencia(e.Item);
+        }
+
+        protected void rblAsistencia_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var rblAsistencia = sender as RadioButtonList;
+            var item = rblAsistencia?.NamingContainer as RepeaterItem;
+
+            if (item == null)
+            {
+                return;
+            }
+
+            AplicarVisibilidadAsistencia(item);
+        }
+
+        private void AplicarVisibilidadAsistencia(RepeaterItem item)
+        {
+            var rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
+            var rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
+            var txtAlergia = (TextBox)item.FindControl("txtAlergia");
+            var pnlTransporte = (Panel)item.FindControl("pnlTransporte");
+            var pnlAlergia = (Panel)item.FindControl("pnlAlergia");
+            var rfvTransporte = (RequiredFieldValidator)item.FindControl("rfvTransporte");
+
+            bool ocultarExtras = string.Equals(rblAsistencia?.SelectedValue, "No", StringComparison.OrdinalIgnoreCase);
+
+            if (pnlTransporte != null)
+            {
+                pnlTransporte.Visible = !ocultarExtras;
+            }
+
+            if (pnlAlergia != null)
+            {
+                pnlAlergia.Visible = !ocultarExtras;
+            }
+
+            if (rfvTransporte != null)
+            {
+                rfvTransporte.Enabled = !ocultarExtras;
+            }
+
+            if (ocultarExtras)
+            {
+                rblTransporte?.ClearSelection();
+                if (txtAlergia != null)
+                {
+                    txtAlergia.Text = string.Empty;
+                }
+            }
         }
 
         // Manejador para enviar comentarios Y guardar todos los cambios
@@ -227,6 +286,12 @@ namespace WebApplication2
                                 string asistencia = rblAsistencia.SelectedValue;
                                 string transporte = rblTransporte.SelectedValue;
                                 string alergia = txtAlergia.Text.Trim();
+
+                                if (string.Equals(asistencia, "No", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    transporte = null;
+                                    alergia = null;
+                                }
                                 string nombreIntegrante = lblEditNombre?.Text.Trim() ?? string.Empty;
 
                                 if (!string.IsNullOrEmpty(nombreIntegrante))
