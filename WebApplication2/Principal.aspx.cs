@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -269,9 +270,9 @@ namespace WebApplication2
 
                 // 4. Mostrar mensaje de éxito
                 MostrarMensajeExito($"✓ {cambiosGuardados} integrante(s) actualizado(s).{mensajeComentario}");
-                
-                // Refrescamos los datos para mostrarlos actualizados
-                CargarIntegrantes();
+
+                Response.Redirect("Agradecimiento.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
             catch (Exception ex)
             {
@@ -332,9 +333,25 @@ namespace WebApplication2
             }
             catch (Exception ex)
             {
-                // Registramos el error de correo en consola de depuración para no romper la ejecución de la app
-                // Si el correo falla, los datos seguirán estando guardados en base de datos.
+                LogError("Error al intentar enviar el correo", ex);
                 System.Diagnostics.Debug.WriteLine($"Error al intentar enviar el correo: {ex.Message}");
+            }
+        }
+
+        private void LogError(string mensaje, Exception ex)
+        {
+            try
+            {
+                string dir = Server.MapPath("~/App_Data");
+                Directory.CreateDirectory(dir);
+
+                string ruta = Path.Combine(dir, "errores.log");
+                string linea = $"{DateTime.UtcNow:O} | {mensaje} | {ex}\r\n";
+                File.AppendAllText(ruta, linea, Encoding.UTF8);
+            }
+            catch
+            {
+                // Evitar romper la app si el log falla
             }
         }
 

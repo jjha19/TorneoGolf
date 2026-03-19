@@ -67,14 +67,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Agradecimiento.aspx" />
     <Content Include="Content\styles.css" />
     <Content Include="Database\Torneo.accdb" />
     <Content Include="images\FondoGolf.jpeg" />
+    <Content Include="images\tick.png" />
     <Content Include="Login.aspx" />
     <Content Include="Web.config" />
     <Content Include="Principal.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Agradecimiento.aspx.cs">
+      <DependentUpon>Agradecimiento.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Agradecimiento.aspx.designer.cs">
+      <DependentUpon>Agradecimiento.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -92,6 +101,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\errores.log" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -101,7 +111,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BBDD\" />
+    <Folder Include="bin\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -753,3 +753,41 @@ h2 {
     -ms-user-select: none;
     user-select: none;
 }
+
+#tick-image {
+    width: 25vw;
+    height: auto;
+}
+
+.agradecimiento-page .container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.agradecimiento-page .comentarios-section {
+    text-align: center;
+}
+
+.agradecimiento-page #tick-image {
+    display: block;
+    margin: 0 auto 15px;
+    transform: scale(0.2);
+    animation: tick-pop 0.6s ease-out forwards;
+}
+
+@keyframes tick-pop {
+    0% {
+        transform: scale(0.2);
+        opacity: 0;
+    }
+    60% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
