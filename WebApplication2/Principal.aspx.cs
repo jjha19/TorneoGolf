@@ -26,14 +26,12 @@ namespace WebApplication2
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Comentamos la verificación del login de momento
-            /* 
+            // Verificamos si hay una sesión activa, de lo contrario lo mandamos a Login
             if (Session["Usuario"] == null)
             {
                 Response.Redirect("Login.aspx");
                 return;
             }
-            */
 
             if (!IsPostBack)
             {
@@ -288,6 +286,8 @@ namespace WebApplication2
                     para mi correo f.oliverosafonso2@gmail.com.
                     Funciona bien, de esta forma solo enviamos en el correo que se han realizado cambios y también 
                     el comentario que se escriba, pero sin incluir los datos personales ni las opciones de coche ni asiste.
+                    Hay que hacer que también ponga la fecha de modificación (supongo)
+                    
                  
                  */
                 var fromAddress = new MailAddress("f.oliverosafonso2@gmail.com", "Torneo de Golf");

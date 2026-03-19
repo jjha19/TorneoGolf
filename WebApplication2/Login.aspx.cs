@@ -34,7 +34,7 @@ namespace WebApplication2
             {
                 // Login exitoso, nos vamos a la web en la que se ven los participantes del grupo
                 Session["Usuario"] = usuario;
-                Response.Redirect("Principal.aspx");
+                Response.Redirect("Torneos.aspx");
             }
             else
             {
