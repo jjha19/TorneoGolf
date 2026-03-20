@@ -5,6 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Torneo de Golf - Participantes</title>
     <link href="Content/styles.css" rel="stylesheet" type="text/css" />
 </head>
@@ -38,11 +39,11 @@
                     <ItemTemplate>
                         <li class="integrante-item">
                             <!-- Nombre principal del participante -->
-                            <div style="font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
-                                <strong style="color: #2E7D32;"><%# Eval("p_nombre") %> <%# Eval("p_apellido") %></strong>
+                            <div class="participante-nombre">
+                                <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido")) %>' CssClass="integrante-nombre-texto"></asp:Label>
                             </div>
 
-                            <div class="integrante-edit-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="participantes-detalles">
                                 
                                 <div class="form-group">
                                     <strong>Móvil:</strong>
@@ -71,7 +72,7 @@
                                 </div>
 
                                 <!-- Comentario a fila completa -->
-                                <div class="form-group" style="grid-column: 1 / -1;">
+                                <div class="form-group">
                                     <strong>Comentarios:</strong>
                                     <asp:Label ID="lblComentario" runat="server" style="color: #666; font-style: italic;" 
                                         Text='<%# string.IsNullOrEmpty(Eval("p_comentario")?.ToString()) ? "Sin comentarios..." : Eval("p_comentario") %>'></asp:Label>

@@ -45,7 +45,7 @@
                             <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
                             
                             <div class="integrante-edit-grid">
-                                <!-- Nombre NO editable -->
+                                <!-- Nombre -->
                                 <div class="form-group full">
                                     <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido")) %>' CssClass="integrante-nombre-texto"></asp:Label>
                                 </div>
