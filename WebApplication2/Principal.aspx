@@ -45,7 +45,7 @@
                             <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
                             
                             <div class="integrante-edit-grid">
-                                <!-- Nombre NO editable -->
+                                <!-- Nombre -->
                                 <div class="form-group full">
                                     <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido")) %>' CssClass="integrante-nombre-texto"></asp:Label>
                                 </div>
@@ -63,7 +63,7 @@
                                         </asp:RadioButtonList>
                                     </div>
                                     <asp:RequiredFieldValidator ID="rfvAsistencia" runat="server" 
-                                        ControlToValidate="rblAsistencia" ErrorMessage="Requerido" 
+                                        ControlToValidate="rblAsistencia" ErrorMessage="Falta informacion Necesaria" 
                                         Display="Dynamic" CssClass="mensaje-error">Este campo es Obligatorio</asp:RequiredFieldValidator>
                                 </div>
 
@@ -79,7 +79,7 @@
                                         </asp:RadioButtonList>
                                     </div>
                                     <asp:RequiredFieldValidator ID="rfvTransporte" runat="server" 
-                                        ControlToValidate="rblTransporte" ErrorMessage="Requerido" 
+                                        ControlToValidate="rblTransporte" ErrorMessage="" 
                                         Display="Dynamic" CssClass="mensaje-error">Este campo es Obligatorio</asp:RequiredFieldValidator>
                                 </asp:Panel>
 
@@ -124,6 +124,9 @@
                     <asp:Button ID="btnEnviarComentario" runat="server" Text="Guardar y Enviar" 
                         CssClass="btn-enviar-comentario" OnClick="btnEnviarComentario_Click" />
                 </div>
+                <asp:ValidationSummary ID="vsCamposFaltantes" runat="server" CssClass="mensaje mensaje-error mensaje-validacion"
+                    DisplayMode="SingleParagraph" ShowSummary="true"
+                    HeaderText="Falta rellenar campos" />
             </div>
 
         </div>

@@ -265,7 +265,8 @@ namespace WebApplication2
         {
             if (!Page.IsValid)
             {
-                MostrarMensajeError("Por favor, complete todos los campos obligatorios (Asistencia y Transporte) de todos los integrantes.");
+                pnlMensajeError.Visible = false;
+                pnlMensajeExito.Visible = false;
                 return;
             }
 
@@ -379,10 +380,12 @@ namespace WebApplication2
                     el comentario que se escriba, pero sin incluir los datos personales ni las opciones de coche ni asiste.
                     Hay que hacer que también ponga la fecha de modificación (supongo)
                     
+                     labide6983@soco7.com
+
                  
                  */
                 var fromAddress = new MailAddress("f.oliverosafonso2@gmail.com", "Torneo de Golf");
-                var toAddress = new MailAddress("eugenio@mesia.es");
+                var toAddress = new MailAddress("labide6983@soco7.com");
                 
                 const string fromPassword = "wtittjtuldcyorfb";
                 string subject = $"Cambios en la base de datos - Equipo: {nombreEquipo}";

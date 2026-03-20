@@ -153,6 +153,7 @@ h2 {
     background-color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     transition: box-shadow 0.3s;
+    animation: integrante-slide-in 1.0s ease-out both;
 }
 
 .integrante-item.asistencia-si {
@@ -163,6 +164,30 @@ h2 {
 .integrante-item.asistencia-no {
     border-color: #c53030;
     background-color: rgba(254, 215, 215, 0.95);
+}
+
+@keyframes integrante-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.participante-nombre {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    text-align: center;
+}
+
+.participantes-detalles {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .integrante-item:hover {
@@ -336,7 +361,7 @@ h2 {
     text-align: center;
 }
 
-.integrante-edit-grid .form-group.full .integrante-nombre-texto {
+.integrante-nombre-texto {
     display: block;
     font-size: 1.8em;
     font-weight: bold;
@@ -523,6 +548,11 @@ h2 {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+.mensaje-validacion {
+    margin-top: 10px;
+    text-align: center;
 }
 
 /* Sin datos */
