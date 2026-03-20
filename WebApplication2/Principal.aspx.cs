@@ -183,11 +183,6 @@ namespace WebApplication2
             }
         }
 
-        protected void rptIntegrantes_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {       
-            // Ya no se usa porque eliminamos los botones individuales
-        }
-
         protected void rptIntegrantes_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem)

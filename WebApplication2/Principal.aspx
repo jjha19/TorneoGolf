@@ -36,7 +36,7 @@
 
             <!-- Lista de integrantes -->
             <div id="lista-container">
-                <asp:Repeater ID="rptIntegrantes" runat="server" OnItemCommand="rptIntegrantes_ItemCommand" OnItemDataBound="rptIntegrantes_ItemDataBound">
+                <asp:Repeater ID="rptIntegrantes" runat="server" OnItemDataBound="rptIntegrantes_ItemDataBound">
                     <HeaderTemplate>
                         <ul class="integrantes-lista">
                     </HeaderTemplate>
