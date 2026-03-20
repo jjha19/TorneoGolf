@@ -550,6 +550,11 @@ h2 {
     border: 1px solid #f5c6cb;
 }
 
+.mensaje-validacion {
+    margin-top: 10px;
+    text-align: center;
+}
+
 /* Sin datos */
 .no-data {
     text-align: center;
