@@ -30,12 +30,13 @@ namespace WebApplication2
         protected void Page_Load(object sender, EventArgs e)
         {
             // Verificamos si hay una sesión activa, de lo contrario lo mandamos a Login
-            if (Session["Usuario"] == null)
-            {
-                Response.Redirect("Login.aspx");
-                return;
-            }
-
+            /*
+                if (Session["Usuario"] == null)
+                {
+                    Response.Redirect("Login.aspx");
+                    return;
+                }
+            */
             if (!IsPostBack)
             {
                 InicializarPagina();
