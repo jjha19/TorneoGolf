@@ -5,18 +5,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Torneo de Golf - Equipo</title>
     <link href="Content/styles.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <img src="/images/golfMadridA.jpg" alt="Fondo de Golf" id="bg_image" />
+    <img src="images/golfMadridA.jpg" alt="Fondo de Golf" id="bg_image" />
 
     <form id="form1" runat="server">
         <div class="container">
 
             <!-- Título -->
             <div id="TitleText">
-                <h1><asp:Label ID="lblTituloTorneo" runat="server"></asp:Label> - Equipo: <asp:Label ID="lblTituloEquipo" runat="server"></asp:Label></h1>
+                <h1><asp:Label ID="lblTituloTorneo" runat="server"></asp:Label> - <asp:Label ID="lblTituloEquipo" runat="server"></asp:Label></h1>
                 <div class="torneo-comentario">
                     <asp:Label ID="lblComentarioTorneo" runat="server"></asp:Label>
                 </div>
@@ -31,30 +32,30 @@
                 <asp:Label ID="lblMensajeError" runat="server"></asp:Label>
             </asp:Panel>
 
-            <h2>Listado de Integrantes</h2>
+            <h2>Lista de Invitados</h2>
 
             <!-- Lista de integrantes -->
             <div id="lista-container">
-                <asp:Repeater ID="rptIntegrantes" runat="server" OnItemCommand="rptIntegrantes_ItemCommand">
+                <asp:Repeater ID="rptIntegrantes" runat="server" OnItemCommand="rptIntegrantes_ItemCommand" OnItemDataBound="rptIntegrantes_ItemDataBound">
                     <HeaderTemplate>
                         <ul class="integrantes-lista">
                     </HeaderTemplate>
                     <ItemTemplate>
-                        <li class="integrante-item">
+                        <li id="itemContainer" runat="server" class="integrante-item">
                             <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
                             
                             <div class="integrante-edit-grid">
                                 <!-- Nombre NO editable -->
                                 <div class="form-group full">
-                                    <label><strong>Nombre:</strong></label>
-                                    <asp:Label ID="lblEditNombre" runat="server" Text='<%# Eval("p_nombre") %>' CssClass="readonly-field"></asp:Label>
+                                    <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido")) %>' CssClass="integrante-nombre-texto"></asp:Label>
                                 </div>
 
                                 <!-- Asistencia RadioButtonList -->
                                 <div class="form-group">
                                     <label><strong>Asiste:</strong></label>
                                     <div class="radio-wrapper-15 radio-list-responsive">
-                                        <asp:RadioButtonList ID="rblAsistencia" runat="server" RepeatDirection="Horizontal" 
+                                        <asp:RadioButtonList ID="rblAsistencia" runat="server" RepeatDirection="Horizontal"
+                                            AutoPostBack="true" CausesValidation="false" OnSelectedIndexChanged="rblAsistencia_SelectedIndexChanged"
                                             SelectedValue='<%# Convert.ToString(Eval("p_asistencia")) == "Si" || Convert.ToString(Eval("p_asistencia")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_asistencia")) == "No" ? "No" : null) %>' 
                                             CssClass="" Width="100%">
                                         <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
@@ -67,7 +68,7 @@
                                 </div>
 
                                 <!-- Transporte RadioButtonList -->
-                                <div class="form-group">
+                                <asp:Panel ID="pnlTransporte" runat="server" CssClass="form-group">
                                     <label><strong>Usará autobús:</strong></label>
                                     <div class="radio-wrapper-15 radio-list-responsive">
                                         <asp:RadioButtonList ID="rblTransporte" runat="server" RepeatDirection="Horizontal" 
@@ -80,13 +81,13 @@
                                     <asp:RequiredFieldValidator ID="rfvTransporte" runat="server" 
                                         ControlToValidate="rblTransporte" ErrorMessage="Requerido" 
                                         Display="Dynamic" CssClass="mensaje-error">Este campo es Obligatorio</asp:RequiredFieldValidator>
-                                </div>
+                                </asp:Panel>
 
                                 <!-- Alergias -->
-                                <div class="form-group">
+                                <asp:Panel ID="pnlAlergia" runat="server" CssClass="form-group">
                                     <label><strong>Alergias / Intolerancias:</strong></label>
                                     <asp:TextBox ID="txtAlergia" runat="server" Text='<%# Eval("p_alergia") %>' CssClass="textbox-alergia"></asp:TextBox>
-                                </div>
+                                </asp:Panel>
                             </div>
                         </li>
                     </ItemTemplate>
@@ -96,7 +97,7 @@
                 </asp:Repeater>
 
                 <asp:Panel ID="pnlNoData" runat="server" CssClass="no-data" Visible="false">
-                    No hay integrantes registrados en el equipo.
+                    No hay invitados registrados en el equipo.
                 </asp:Panel>
             </div>
 

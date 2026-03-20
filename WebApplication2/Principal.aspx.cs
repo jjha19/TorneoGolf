@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Text;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace WebApplication2
@@ -137,7 +140,7 @@ namespace WebApplication2
 
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
-                    string query = "SELECT p_contador, p_nombre, p_asistencia, p_transporte, p_alergia, p_practica FROM Equipo_participa WHERE e_codigo = ?";
+                    string query = "SELECT p_contador, p_nombre, p_apellido, p_asistencia, p_transporte, p_alergia, p_practica FROM Equipo_participa WHERE e_codigo = ?";
                     OleDbCommand cmd = new OleDbCommand(query, conn);
                     cmd.Parameters.AddWithValue("@e_codigo", codigoEquipo);
 
@@ -185,6 +188,83 @@ namespace WebApplication2
             // Ya no se usa porque eliminamos los botones individuales
         }
 
+        protected void rptIntegrantes_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType != ListItemType.Item && e.Item.ItemType != ListItemType.AlternatingItem)
+            {
+                return;
+            }
+
+            AplicarVisibilidadAsistencia(e.Item);
+        }
+
+        protected void rblAsistencia_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var rblAsistencia = sender as RadioButtonList;
+            var item = rblAsistencia?.NamingContainer as RepeaterItem;
+
+            if (item == null)
+            {
+                return;
+            }
+
+            AplicarVisibilidadAsistencia(item);
+        }
+
+        private void AplicarVisibilidadAsistencia(RepeaterItem item)
+        {
+            var rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
+            var rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
+            var txtAlergia = (TextBox)item.FindControl("txtAlergia");
+            var pnlTransporte = (Panel)item.FindControl("pnlTransporte");
+            var pnlAlergia = (Panel)item.FindControl("pnlAlergia");
+            var rfvTransporte = (RequiredFieldValidator)item.FindControl("rfvTransporte");
+            var itemContainer = (HtmlGenericControl)item.FindControl("itemContainer");
+
+            bool ocultarExtras = string.Equals(rblAsistencia?.SelectedValue, "No", StringComparison.OrdinalIgnoreCase);
+
+            if (pnlTransporte != null)
+            {
+                pnlTransporte.Visible = !ocultarExtras;
+            }
+
+            if (pnlAlergia != null)
+            {
+                pnlAlergia.Visible = !ocultarExtras;
+            }
+
+            if (rfvTransporte != null)
+            {
+                rfvTransporte.Enabled = !ocultarExtras;
+            }
+
+            if (itemContainer != null)
+            {
+                string baseClass = "integrante-item";
+                if (string.Equals(rblAsistencia?.SelectedValue, "Si", StringComparison.OrdinalIgnoreCase))
+                {
+                    itemContainer.Attributes["class"] = baseClass + " asistencia-si";
+                }
+                else if (string.Equals(rblAsistencia?.SelectedValue, "No", StringComparison.OrdinalIgnoreCase))
+                {
+                    itemContainer.Attributes["class"] = baseClass + " asistencia-no";
+                }
+                else
+                {
+                    itemContainer.Attributes["class"] = baseClass;
+                }
+            }
+
+            if (ocultarExtras)
+            {
+                rblTransporte?.ClearSelection();
+                if (txtAlergia != null)
+                {
+                    txtAlergia.Text = string.Empty;
+                }
+            }
+        }
+
         // Manejador para enviar comentarios Y guardar todos los cambios
         protected void btnEnviarComentario_Click(object sender, EventArgs e)
         {
@@ -200,6 +280,7 @@ namespace WebApplication2
                 
                 // Extraer el comentario antes de entrar al bucle para tenerlo disponible
                 string comentario = txtComentario.Text.Trim();
+                StringBuilder detalleIntegrantes = new StringBuilder();
 
                 // Abrir la conexión una sola vez fuera del bucle para mejorar el rendimiento
                 // Valor común de práctica (Si/No) tomado del radio superior (puede ser null)
@@ -220,6 +301,7 @@ namespace WebApplication2
                             RadioButtonList rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
                             RadioButtonList rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
                             TextBox txtAlergia = (TextBox)item.FindControl("txtAlergia");
+                            Label lblEditNombre = (Label)item.FindControl("lblEditNombre");
                             HiddenField hdnContador = (HiddenField)item.FindControl("hdnContador");
 
                             if (rblAsistencia != null && rblTransporte != null && txtAlergia != null && hdnContador != null)
@@ -230,6 +312,20 @@ namespace WebApplication2
                                 string asistencia = rblAsistencia.SelectedValue;
                                 string transporte = rblTransporte.SelectedValue;
                                 string alergia = txtAlergia.Text.Trim();
+
+                                if (string.Equals(asistencia, "No", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    transporte = null;
+                                    alergia = null;
+                                }
+                                string nombreIntegrante = lblEditNombre?.Text.Trim() ?? string.Empty;
+
+                                if (!string.IsNullOrEmpty(nombreIntegrante))
+                                {
+                                    string asistenciaTexto = asistencia == "Si" ? "Sí" : asistencia;
+                                    string transporteTexto = transporte == "Si" ? "Sí" : transporte;
+                                    detalleIntegrantes.AppendLine($"- {nombreIntegrante} | Alergia: {(string.IsNullOrEmpty(alergia) ? "(sin datos)" : alergia)} | Asiste: {asistenciaTexto} | Transporte: {transporteTexto}");
+                                }
 
                                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                                 {
@@ -261,13 +357,13 @@ namespace WebApplication2
 
                 // 3. Enviar el correo notificando los cambios
                 string nombreEquipo = Session["NombreEquipo"]?.ToString() ?? "Equipo Desconocido";
-                EnviarCorreo(nombreEquipo, cambiosGuardados, comentario);
+                EnviarCorreo(nombreEquipo, cambiosGuardados, comentario, detalleIntegrantes.ToString());
 
                 // 4. Mostrar mensaje de éxito
                 MostrarMensajeExito($"✓ {cambiosGuardados} integrante(s) actualizado(s).{mensajeComentario}");
-                
-                // Refrescamos los datos para mostrarlos actualizados
-                CargarIntegrantes();
+
+                Response.Redirect("Agradecimiento.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
             catch (Exception ex)
             {
@@ -275,7 +371,7 @@ namespace WebApplication2
             }
         }
 
-        private void EnviarCorreo(string nombreEquipo, int integrantesActualizados, string comentario)
+        private void EnviarCorreo(string nombreEquipo, int integrantesActualizados, string comentario, string detalleIntegrantes)
         {
             try
             {
@@ -291,12 +387,19 @@ namespace WebApplication2
                  
                  */
                 var fromAddress = new MailAddress("f.oliverosafonso2@gmail.com", "Torneo de Golf");
-                var toAddress = new MailAddress("f.oliverosafonso@gmail.com");
+                var toAddress = new MailAddress("juanjose.spider@gmail.com");
                 
                 const string fromPassword = "wtittjtuldcyorfb";
                 string subject = $"Cambios en la base de datos - Equipo: {nombreEquipo}";
-                
-                string body = $"Se han actualizado los datos de {integrantesActualizados} integrante(s) pertenecientes al equipo '{nombreEquipo}'.\n";
+
+                string body = $"Se han actualizado los datos de {integrantesActualizados} integrante(s) pertenecientes al equipo '{nombreEquipo}'.\n" +
+                    $"El equipo quedó así:\n";
+
+                if (!string.IsNullOrWhiteSpace(detalleIntegrantes))
+                {
+                    body += detalleIntegrantes + "\n \n";
+                }
+
                 if (!string.IsNullOrEmpty(comentario))
                 {
                     body += $"\nComentario adjunto:\n{comentario}";
@@ -323,9 +426,25 @@ namespace WebApplication2
             }
             catch (Exception ex)
             {
-                // Registramos el error de correo en consola de depuración para no romper la ejecución de la app
-                // Si el correo falla, los datos seguirán estando guardados en base de datos.
+                LogError("Error al intentar enviar el correo", ex);
                 System.Diagnostics.Debug.WriteLine($"Error al intentar enviar el correo: {ex.Message}");
+            }
+        }
+
+        private void LogError(string mensaje, Exception ex)
+        {
+            try
+            {
+                string dir = Server.MapPath("~/App_Data");
+                Directory.CreateDirectory(dir);
+
+                string ruta = Path.Combine(dir, "errores.log");
+                string linea = $"{DateTime.UtcNow:O} | {mensaje} | {ex}\r\n";
+                File.AppendAllText(ruta, linea, Encoding.UTF8);
+            }
+            catch
+            {
+                // Evitar romper la app si el log falla
             }
         }
 
