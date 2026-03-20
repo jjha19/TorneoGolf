@@ -378,7 +378,7 @@ namespace WebApplication2
                  
                  */
                 var fromAddress = new MailAddress("f.oliverosafonso2@gmail.com", "Torneo de Golf");
-                var toAddress = new MailAddress("juanjose.spider@gmail.com");
+                var toAddress = new MailAddress("eugenio@mesia.es");
                 
                 const string fromPassword = "wtittjtuldcyorfb";
                 string subject = $"Cambios en la base de datos - Equipo: {nombreEquipo}";
