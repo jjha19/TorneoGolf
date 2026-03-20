@@ -65,7 +65,10 @@ namespace WebApplication2
 
                     // 2. Extraer a los participantes de la tabla Equipo_participa donde p_torneo es el código
                     DataTable dt = new DataTable();
-                    string queryParticipantes = "SELECT p_nombre, p_apellido, p_movi FROM Equipo_participa WHERE p_torneo = ?";
+                    
+                    // AÑADIDOS LOS NUEVOS CAMPOS AQUÍ: p_asistencia, p_transporte, p_alergia, p_comentario, Y p_practica
+                    string queryParticipantes = "SELECT p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica " +
+                                                "FROM Equipo_participa WHERE p_torneo = ?";
                     
                     using (OleDbCommand cmdPart = new OleDbCommand(queryParticipantes, conn))
                     {

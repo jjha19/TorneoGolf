@@ -37,12 +37,44 @@
                     </HeaderTemplate>
                     <ItemTemplate>
                         <li class="integrante-item">
-                            <div class="integrante-edit-grid" style="grid-template-columns: 1fr;">
-                                <div class="form-group full" style="font-size: 18px;">
-                                    <strong><%# Eval("p_nombre") %> <%# Eval("p_apellido") %></strong>
+                            <!-- Nombre principal del participante -->
+                            <div style="font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                                <strong style="color: #2E7D32;"><%# Eval("p_nombre") %> <%# Eval("p_apellido") %></strong>
+                            </div>
+
+                            <div class="integrante-edit-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+                                
+                                <div class="form-group">
+                                    <strong>Móvil:</strong>
+                                    <asp:Label ID="lblMovil" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_movi")?.ToString()) ? "No especificado" : Eval("p_movi") %>'></asp:Label>
                                 </div>
-                                <div class="form-group full" style="margin-top: 10px;">
-                                    <strong>Móvil:</strong> <%# Eval("p_movi") %>
+
+                                <div class="form-group">
+                                    <strong>Alergias:</strong>
+                                    <asp:Label ID="lblAlergias" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_alergia")?.ToString()) ? "Ninguna" : Eval("p_alergia") %>'></asp:Label>
+                                </div>
+
+                                <div class="form-group">
+                                    <strong>¿Asiste al torneo?:</strong>
+                                    <asp:Label ID="lblAsiste" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_asistencia")?.ToString()) ? "Sin respuesta" : Eval("p_asistencia") %>'></asp:Label>
+                                </div>
+
+                                <div class="form-group">
+                                    <strong>Usará autobús:</strong>
+                                    <asp:Label ID="lblTransporte" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_transporte")?.ToString()) ? "Sin respuesta" : Eval("p_transporte") %>'></asp:Label>
+                                </div>
+
+                                <!-- Añadido nuevo campo: Jornada de práctica -->
+                                <div class="form-group">
+                                    <strong>¿Jornada de práctica?:</strong>
+                                    <asp:Label ID="lblPractica" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_practica")?.ToString()) ? "Sin respuesta" : Eval("p_practica") %>'></asp:Label>
+                                </div>
+
+                                <!-- Comentario a fila completa -->
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <strong>Comentarios:</strong>
+                                    <asp:Label ID="lblComentario" runat="server" style="color: #666; font-style: italic;" 
+                                        Text='<%# string.IsNullOrEmpty(Eval("p_comentario")?.ToString()) ? "Sin comentarios..." : Eval("p_comentario") %>'></asp:Label>
                                 </div>
                             </div>
                         </li>

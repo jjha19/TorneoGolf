@@ -7,7 +7,7 @@ namespace WebApplication2
 {
     public partial class Torneos : System.Web.UI.Page
     {
-        // Reusamos la misma lógica de conexión de tu proyecto
+        // Reusamos la misma lógica de conexión 
         private string connectionString
         {
             get
