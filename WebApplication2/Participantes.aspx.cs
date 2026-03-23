@@ -113,15 +113,38 @@ namespace WebApplication2
                 {
                     conn.Open();
 
-                    // Consulta de inserción para el nuevo participante
+                    // --- NUEVA VALIDACIÓN: COMPROBAR SI EL CÓDIGO DE EQUIPO EXISTE ---
+                    string codEquipoIngresado = txtAddCodigoEquipo.Text.Trim().ToUpper();
+                    bool equipoExiste = false;
+
+                    string queryValidarEquipo = "SELECT COUNT(*) FROM Equipo_participa WHERE e_codigo = ?";
+                    using (OleDbCommand cmdValidar = new OleDbCommand(queryValidarEquipo, conn))
+                    {
+                        cmdValidar.Parameters.AddWithValue("?", codEquipoIngresado);
+                        int count = Convert.ToInt32(cmdValidar.ExecuteScalar());
+                        if (count > 0)
+                        {
+                            equipoExiste = true;
+                        }
+                    }
+
+                    // Si no existe no permitimos guardar el participante y mostramos un mensaje de error
+                    if (!equipoExiste)
+                    {
+                        MostrarMensajeError($"El código de equipo '{codEquipoIngresado}' no existe en la base de datos. Por favor, introduzca uno válido.");
+                        return;
+                    }
+                    
+
+                    // Consulta de inserción incluyendo e_codigo
                     string query = @"INSERT INTO Equipo_participa 
-                                     (p_torneo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_practica, p_comentario) 
-                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                     (p_torneo, e_codigo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_practica, p_comentario) 
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                     using (OleDbCommand cmd = new OleDbCommand(query, conn))
                     {
-                        // IMPORTANTE OLEDB: El orden de los parámetros DEBE coincidir con los interrogantes en exactitud.
                         cmd.Parameters.AddWithValue("@p_torneo", torneoCodigo);
+                        cmd.Parameters.AddWithValue("@e_codigo", codEquipoIngresado);
                         cmd.Parameters.AddWithValue("@p_nombre", txtAddNombre.Text.Trim());
                         cmd.Parameters.AddWithValue("@p_apellido", txtAddApellido.Text.Trim());
                         
@@ -155,6 +178,7 @@ namespace WebApplication2
         {
             txtAddNombre.Text = string.Empty;
             txtAddApellido.Text = string.Empty;
+            txtAddCodigoEquipo.Text = string.Empty; 
             txtAddMovil.Text = string.Empty;
             txtAddAlergia.Text = string.Empty;
             txtAddComentario.Text = string.Empty;

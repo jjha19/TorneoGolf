@@ -94,8 +94,9 @@
             </div>
 
             
-            <!-- Este es el formulario para añadir nuevo participante -->
-         
+            
+            <!-- Este es el formulario para añadir un nuevo participante -->
+            
             <div class="form-add-container">
                 <h3>Añadir Nuevo Participante</h3>
                 <div class="integrante-edit-grid participante-grid-add">
@@ -110,6 +111,13 @@
                         <label><strong>Apellido <span class="asterisco-req">*</span></strong></label>
                         <asp:TextBox ID="txtAddApellido" runat="server" CssClass="textbox-alergia"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="rfvAddApellido" runat="server" ControlToValidate="txtAddApellido" ErrorMessage="El apellido es obligatorio" Display="Dynamic" ForeColor="Red" ValidationGroup="AddGroup"></asp:RequiredFieldValidator>
+                    </div>
+
+                    
+                    <div class="form-group">
+                        <label><strong>Código Equipo <span class="asterisco-req">*</span></strong></label>
+                        <asp:TextBox ID="txtAddCodigoEquipo" runat="server" CssClass="textbox-alergia"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="rfvAddCodigoEquipo" runat="server" ControlToValidate="txtAddCodigoEquipo" ErrorMessage="El código de equipo es obligatorio" Display="Dynamic" ForeColor="Red" ValidationGroup="AddGroup"></asp:RequiredFieldValidator>
                     </div>
 
                     <div class="form-group">
