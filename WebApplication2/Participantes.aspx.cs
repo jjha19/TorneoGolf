@@ -87,7 +87,6 @@ namespace WebApplication2
 
         private void CargarParticipantes()
         {
-            // Rescatamos el ?torneo= de la URL enviado por la pantalla anterior
             string torneoCodigo = Request.QueryString["torneo"];
 
             if (string.IsNullOrEmpty(torneoCodigo))
@@ -102,12 +101,12 @@ namespace WebApplication2
                 {
                     conn.Open();
 
-                    // 1. (Opcional) Obtener el nombre del torneo para ponerlo en el título
+                    // 1. Obtener el nombre del torneo
                     string queryTorneo = "SELECT t_nombre FROM Torneos WHERE t_codigo = ?";
                     using (OleDbCommand cmdTorneo = new OleDbCommand(queryTorneo, conn))
                     {
                         cmdTorneo.Parameters.AddWithValue("?", torneoCodigo);
-                        object nombreResultado = cmdTorneo.ExecuteScalar(); // Coge solo un dato
+                        object nombreResultado = cmdTorneo.ExecuteScalar(); 
                         if (nombreResultado != null)
                         {
                             lblNombreTorneo.Text = nombreResultado.ToString();
@@ -118,10 +117,8 @@ namespace WebApplication2
                         }
                     }
 
-                    // 2. Extraer a los participantes de la tabla Equipo_participa donde p_torneo es el código
+                    // 2. Extraer a los participantes
                     DataTable dt = new DataTable();
-                    
-                    // AÑADIDOS LOS NUEVOS CAMPOS AQUÍ: p_asistencia, p_transporte, p_alergia, p_comentario, Y p_practica
                     string queryParticipantes = "SELECT p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica " +
                                                 "FROM Equipo_participa WHERE p_torneo = ?";
                     
@@ -132,7 +129,7 @@ namespace WebApplication2
                         adapter.Fill(dt);
                     }
 
-                    // 3. Emparejar los datos visualmente
+                    // 3. Pintar los datos
                     if (dt.Rows.Count > 0)
                     {
                         rptParticipantes.DataSource = dt;
@@ -153,11 +150,87 @@ namespace WebApplication2
             }
         }
 
+        protected void btnGuardarParticipante_Click(object sender, EventArgs e)
+        {
+            if (!Page.IsValid) return;
+
+            string torneoCodigo = Request.QueryString["torneo"];
+            
+            if (string.IsNullOrEmpty(torneoCodigo))
+            {
+                MostrarMensajeError("No se puede guardar un participante sin un código de torneo válido.");
+                return;
+            }
+
+            try
+            {
+                using (OleDbConnection conn = new OleDbConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // Consulta de inserción para el nuevo participante
+                    string query = @"INSERT INTO Equipo_participa 
+                                     (p_torneo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_practica, p_comentario) 
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                    using (OleDbCommand cmd = new OleDbCommand(query, conn))
+                    {
+                        // IMPORTANTE OLEDB: El orden de los parámetros DEBE coincidir con los interrogantes en exactitud.
+                        cmd.Parameters.AddWithValue("@p_torneo", torneoCodigo);
+                        cmd.Parameters.AddWithValue("@p_nombre", txtAddNombre.Text.Trim());
+                        cmd.Parameters.AddWithValue("@p_apellido", txtAddApellido.Text.Trim());
+                        
+                        cmd.Parameters.AddWithValue("@p_movi", string.IsNullOrEmpty(txtAddMovil.Text.Trim()) ? (object)DBNull.Value : txtAddMovil.Text.Trim());
+                        cmd.Parameters.AddWithValue("@p_asistencia", string.IsNullOrEmpty(rblAddAsistencia.SelectedValue) ? (object)DBNull.Value : rblAddAsistencia.SelectedValue);
+                        cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(rblAddTransporte.SelectedValue) ? (object)DBNull.Value : rblAddTransporte.SelectedValue);
+                        cmd.Parameters.AddWithValue("@p_alergia", string.IsNullOrEmpty(txtAddAlergia.Text.Trim()) ? (object)DBNull.Value : txtAddAlergia.Text.Trim());
+                        cmd.Parameters.AddWithValue("@p_practica", string.IsNullOrEmpty(rblAddPractica.SelectedValue) ? (object)DBNull.Value : rblAddPractica.SelectedValue);
+                        cmd.Parameters.AddWithValue("@p_comentario", string.IsNullOrEmpty(txtAddComentario.Text.Trim()) ? (object)DBNull.Value : txtAddComentario.Text.Trim());
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // Mostrar éxito
+                MostrarMensajeExito("¡El participante ha sido añadido con éxito!");
+                
+                // Limpiar el formulario
+                LimpiarFormularioAñadir();
+                
+                // Recargar el grid para que aparezca el nuevo registro en la pantalla
+                CargarParticipantes();
+            }
+            catch (Exception ex)
+            {
+                MostrarMensajeError("Error al guardar el participante: " + ex.Message);
+            }
+        }
+
+        private void LimpiarFormularioAñadir()
+        {
+            txtAddNombre.Text = string.Empty;
+            txtAddApellido.Text = string.Empty;
+            txtAddMovil.Text = string.Empty;
+            txtAddAlergia.Text = string.Empty;
+            txtAddComentario.Text = string.Empty;
+            
+            rblAddAsistencia.ClearSelection();
+            rblAddTransporte.ClearSelection();
+            rblAddPractica.ClearSelection();
+        }
+
+        private void MostrarMensajeExito(string mensaje)
+        {
+            lblMensajeExito.Text = mensaje;
+            pnlMensajeExito.Visible = true;
+            pnlMensajeError.Visible = false;
+        }
+
         private void MostrarMensajeError(string mensaje)
         {
             lblMensajeError.Text = mensaje;
             pnlMensajeError.Visible = true;
-            pnlNoData.Visible = false;
+            pnlMensajeExito.Visible = false;
         }
 
         private static string ConvertirDataTableACsv(DataTable dt)
