@@ -24,6 +24,9 @@
             </div>
 
             <!-- Mensajes -->
+            <asp:ValidationSummary ID="vsCamposFaltantes" runat="server" CssClass="mensaje mensaje-error mensaje-validacion"
+    DisplayMode="SingleParagraph" ShowSummary="true"
+    HeaderText="Falta rellenar campos" />
             <asp:Panel ID="pnlMensajeExito" runat="server" CssClass="mensaje mensaje-exito" Visible="false">
                 <asp:Label ID="lblMensajeExito" runat="server"></asp:Label>
             </asp:Panel>
@@ -121,12 +124,9 @@
                         CssClass="comentario-textbox"></asp:TextBox>
                 </div>
                 <div class="form-group" style="text-align: center !important;">
-                    <asp:Button ID="btnEnviarComentario" runat="server" Text="Guardar y Enviar" 
+                    <asp:Button ID="btnEnviarComentario" runat="server" Text="Guardar" 
                         CssClass="btn-enviar-comentario" OnClick="btnEnviarComentario_Click" />
                 </div>
-                <asp:ValidationSummary ID="vsCamposFaltantes" runat="server" CssClass="mensaje mensaje-error mensaje-validacion"
-                    DisplayMode="SingleParagraph" ShowSummary="true"
-                    HeaderText="Falta rellenar campos" />
             </div>
 
         </div>
