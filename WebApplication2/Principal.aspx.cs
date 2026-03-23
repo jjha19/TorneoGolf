@@ -321,7 +321,7 @@ namespace WebApplication2
                                 {
                                     string asistenciaTexto = asistencia == "Si" ? "Sí" : asistencia;
                                     string transporteTexto = transporte == "Si" ? "Sí" : transporte;
-                                    detalleIntegrantes.AppendLine($"- {nombreIntegrante} | Alergia: {(string.IsNullOrEmpty(alergia) ? "(sin datos)" : alergia)} | Asiste: {asistenciaTexto} | Transporte: {transporteTexto}");
+                                    detalleIntegrantes.AppendLine($"- {nombreIntegrante} | Asiste: {asistenciaTexto} | Transporte: {transporteTexto} | Alergia: {(string.IsNullOrEmpty(alergia) ? "(sin datos)" : alergia)}");
                                 }
 
                                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
