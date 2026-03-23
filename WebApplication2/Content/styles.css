@@ -1,716 +1,89 @@
-/* Estilos Generales */
-body {
-    font-family: "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    margin: 20px;
-    background-color: #f5f5f5;
-    font-size: 17px;
+/* ========================================================
+   ESTILOS PARA LA PANTALLA PARTICIPANTES Y AÑADIR NUEVO
+   ======================================================== */
+
+/* Botón de volver */
+.btn-volver-container {
+    margin-bottom: 20px;
 }
 
-.login-container {
-    max-width: 420px;
-    margin: 80px auto;
-    background-color: rgba(255, 255, 255, 0.95);
-    padding: 30px;
-    border-radius: 10px;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    text-align: center;
-}
-
-.login-container h2 {
-    margin-top: 0;
-}
-
-.login-container .form-group {
-    border: 2px solid darkgreen;
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.login-container .form-group label {
-    color: #2c5f2d;
-}
-
-.login-container .form-group input[type="text"],
-.login-container .form-group input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-family: inherit;
+.btn-volver {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
     font-size: 16px;
 }
 
-.btn-login {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 8px;
-    cursor: pointer;
+.btn-volver:hover {
+    text-decoration: underline;
+}
+
+/* Cabecera de la tarjeta de participante */
+.participante-header {
     font-size: 18px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.btn-login:hover {
-    background-color: #45a049;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    transform: translateY(-2px);
-}
-
-.btn-login:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.error-message {
-    display: block;
-    margin-top: 12px;
-    color: #721c24;
-    background-color: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 5px;
-    padding: 8px 10px;
-    font-size: 15px;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: rgba(255, 255, 255, 0);
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* Títulos */
-#TitleText {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-#TitleText h1 {
-    color: #2c5f2d;
-    border-bottom: none;
-    padding-bottom: 10px;
-    margin: 0 0 10px 0;
-    font-size: 28px;
-}
-
-#TitleText hr {
-    border: none;
-    border-top: 2px solid #2c5f2d;
-    margin: 10px 0;
-}
-
-.torneo-comentario {
-    color: #555;
-    font-size: 14px;
-    line-height: 1.6;
-    padding: 10px 0 0 0;
-    font-style: italic;
-}
-
-h1 {
-    color: #2c5f2d;
-    border-bottom: 3px solid #2c5f2d;
-    padding-bottom: 10px;
-    margin: 0;
-}
-
-h2 {
-    color: #2c5f2d;
-    text-align: center;
-    font-size: 22px;
-}
-
-/* Lista de Integrantes */
-.integrantes-lista {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0;
-    border-top: none;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.integrante-item {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    transition: box-shadow 0.3s;
-    animation: integrante-slide-in 1.0s ease-out both;
-}
-
-.integrante-item.asistencia-si {
-    border-color: #2b6cb0;
-    background-color: rgba(219, 234, 254, 0.95);
-}
-
-.integrante-item.asistencia-no {
-    border-color: #c53030;
-    background-color: rgba(254, 215, 215, 0.95);
-}
-
-@keyframes integrante-slide-in {
-    from {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.participante-nombre {
     margin-bottom: 15px;
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
-    text-align: center;
 }
 
-.participantes-detalles {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.participante-nombre {
+    color: #2E7D32;
 }
 
-.integrante-item:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.integrante-contenido {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* ESTILO DEL NOMBRE - MÁXIMA PRIORIDAD */
-.integrante-item .integrante-contenido .integrante-nombre-grande {
-    font-size: 46px !important;
-    font-weight: 900 !important;
-    color: #2c5f2d !important;
-    padding: 20px 0 15px 0 !important;
-    border-bottom: 4px solid #2c5f2d !important;
-    margin-bottom: 15px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 2px !important;
-    line-height: 1.2 !important;
-    text-align: center !important;
-    display: block !important;
-    width: 100% !important;
-}
-
-.integrante-campos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
-}
-
-.campo-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Ocultar checkbox original */
-.campo-checkbox input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 24px;
-    height: 24px;
-    border: 2px solid #2c5f2d;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    background-color: white;
-    transition: all 0.3s ease;
-}
-
-/* Checkbox marcado */
-.campo-checkbox input[type="checkbox"]:checked {
-    background-color: #2c5f2d;
-    border-color: #2c5f2d;
-}
-
-/* Marca de check */
-.campo-checkbox input[type="checkbox"]:checked::after {
-    content: '✓';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-/* Hover effect */
-.campo-checkbox input[type="checkbox"]:hover {
-    border-color: #1e4620;
-    box-shadow: 0 2px 8px rgba(44, 95, 45, 0.2);
-}
-
-.campo-checkbox label {
-    font-size: 16px;
-    color: #333;
-    cursor: pointer;
-    margin: 0;
-    font-weight: 500;
-}
-
-.campo-alergia {
-    font-size: 14px;
-    color: #555;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-}
-
-.campo-alergia strong {
-    color: #333;
-    white-space: nowrap;
-}
-
-.campo-alergia input[type="text"] {
-    flex: 1;
-    padding: 8px 12px;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: inherit;
-    transition: border-color 0.3s;
-}
-
-.campo-alergia input[type="text"]:focus {
-    outline: none;
-    border-color: #2c5f2d;
-    box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.1);
-}
-
-.btn-guardar-inline {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-}
-
-.btn-guardar-inline:hover {
-    background-color: #45a049;
-}
-
-.integrante-linea {
-    margin: 4px 0;
-    color: #333;
-}
-
-.integrante-linea strong {
-    color: #2c5f2d;
-}
-
-.integrante-acciones {
-    margin-top: 10px;
-    display: flex;
-    gap: 8px;
-}
-
-/* Vista de edición inline */
-.integrante-edit {
-    width: 100%;
-}
-
-.integrante-edit-grid {
-    display: grid;
+/* Diseño de cuadrícula (Grid) específico para los detalles */
+.participante-grid-detalles {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
 
-.integrante-edit-grid .full {
+.participante-grid-add {
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* Utilidad para forzar a un elemento a ocupar toda la fila del grid */
+.grid-full-width {
     grid-column: 1 / -1;
 }
 
-.integrante-edit-grid .form-group {
-    margin-bottom: 8px;
-}
-
-/* Aumentar tamaño y centrar el nombre */
-.integrante-edit-grid .form-group.full {
-    text-align: center;
-}
-
-.integrante-nombre-texto {
-    display: block;
-    font-size: 1.8em;
-    font-weight: bold;
-    margin-top: 8px;
-    color: #2c5f2d;
-}
-
-.integrante-edit-grid .form-group label {
-    display: block;
-    margin-bottom: 3px;
-    font-weight: bold;
-    color: #2c5f2d;
-    font-size: 15px;
-}
-
-.integrante-edit-grid input[type="text"],
-.integrante-edit-grid input[type="tel"],
-.integrante-edit-grid select,
-.integrante-edit-grid textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
-.integrante-edit-grid textarea {
-    min-height: 70px;
-    resize: vertical;
-}
-
-/* Campo de alergias: que ocupe todo el ancho disponible del contenedor */
-.integrante-edit-grid .textbox-alergia {
-    width: 100%;
-    display: block;
-}
-
-/* Sección de Comentarios */
-.comentarios-section {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    margin-top: 30px;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
-}
-
-.comentarios-section h2 {
-    margin-top: 0;
-    color: #2c5f2d;
-    text-align: center;
-}
-
-/* Centrar texto y radios de la pregunta de práctica */
-.comentarios-section .form-group:first-child {
-    text-align: center;
-    width: 100%;
-}
-
-.comentarios-section .form-group:first-child .radio-list-responsive {
-    width: 100%;
-}
-
-.comentarios-section .form-group:first-child .radio-list-responsive table {
-    width: 100%;
-    border-spacing: 0;
-}
-
-/* Cajitas con borde verde oscuro para form-group */
-.integrante-edit-grid .form-group,
-.comentarios-section .form-group {
-    border: 2px solid darkgreen;
-    border-radius: 10px;
-    padding: 15px;
-    box-sizing: border-box;
-}
-
-/* FORZAR CENTRADO DEL BOTÓN */
-.comentarios-section .form-group:last-child {
-    text-align: center !important;
-    display: block !important;
-    width: 100% !important;
-    border: none;
-    padding: 0;
-}
-
-.comentarios-section div[style*="text-align"] {
-    text-align: center !important;
-}
-
-.comentario-textbox {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 16px;
-    resize: vertical;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
-}
-
-.comentario-textbox:focus {
-    outline: none;
-    border-color: #2c5f2d;
-}
-
-.btn-enviar-comentario {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 15px 40px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 19px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.btn-enviar-comentario:hover {
-    background-color: #45a049;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    transform: translateY(-2px);
-}
-
-.btn-enviar-comentario:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* Estilo base de form-group (solo margen); los bordes se controlan arriba para no duplicar reglas */
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #333;
-}
-
-.form-group input[type="text"],
-.form-group input[type="tel"],
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
-.form-group textarea {
-    resize: vertical;
-    min-height: 60px;
-}
-
-.form-group select {
-    cursor: pointer;
-}
-
-/* Mensajes */
-.mensaje {
-    padding: 10px 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.mensaje-exito {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.mensaje-error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.mensaje-validacion {
-    margin-top: 10px;
-    text-align: center;
-}
-
-/* Sin datos */
-.no-data {
-    text-align: center;
-    padding: 40px;
+/* Textos de comentario en la lista */
+.comentario-texto {
     color: #666;
     font-style: italic;
 }
 
-#bg_image {
-    position: fixed;
-    top: 0;
-    left: 0;
+/* Contenedor del formulario Añadir Participante */
+.form-add-container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+    border: 1px solid #ddd;
+}
+
+.form-add-container h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 10px;
+}
+
+/* Caja de texto enriquecida para el formulario añadir */
+.add-comentario-box {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-    opacity: 0.3;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    box-sizing: border-box; /* Evita que el padding desborde el ancho */
 }
 
-/* Tamaño de fuente y color para mensajes de éxito y error */
-.mensaje-exito, .mensaje-error {
-    font-size: 16px;
-}
-
-/* Ajustes para campos de texto en pantallas pequeñas */
-@media (max-width: 768px) {
-    .integrante-edit-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-buttons {
-        flex-direction: column;
-    }
-
-    .btn-agregar, .btn-cancelar {
-        width: 100%;
-    }
-}
-
-/* ----------- RADIO BUTTON LAYOUT Y ESTILO PERSONALIZADO ----------- */
-
-/* Distribución del RadioButtonList (tabla) */
-.radio-list-responsive {
-    width: 100%;
-    margin-top: 5px;
-}
-
-.radio-list-responsive td {
-    width: 50%;
+/* Contenedor del botón guardar */
+.btn-guardar-container {
     text-align: center;
-    padding: 0 14px;
+    margin-top: 20px;
 }
 
-.radio-list-responsive label {
-    margin-left: 8px;
-    cursor: pointer;
-}
-
-/* Estilo visual tipo radio-wrapper-15 */
-.radio-wrapper-15 input[type="radio"] {
-    position: relative;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    border-radius: 30px;
-}
-
-.radio-wrapper-15 input[type="radio"]:before,
-.radio-wrapper-15 input[type="radio"]:after {
-    content: "";
-    position: absolute;
-}
-
-    .radio-wrapper-15 input[type="radio"]:before {
-        width: 100%;
-        height: 100%;
-        border-radius: 30px;
-        background-color: #f2f2f2;
-        box-shadow: 0 0 0 1px #f2f2f2;
-        -moz-transition: all 0.25s ease-in-out;
-        -o-transition: all 0.25s ease-in-out;
-        -webkit-transition: all 0.25s ease-in-out;
-        transition: all 0.25s ease-in-out;
-    }
-
-.radio-wrapper-15 input[type="radio"]:after {
-    width: 100%;
-    height: 100%;
-    border-radius: 30px;
-    background-color: #15202a;
-    -moz-transform: scale(0, 0);
-    -ms-transform: scale(0, 0);
-    -webkit-transform: scale(0, 0);
-    transform: scale(0, 0);
-    -moz-transition: all 0.25s cubic-bezier(0.75, 0.01, 0.48, 2);
-    -o-transition: all 0.25s cubic-bezier(0.75, 0.01, 0.48, 2);
-    -webkit-transition: all 0.25s cubic-bezier(0.75, 0.01, 0.48, 2);
-    transition: all 0.25s cubic-bezier(0.75, 0.01, 0.48, 2);
-}
-
-.radio-wrapper-15 input[type="radio"]:checked:after {
-    -moz-transform: scale(0.75, 0.75);
-    -ms-transform: scale(0.75, 0.75);
-    -webkit-transform: scale(0.75, 0.75);
-    transform: scale(0.75, 0.75);
-}
-
-.radio-wrapper-15 input[type="radio"]:checked:before {
-    background-color: #85ff7a;
-    box-shadow: 0 0 0 1px #85ff7a;
-}
-
-.radio-wrapper-15 * {
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-#tick-image {
-    width: 25vw;
-    height: auto;
-}
-
-.agradecimiento-page .container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.agradecimiento-page .comentarios-section {
-    text-align: center;
-}
-
-.agradecimiento-page #tick-image {
-    display: block;
-    margin: 0 auto 15px;
-    transform: scale(0.2);
-    animation: tick-pop 0.6s ease-out forwards;
-}
-
-@keyframes tick-pop {
-    0% {
-        transform: scale(0.2);
-        opacity: 0;
-    }
-    60% {
-        opacity: 1;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+/* Asteriscos obligatorios */
+.asterisco-req {
+    color: red;
 }

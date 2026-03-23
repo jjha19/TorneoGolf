@@ -5,8 +5,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Torneo de Golf - Participantes</title>
+    <!-- Referencia única y centralizada a TODOS los estilos -->
     <link href="Content/styles.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -16,8 +16,8 @@
         <div class="container">
             
             <!-- Botón de Volver -->
-            <div style="margin-bottom: 20px;">
-                <a href="Torneos.aspx" style="color: #4CAF50; text-decoration: none; font-weight: bold; font-size: 16px;">&larr; Volver a Mis Torneos</a>
+            <div class="btn-volver-container">
+                <a href="Torneos.aspx" class="btn-volver">&larr; Volver a Mis Torneos</a>
             </div>
 
             <!-- Título -->
@@ -25,7 +25,10 @@
                 <h1>Participantes: <asp:Label ID="lblNombreTorneo" runat="server"></asp:Label></h1>
             </div>
 
-            <!-- Mensajes -->
+            <!-- Mensajes Globales -->
+            <asp:Panel ID="pnlMensajeExito" runat="server" CssClass="mensaje mensaje-exito" Visible="false">
+                <asp:Label ID="lblMensajeExito" runat="server"></asp:Label>
+            </asp:Panel>
             <asp:Panel ID="pnlMensajeError" runat="server" CssClass="mensaje mensaje-error" Visible="false">
                 <asp:Label ID="lblMensajeError" runat="server"></asp:Label>
             </asp:Panel>
@@ -39,11 +42,11 @@
                     <ItemTemplate>
                         <li class="integrante-item">
                             <!-- Nombre principal del participante -->
-                            <div class="participante-nombre">
-                                <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido")) %>' CssClass="integrante-nombre-texto"></asp:Label>
+                            <div class="participante-header">
+                                <strong class="participante-nombre"><%# Eval("p_nombre") %> <%# Eval("p_apellido") %></strong>
                             </div>
 
-                            <div class="participantes-detalles">
+                            <div class="integrante-edit-grid participante-grid-detalles">
                                 
                                 <div class="form-group">
                                     <strong>Móvil:</strong>
@@ -72,9 +75,9 @@
                                 </div>
 
                                 <!-- Comentario a fila completa -->
-                                <div class="form-group">
+                                <div class="form-group grid-full-width">
                                     <strong>Comentarios:</strong>
-                                    <asp:Label ID="lblComentario" runat="server" style="color: #666; font-style: italic;" 
+                                    <asp:Label ID="lblComentario" runat="server" CssClass="comentario-texto" 
                                         Text='<%# string.IsNullOrEmpty(Eval("p_comentario")?.ToString()) ? "Sin comentarios..." : Eval("p_comentario") %>'></asp:Label>
                                 </div>
                             </div>
@@ -88,6 +91,77 @@
                 <asp:Panel ID="pnlNoData" runat="server" CssClass="no-data" Visible="false">
                     No hay participantes registrados en este torneo.
                 </asp:Panel>
+            </div>
+
+            
+            <!-- Este es el formulario para añadir nuevo participante -->
+         
+            <div class="form-add-container">
+                <h3>Añadir Nuevo Participante</h3>
+                <div class="integrante-edit-grid participante-grid-add">
+                    
+                    <div class="form-group">
+                        <label><strong>Nombre <span class="asterisco-req">*</span></strong></label>
+                        <asp:TextBox ID="txtAddNombre" runat="server" CssClass="textbox-alergia"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="rfvAddNombre" runat="server" ControlToValidate="txtAddNombre" ErrorMessage="El nombre es obligatorio" Display="Dynamic" ForeColor="Red" ValidationGroup="AddGroup"></asp:RequiredFieldValidator>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Apellido <span class="asterisco-req">*</span></strong></label>
+                        <asp:TextBox ID="txtAddApellido" runat="server" CssClass="textbox-alergia"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="rfvAddApellido" runat="server" ControlToValidate="txtAddApellido" ErrorMessage="El apellido es obligatorio" Display="Dynamic" ForeColor="Red" ValidationGroup="AddGroup"></asp:RequiredFieldValidator>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Móvil</strong></label>
+                        <asp:TextBox ID="txtAddMovil" runat="server" CssClass="textbox-alergia"></asp:TextBox>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>Alergias</strong></label>
+                        <asp:TextBox ID="txtAddAlergia" runat="server" CssClass="textbox-alergia"></asp:TextBox>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>¿Asiste al torneo?</strong></label>
+                        <div class="radio-wrapper-15 radio-list-responsive">
+                            <asp:RadioButtonList ID="rblAddAsistencia" runat="server" RepeatDirection="Horizontal">
+                                <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                                <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                            </asp:RadioButtonList>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>¿Tiene transporte?</strong></label>
+                        <div class="radio-wrapper-15 radio-list-responsive">
+                            <asp:RadioButtonList ID="rblAddTransporte" runat="server" RepeatDirection="Horizontal">
+                                <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                                <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                            </asp:RadioButtonList>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><strong>¿Asiste a práctica?</strong></label>
+                        <div class="radio-wrapper-15 radio-list-responsive">
+                            <asp:RadioButtonList ID="rblAddPractica" runat="server" RepeatDirection="Horizontal">
+                                <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                                <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                            </asp:RadioButtonList>
+                        </div>
+                    </div>
+
+                    <div class="form-group grid-full-width">
+                        <label><strong>Comentario</strong></label>
+                        <asp:TextBox ID="txtAddComentario" runat="server" TextMode="MultiLine" Rows="3" CssClass="comentario-textbox sublimado add-comentario-box"></asp:TextBox>
+                    </div>
+
+                </div>
+
+                <div class="form-group btn-guardar-container">
+                    <asp:Button ID="btnGuardarParticipante" runat="server" Text="Guardar Participante" CssClass="btn-enviar-comentario" OnClick="btnGuardarParticipante_Click" ValidationGroup="AddGroup" />
+                </div>
             </div>
 
         </div>
