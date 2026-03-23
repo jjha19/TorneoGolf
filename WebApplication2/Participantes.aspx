@@ -23,6 +23,9 @@
             <!-- Título -->
             <div id="TitleText">
                 <h1>Participantes: <asp:Label ID="lblNombreTorneo" runat="server"></asp:Label></h1>
+                <div class="form-group" style="text-align: center; border: none; padding: 0;">
+                    <asp:Button ID="btnDescargar" runat="server" Text="Descargar info" CssClass="btn-enviar-comentario" OnClick="btnDescargar_Click" />
+                </div>
             </div>
 
             <!-- Mensajes -->
