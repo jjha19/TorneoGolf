@@ -3,5 +3,4 @@ bin/
 obj/
 *.user
 *.suo
-/WebApplication2/Database/
-WebApplication2/Database/
+

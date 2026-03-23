@@ -22,7 +22,10 @@
 
             <!-- Título -->
             <div id="TitleText">
-                <h1>Participantes: <asp:Label ID="lblNombreTorneo" runat="server"></asp:Label></h1>
+                <h1>Invitados: <asp:Label ID="lblNombreTorneo" runat="server"></asp:Label></h1>
+                <div class="form-group" style="text-align: center; border: none; padding: 0;">
+                    <asp:Button ID="btnDescargar" runat="server" Text="Descargar info" CssClass="btn-enviar-comentario" OnClick="btnDescargar_Click" />
+                </div>
             </div>
 
             <!-- Mensajes -->
@@ -38,7 +41,7 @@
                     </HeaderTemplate>
                     <ItemTemplate>
                         <li class="integrante-item">
-                            <!-- Nombre principal del participante -->
+                            <!-- Nombre del participante -->
                             <div class="participante-nombre">
                                 <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido")) %>' CssClass="integrante-nombre-texto"></asp:Label>
                             </div>
@@ -65,7 +68,6 @@
                                     <asp:Label ID="lblTransporte" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_transporte")?.ToString()) ? "Sin respuesta" : Eval("p_transporte") %>'></asp:Label>
                                 </div>
 
-                                <!-- Añadido nuevo campo: Jornada de práctica -->
                                 <div class="form-group">
                                     <strong>¿Jornada de práctica?:</strong>
                                     <asp:Label ID="lblPractica" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_practica")?.ToString()) ? "Sin respuesta" : Eval("p_practica") %>'></asp:Label>
