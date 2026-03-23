@@ -121,7 +121,7 @@
                         CssClass="comentario-textbox"></asp:TextBox>
                 </div>
                 <div class="form-group" style="text-align: center !important;">
-                    <asp:Button ID="btnEnviarComentario" runat="server" Text="Guardar y Enviar" 
+                    <asp:Button ID="btnEnviarComentario" runat="server" Text="Guardar" 
                         CssClass="btn-enviar-comentario" OnClick="btnEnviarComentario_Click" />
                 </div>
                 <asp:ValidationSummary ID="vsCamposFaltantes" runat="server" CssClass="mensaje mensaje-error mensaje-validacion"
