@@ -18,15 +18,16 @@
             <!-- Título -->
             <div id="TitleText">
                 <h1><asp:Label ID="lblTituloTorneo" runat="server"></asp:Label> - <asp:Label ID="lblTituloEquipo" runat="server"></asp:Label></h1>
+                        
                 <div class="torneo-comentario">
                     <asp:Label ID="lblComentarioTorneo" runat="server"></asp:Label>
                 </div>
             </div>
 
             <!-- Mensajes -->
-            <asp:ValidationSummary ID="vsCamposFaltantes" runat="server" CssClass="mensaje mensaje-error mensaje-validacion"
-    DisplayMode="SingleParagraph" ShowSummary="true"
-    HeaderText="Falta rellenar campos" />
+            <asp:ValidationSummary ID="vsCamposFaltantes" runat="server" CssClass="mensaje-validacion"
+            DisplayMode="SingleParagraph" ShowSummary="true"
+            HeaderText="Falta rellenar datos" />
             <asp:Panel ID="pnlMensajeExito" runat="server" CssClass="mensaje mensaje-exito" Visible="false">
                 <asp:Label ID="lblMensajeExito" runat="server"></asp:Label>
             </asp:Panel>
