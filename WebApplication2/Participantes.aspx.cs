@@ -272,5 +272,45 @@ namespace WebApplication2
 
             return texto;
         }
+
+        private static string ConvertirDataTableACsv(DataTable dt)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Nombre,Apellido,Movil,Asistencia,Transporte,Alergia,Comentario,Practica");
+
+            foreach (DataRow row in dt.Rows)
+            {
+                sb.AppendLine(string.Join(",", new[]
+                {
+                    EscaparCsv(row["p_nombre"]),
+                    EscaparCsv(row["p_apellido"]),
+                    EscaparCsv(row["p_movi"]),
+                    EscaparCsv(row["p_asistencia"]),
+                    EscaparCsv(row["p_transporte"]),
+                    EscaparCsv(row["p_alergia"]),
+                    EscaparCsv(row["p_comentario"]),
+                    EscaparCsv(row["p_practica"])
+                }));
+            }
+
+            return sb.ToString();
+        }
+
+        private static string EscaparCsv(object valor)
+        {
+            if (valor == null || valor == DBNull.Value)
+            {
+                return "";
+            }
+
+            string texto = valor.ToString();
+            if (texto.Contains("\"") || texto.Contains(",") || texto.Contains("\n") || texto.Contains("\r"))
+            {
+                texto = texto.Replace("\"", "\"\"");
+                return $"\"{texto}\"";
+            }
+
+            return texto;
+        }
     }
 }
