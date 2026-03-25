@@ -285,20 +285,22 @@ namespace WebApplication2
             try
             {
                 int cambiosGuardados = 0;
-                
+
                 // Extraer el comentario antes de entrar al bucle para tenerlo disponible
                 string comentario = txtComentario.Text.Trim();
                 StringBuilder detalleIntegrantes = new StringBuilder();
 
-                // Abrir la conexión una sola vez fuera del bucle para mejorar el rendimiento
                 // Valor común de práctica (Si/No) tomado del radio superior (puede ser null)
                 string practicaGlobal = rblPractica.SelectedValue;
+
+                // Fecha de última modificación con formato dd/MM/yyyy (ej: 05/03/2026)
+                string fechaUltimaModificacion = DateTime.Now.ToString("dd/MM/yyyy");
 
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
                     conn.Open();
-                    // Modificamos la consulta para incluir p_comentario y p_practica
-                    string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ?, p_comentario = ?, p_practica = ? WHERE p_contador = ?";
+                    // Incluimos Fecha_ult_modificacion en el UPDATE
+                    string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ?, p_comentario = ?, p_practica = ?, Fecha_ult_modificacion = ? WHERE p_contador = ?";
 
                     // 1. Guardar todos los cambios de los integrantes junto con el comentario
                     foreach (RepeaterItem item in rptIntegrantes.Items)
@@ -315,7 +317,7 @@ namespace WebApplication2
                             if (rblAsistencia != null && rblTransporte != null && txtAlergia != null && hdnContador != null)
                             {
                                 int id = Convert.ToInt32(hdnContador.Value);
-                                
+
                                 // Extraer los strings en lugar de booleanos ("Si" o "No")
                                 string asistencia = rblAsistencia.SelectedValue;
                                 string transporte = rblTransporte.SelectedValue;
@@ -337,13 +339,14 @@ namespace WebApplication2
 
                                 using (OleDbCommand cmd = new OleDbCommand(query, conn))
                                 {
-                                    // Los parámetros en OleDb se asignan estrictamente por orden posicional (?
+                                    // Los parámetros en OleDb se asignan estrictamente por orden posicional (?)
                                     // Usamos DBNull.Value en caso de que lleguen vacíos
                                     cmd.Parameters.AddWithValue("@p_asistencia", string.IsNullOrEmpty(asistencia) ? (object)DBNull.Value : asistencia);
                                     cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(transporte) ? (object)DBNull.Value : transporte);
                                     cmd.Parameters.AddWithValue("@p_alergia", string.IsNullOrEmpty(alergia) ? (object)DBNull.Value : alergia);
                                     cmd.Parameters.AddWithValue("@p_comentario", string.IsNullOrEmpty(comentario) ? (object)DBNull.Value : comentario);
                                     cmd.Parameters.AddWithValue("@p_practica", string.IsNullOrEmpty(practicaGlobal) ? (object)DBNull.Value : practicaGlobal);
+                                    cmd.Parameters.AddWithValue("@Fecha_ult_modificacion", fechaUltimaModificacion);
                                     cmd.Parameters.AddWithValue("@p_contador", id);
 
                                     cmd.ExecuteNonQuery();
@@ -392,13 +395,10 @@ namespace WebApplication2
                     el comentario que se escriba, pero sin incluir los datos personales ni las opciones de coche ni asiste.
                     Hay que hacer que también ponga la fecha de modificación (supongo)
                     
-                    
-
-                 
                  */
                 var fromAddress = new MailAddress("f.oliverosafonso2@gmail.com", "Torneo de Golf");
                 var toAddress = new MailAddress("eugenio@mesia.es");
-                
+
                 const string fromPassword = "wtittjtuldcyorfb";
                 string subject = $"Cambios en la base de datos - Equipo: {nombreEquipo}";
 
