@@ -45,8 +45,8 @@
                     <ItemTemplate>
                         <li class="integrante-item">
                             <!-- Nombre del participante -->
-                            <div class="participante-nombre">
-                                <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido")) %>' CssClass="integrante-nombre-texto"></asp:Label>
+                            <div class="participante-header">
+                                <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido")) %>' CssClass="integrante-nombre-texto" style="font-weight: bold; font-size: 18px; color: #2E7D32;"></asp:Label>
                             </div>
 
                             <div class="integrante-edit-grid participante-grid-detalles">
@@ -95,10 +95,7 @@
                 </asp:Panel>
             </div>
 
-            
-            
             <!-- Este es el formulario para añadir un nuevo participante -->
-            
             <div class="form-add-container">
                 <h3>Añadir Nuevo Participante</h3>
                 <div class="integrante-edit-grid participante-grid-add">
@@ -114,7 +111,6 @@
                         <asp:TextBox ID="txtAddApellido" runat="server" CssClass="textbox-alergia"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="rfvAddApellido" runat="server" ControlToValidate="txtAddApellido" ErrorMessage="El apellido es obligatorio" Display="Dynamic" ForeColor="Red" ValidationGroup="AddGroup"></asp:RequiredFieldValidator>
                     </div>
-
                     
                     <div class="form-group">
                         <label><strong>Código Equipo <span class="asterisco-req">*</span></strong></label>

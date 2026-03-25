@@ -49,8 +49,9 @@ namespace WebApplication2
                 {
                     conn.Open();
 
+                    // Añadimos ORDER BY e_codigo ASC para el archivo descargado
                     string queryParticipantes = "SELECT p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica " +
-                                                "FROM Equipo_participa WHERE p_torneo = ?";
+                                                "FROM Equipo_participa WHERE p_torneo = ? ORDER BY e_codigo ASC, p_nombre ASC";
 
                     using (OleDbCommand cmdPart = new OleDbCommand(queryParticipantes, conn))
                     {
@@ -118,9 +119,10 @@ namespace WebApplication2
                     }
 
                     // 2. Extraer a los participantes
-                    DataTable dt = new DataTable();
-                    string queryParticipantes = "SELECT p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica " +
-                                                "FROM Equipo_participa WHERE p_torneo = ?";
+                    DataTable dt = new DataTable(); 
+                    // Incluimos e_codigo en el SELECT y ordenamos por e_codigo y nombre
+                    string queryParticipantes = "SELECT e_codigo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica " +
+                                                "FROM Equipo_participa WHERE p_torneo = ? ORDER BY e_codigo ASC, p_nombre ASC";
                     
                     using (OleDbCommand cmdPart = new OleDbCommand(queryParticipantes, conn))
                     {
@@ -189,7 +191,6 @@ namespace WebApplication2
                         MostrarMensajeError($"El código de equipo '{codEquipoIngresado}' no existe en la base de datos. Por favor, introduzca uno válido.");
                         return;
                     }
-                    
 
                     // Consulta de inserción incluyendo e_codigo
                     string query = @"INSERT INTO Equipo_participa 
