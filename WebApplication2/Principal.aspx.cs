@@ -29,6 +29,13 @@ namespace WebApplication2
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(Request.QueryString["index"]))
+            {
+                Response.StatusCode = 404;
+                Response.End();
+                return;
+            }
+
             // Verificamos si hay una sesión activa, de lo contrario lo mandamos a Login
             /*
                 if (Session["Usuario"] == null)
@@ -141,7 +148,7 @@ namespace WebApplication2
 
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
-                    string query = "SELECT p_contador, p_nombre, p_apellido, p_asistencia, p_transporte, p_alergia, p_practica FROM Equipo_participa WHERE e_codigo = ?";
+                    string query = "SELECT p_contador, p_nombre, p_apellido, p_asistencia, p_transporte, p_alergia, p_practica, p_comentario FROM Equipo_participa WHERE e_codigo = ?";
                     OleDbCommand cmd = new OleDbCommand(query, conn);
                     cmd.Parameters.AddWithValue("@e_codigo", codigoEquipo);
 
@@ -162,6 +169,10 @@ namespace WebApplication2
                                 practica = "Si";
                             rblPractica.SelectedValue = practica;
                         }
+
+                        object comentarioValor = dt.Rows[0]["p_comentario"];
+                        string comentario = comentarioValor == DBNull.Value ? string.Empty : comentarioValor.ToString().Trim();
+                        txtComentario.Text = comentario;
                     }
                 }
 
