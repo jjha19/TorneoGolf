@@ -121,7 +121,7 @@ namespace WebApplication2
                     // 2. Extraer a los participantes
                     DataTable dt = new DataTable(); 
                     // Incluimos e_codigo en el SELECT y ordenamos por e_codigo y nombre
-                    string queryParticipantes = "SELECT e_codigo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica " +
+                    string queryParticipantes = "SELECT p_contador, e_codigo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica " +
                                                 "FROM Equipo_participa WHERE p_torneo = ? ORDER BY e_codigo ASC, p_nombre ASC";
                     
                     using (OleDbCommand cmdPart = new OleDbCommand(queryParticipantes, conn))
@@ -150,6 +150,135 @@ namespace WebApplication2
             {
                 MostrarMensajeError("Error al cargar los participantes: " + ex.Message);
             }
+        }
+
+        protected void btnGuardarCambios_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int cambiosGuardados = 0;
+                string torneoCodigo = Request.QueryString["torneo"];
+
+                if (string.IsNullOrEmpty(torneoCodigo))
+                {
+                    MostrarMensajeError("No se ha seleccionado ningún torneo válido.");
+                    return;
+                }
+
+                using (OleDbConnection conn = new OleDbConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = @"UPDATE Equipo_participa
+                             SET p_nombre = ?,
+                                 p_apellido = ?,
+                                 p_torneo = ?,
+                                 e_codigo = ?,
+                                 p_movi = ?,
+                                 p_asistencia = ?,
+                                 p_alergia = ?,
+                                 p_transporte = ?,
+                                 p_comentario = ?
+                             WHERE p_contador = ?";
+
+                    foreach (System.Web.UI.WebControls.RepeaterItem item in rptParticipantes.Items)
+                    {
+                        if (item.ItemType != System.Web.UI.WebControls.ListItemType.Item &&
+                            item.ItemType != System.Web.UI.WebControls.ListItemType.AlternatingItem)
+                        {
+                            continue;
+                        }
+
+                        var hdnContador = (System.Web.UI.WebControls.HiddenField)item.FindControl("hdnContador");
+                        var txtEditNombre = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditNombre");
+                        var txtEditApellido = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditApellido");
+                        var txtEditEquipo = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditEquipo");
+                        var txtEditMovil = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditMovil");
+                        var txtEditAlergias = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditAlergias");
+                        var rblEditAsistencia = (System.Web.UI.WebControls.RadioButtonList)item.FindControl("rblEditAsistencia");
+                        var rblEditTransporte = (System.Web.UI.WebControls.RadioButtonList)item.FindControl("rblEditTransporte");
+                        var txtEditComentario = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditComentario");
+
+                        if (hdnContador == null || txtEditNombre == null || txtEditApellido == null || txtEditEquipo == null ||
+                            txtEditMovil == null || txtEditAlergias == null || rblEditAsistencia == null ||
+                            rblEditTransporte == null || txtEditComentario == null)
+                        {
+                            continue;
+                        }
+
+                        int id;
+                        if (!int.TryParse(hdnContador.Value, out id))
+                        {
+                            continue;
+                        }
+
+                        string nombre = (Request.Form[txtEditNombre.UniqueID] ?? txtEditNombre.Text ?? string.Empty).Trim();
+                        string apellido = (Request.Form[txtEditApellido.UniqueID] ?? txtEditApellido.Text ?? string.Empty).Trim();
+                        string equipo = (Request.Form[txtEditEquipo.UniqueID] ?? txtEditEquipo.Text ?? string.Empty).Trim().ToUpper();
+                        string movil = (Request.Form[txtEditMovil.UniqueID] ?? txtEditMovil.Text ?? string.Empty).Trim();
+                        string asistencia = rblEditAsistencia.SelectedValue;
+                        string alergia = (Request.Form[txtEditAlergias.UniqueID] ?? txtEditAlergias.Text ?? string.Empty).Trim();
+                        string transporte = rblEditTransporte.SelectedValue;
+                        string comentario = (Request.Form[txtEditComentario.UniqueID] ?? txtEditComentario.Text ?? string.Empty).Trim();
+
+                        using (OleDbCommand cmd = new OleDbCommand(query, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@p_nombre", string.IsNullOrEmpty(nombre) ? (object)DBNull.Value : nombre);
+                            cmd.Parameters.AddWithValue("@p_apellido", string.IsNullOrEmpty(apellido) ? (object)DBNull.Value : apellido);
+                            cmd.Parameters.AddWithValue("@p_torneo", torneoCodigo);
+                            cmd.Parameters.AddWithValue("@e_codigo", string.IsNullOrEmpty(equipo) ? (object)DBNull.Value : equipo);
+                            cmd.Parameters.AddWithValue("@p_movi", string.IsNullOrEmpty(movil) ? (object)DBNull.Value : movil);
+                            cmd.Parameters.AddWithValue("@p_asistencia", string.IsNullOrEmpty(asistencia) ? (object)DBNull.Value : asistencia);
+                            cmd.Parameters.AddWithValue("@p_alergia", string.IsNullOrEmpty(alergia) ? (object)DBNull.Value : alergia);
+                            cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(transporte) ? (object)DBNull.Value : transporte);
+                            cmd.Parameters.AddWithValue("@p_comentario", string.IsNullOrEmpty(comentario) ? (object)DBNull.Value : comentario);
+                            cmd.Parameters.AddWithValue("@p_contador", id);
+
+                            cambiosGuardados += cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+
+                if (cambiosGuardados > 0)
+                {
+                    MostrarMensajeExito("Cambios guardados correctamente: " + cambiosGuardados + " registro(s).");
+                }
+                else
+                {
+                    MostrarMensajeError("No se actualizó ningún registro. Revisa que los IDs (p_contador) existan.");
+                }
+
+                CargarParticipantes();
+            }
+            catch (Exception ex)
+            {
+                MostrarMensajeError("Error al guardar cambios: " + ex.Message);
+            }
+        }
+
+        private bool ExisteColumna(OleDbConnection conn, string tabla, string columna)
+        {
+            string query = "SELECT TOP 1 * FROM " + tabla;
+            using (OleDbCommand cmd = new OleDbCommand(query, conn))
+            using (OleDbDataReader reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly))
+            {
+                DataTable schema = reader.GetSchemaTable();
+                if (schema == null)
+                {
+                    return false;
+                }
+
+                foreach (DataRow fila in schema.Rows)
+                {
+                    string nombreColumna = Convert.ToString(fila["ColumnName"]);
+                    if (string.Equals(nombreColumna, columna, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         protected void btnGuardarParticipante_Click(object sender, EventArgs e)

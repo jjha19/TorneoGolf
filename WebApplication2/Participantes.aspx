@@ -44,43 +44,76 @@
                     </HeaderTemplate>
                     <ItemTemplate>
                         <li class="integrante-item">
-                            <!-- Nombre del participante -->
-                            <div class="participante-header">
-                                <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido"), " - Equipo: ", Eval("e_codigo")) %>' CssClass="integrante-nombre-texto" style="font-weight: bold; font-size: 18px; color: #2E7D32;"></asp:Label>
-                            </div>
+                            <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
 
                             <div class="integrante-edit-grid participante-grid-detalles">
-                                
+                                <div class="form-group">
+                                    <strong>Nombre:</strong>
+                                    <asp:TextBox ID="txtEditNombre" runat="server" CssClass="textbox-alergia campo-click-edit"
+                                        ReadOnly="true" Text='<%# Eval("p_nombre") %>'></asp:TextBox>
+                                </div>
+
+                                <div class="form-group">
+                                    <strong>Apellido:</strong>
+                                    <asp:TextBox ID="txtEditApellido" runat="server" CssClass="textbox-alergia campo-click-edit"
+                                        ReadOnly="true" Text='<%# Eval("p_apellido") %>'></asp:TextBox>
+                                </div>
+
+                                <div class="form-group">
+                                    <strong>Equipo:</strong>
+                                    <asp:TextBox ID="txtEditEquipo" runat="server" CssClass="textbox-alergia campo-click-edit"
+                                        ReadOnly="true" Text='<%# Eval("e_codigo") %>'></asp:TextBox>
+                                </div>
+
                                 <div class="form-group">
                                     <strong>Móvil:</strong>
-                                    <asp:Label ID="lblMovil" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_movi")?.ToString()) ? "No especificado" : Eval("p_movi") %>'></asp:Label>
+                                    <asp:TextBox ID="txtEditMovil" runat="server" CssClass="textbox-alergia campo-click-edit"
+                                        ReadOnly="true" Text='<%# Eval("p_movi") %>'></asp:TextBox>
                                 </div>
 
                                 <div class="form-group">
                                     <strong>Alergias:</strong>
-                                    <asp:Label ID="lblAlergias" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_alergia")?.ToString()) ? "Ninguna" : Eval("p_alergia") %>'></asp:Label>
+                                    <asp:TextBox ID="txtEditAlergias" runat="server" CssClass="textbox-alergia campo-click-edit"
+                                        ReadOnly="true" Text='<%# Eval("p_alergia") %>'></asp:TextBox>
                                 </div>
 
                                 <div class="form-group">
                                     <strong>¿Asiste al torneo?:</strong>
-                                    <asp:Label ID="lblAsiste" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_asistencia")?.ToString()) ? "Sin respuesta" : Eval("p_asistencia") %>'></asp:Label>
+                                    <div class="radio-wrapper-15 radio-list-responsive">
+                                        <asp:RadioButtonList ID="rblEditAsistencia" runat="server" RepeatDirection="Horizontal"
+                                            SelectedValue='<%# Convert.ToString(Eval("p_asistencia")) == "Si" || Convert.ToString(Eval("p_asistencia")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_asistencia")) == "No" ? "No" : null) %>'>
+                                            <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                                            <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
                                     <strong>Usará autobús:</strong>
-                                    <asp:Label ID="lblTransporte" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_transporte")?.ToString()) ? "Sin respuesta" : Eval("p_transporte") %>'></asp:Label>
+                                    <div class="radio-wrapper-15 radio-list-responsive">
+                                        <asp:RadioButtonList ID="rblEditTransporte" runat="server" RepeatDirection="Horizontal"
+                                            SelectedValue='<%# Convert.ToString(Eval("p_transporte")) == "Si" || Convert.ToString(Eval("p_transporte")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_transporte")) == "No" ? "No" : null) %>'>
+                                            <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                                            <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
                                     <strong>¿Jornada de práctica?:</strong>
-                                    <asp:Label ID="lblPractica" runat="server" Text='<%# string.IsNullOrEmpty(Eval("p_practica")?.ToString()) ? "Sin respuesta" : Eval("p_practica") %>'></asp:Label>
+                                    <div class="radio-wrapper-15 radio-list-responsive">
+                                        <asp:RadioButtonList ID="rblEditPractica" runat="server" RepeatDirection="Horizontal"
+                                            SelectedValue='<%# Convert.ToString(Eval("p_practica")) == "Si" || Convert.ToString(Eval("p_practica")) == "Sí" ? "Si" : (Convert.ToString(Eval("p_practica")) == "No" ? "No" : null) %>'>
+                                            <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                                            <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </div>
                                 </div>
 
-                                <!-- Comentario a fila completa -->
                                 <div class="form-group grid-full-width">
                                     <strong>Comentarios:</strong>
-                                    <asp:Label ID="lblComentario" runat="server" CssClass="comentario-texto" 
-                                        Text='<%# string.IsNullOrEmpty(Eval("p_comentario")?.ToString()) ? "Sin comentarios..." : Eval("p_comentario") %>'></asp:Label>
+                                    <asp:TextBox ID="txtEditComentario" runat="server" TextMode="MultiLine" Rows="3"
+                                        CssClass="comentario-textbox campo-click-edit" ReadOnly="true" Text='<%# Eval("p_comentario") %>'></asp:TextBox>
                                 </div>
                             </div>
                         </li>
@@ -89,6 +122,11 @@
                         </ul>
                     </FooterTemplate>
                 </asp:Repeater>
+
+                <div class="form-group" style="text-align:center; margin-top:15px;">
+                    <asp:Button ID="btnGuardarCambios" runat="server" Text="Guardar cambios" CssClass="btn-enviar-comentario"
+                        OnClick="btnGuardarCambios_Click" />
+                </div>
 
                 <asp:Panel ID="pnlNoData" runat="server" CssClass="no-data" Visible="false">
                     No hay participantes registrados en este torneo.
@@ -172,5 +210,23 @@
 
         </div>
     </form>
+    <script type="text/javascript">
+        (function () {
+            document.addEventListener("click", function (e) {
+                var target = e.target;
+                if (!target || !target.classList || !target.classList.contains("campo-click-edit")) {
+                    return;
+                }
+
+                if (target.readOnly) {
+                    target.readOnly = false;
+                    target.focus();
+                    if (typeof target.select === "function") {
+                        target.select();
+                    }
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
