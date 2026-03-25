@@ -73,15 +73,15 @@ namespace WebApplication2
                 return;
             }
 
-            string nombreArchivo = $"participantes_{torneoCodigo}.csv";
-            string csv = ConvertirDataTableACsv(dt);
+            string nombreArchivo = $"participantes_{torneoCodigo}.xls";
+            string contenidoExcel = ConvertirDataTableAExcel(dt);
 
             Response.Clear();
-            Response.ContentType = "text/csv";
+            Response.ContentType = "application/vnd.ms-excel";
             Response.ContentEncoding = Encoding.UTF8;
             Response.AddHeader("Content-Disposition", $"attachment; filename={nombreArchivo}");
             Response.Write("\uFEFF");
-            Response.Write(csv);
+            Response.Write(contenidoExcel);
             Response.Flush();
             Response.End();
         }
@@ -258,44 +258,38 @@ namespace WebApplication2
             pnlMensajeExito.Visible = false;
         }
 
-        private static string ConvertirDataTableACsv(DataTable dt)
+        private static string ConvertirDataTableAExcel(DataTable dt)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Nombre,Apellido,Movil,Asistencia,Transporte,Alergia,Comentario,Practica");
+            sb.AppendLine("<table border='1'>");
+            sb.AppendLine("<tr><th>Nombre</th><th>Apellido</th><th>Movil</th><th>Asistencia</th><th>Transporte</th><th>Alergia</th><th>Comentario</th><th>Practica</th></tr>");
 
             foreach (DataRow row in dt.Rows)
             {
-                sb.AppendLine(string.Join(",", new[]
-                {
-                    EscaparCsv(row["p_nombre"]),
-                    EscaparCsv(row["p_apellido"]),
-                    EscaparCsv(row["p_movi"]),
-                    EscaparCsv(row["p_asistencia"]),
-                    EscaparCsv(row["p_transporte"]),
-                    EscaparCsv(row["p_alergia"]),
-                    EscaparCsv(row["p_comentario"]),
-                    EscaparCsv(row["p_practica"])
-                }));
+                sb.AppendLine("<tr>");
+                sb.AppendLine($"<td>{EscaparHtml(row["p_nombre"])}</td>");
+                sb.AppendLine($"<td>{EscaparHtml(row["p_apellido"])}</td>");
+                sb.AppendLine($"<td>{EscaparHtml(row["p_movi"])}</td>");
+                sb.AppendLine($"<td>{EscaparHtml(row["p_asistencia"])}</td>");
+                sb.AppendLine($"<td>{EscaparHtml(row["p_transporte"])}</td>");
+                sb.AppendLine($"<td>{EscaparHtml(row["p_alergia"])}</td>");
+                sb.AppendLine($"<td>{EscaparHtml(row["p_comentario"])}</td>");
+                sb.AppendLine($"<td>{EscaparHtml(row["p_practica"])}</td>");
+                sb.AppendLine("</tr>");
             }
 
+            sb.AppendLine("</table>");
             return sb.ToString();
         }
 
-        private static string EscaparCsv(object valor)
+        private static string EscaparHtml(object valor)
         {
             if (valor == null || valor == DBNull.Value)
             {
-                return "";
+                return string.Empty;
             }
 
-            string texto = valor.ToString();
-            if (texto.Contains("\"") || texto.Contains(",") || texto.Contains("\n") || texto.Contains("\r"))
-            {
-                texto = texto.Replace("\"", "\"\"");
-                return $"\"{texto}\"";
-            }
-
-            return texto;
+            return System.Net.WebUtility.HtmlEncode(valor.ToString());
         }
     }
 }

@@ -70,7 +70,6 @@
     <Content Include="Agradecimiento.aspx" />
     <Content Include="Content\styles.css" />
     <Content Include="Database\Torneo.accdb" />
-    <Content Include="images\FondoGolf.jpeg" />
     <Content Include="images\tick.png" />
     <Content Include="Login.aspx" />
     <Content Include="Participantes.aspx" />

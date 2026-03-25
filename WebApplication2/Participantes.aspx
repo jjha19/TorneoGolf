@@ -46,7 +46,7 @@
                         <li class="integrante-item">
                             <!-- Nombre del participante -->
                             <div class="participante-header">
-                                <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido")) %>' CssClass="integrante-nombre-texto" style="font-weight: bold; font-size: 18px; color: #2E7D32;"></asp:Label>
+                                <asp:Label ID="lblEditNombre" runat="server" Text='<%# string.Concat(Eval("p_nombre"), " ", Eval("p_apellido"), " - Equipo: ", Eval("e_codigo")) %>' CssClass="integrante-nombre-texto" style="font-weight: bold; font-size: 18px; color: #2E7D32;"></asp:Label>
                             </div>
 
                             <div class="integrante-edit-grid participante-grid-detalles">
