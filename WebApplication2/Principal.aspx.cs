@@ -293,8 +293,8 @@ namespace WebApplication2
                 // Valor común de práctica (Si/No) tomado del radio superior (puede ser null)
                 string practicaGlobal = rblPractica.SelectedValue;
 
-                // Fecha de última modificación con formato dd/MM/yyyy (ej: 05/03/2026)
-                string fechaUltimaModificacion = DateTime.Now.ToString("dd/MM/yyyy");
+                // Fecha y hora de última modificación con formato dd/MM/yyyy HH:mm:ss (ej: 05/03/2026 14:00:00)
+                string fechaUltimaModificacion = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
 
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
