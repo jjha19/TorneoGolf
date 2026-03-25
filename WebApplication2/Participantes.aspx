@@ -10,7 +10,7 @@
     <link href="Content/styles.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <img src="/images/golfMadridA.jpg" alt="Fondo de Golf" id="bg_image" />
+    <img src="images/golfMadridA.jpg" alt="Fondo de Golf" id="bg_image" />
 
     <form id="form1" runat="server">
         <div class="container">

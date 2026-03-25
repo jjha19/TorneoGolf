@@ -10,7 +10,7 @@
 </head>
 <body>
     <!-- Mismo fondo que la pantalla principal -->
-    <img src="/images/golfMadridA.jpg" alt="Fondo de Golf" id="bg_image" />
+    <img src="images/golfMadridA.jpg" alt="Fondo de Golf" id="bg_image" />
 
     <form id="form1" runat="server">
         <div class="container">
