@@ -361,7 +361,7 @@ namespace WebApplication2
                 {
                     conn.Open();
                     // Incluimos Fecha_ult_modificacion en el UPDATE
-                    string query = "UPDATE Equipo_participa SET p_nombre = ?, p_apellido = ?, p_asistencia = ?, p_transporte = ?, p_alergia = ?, p_comentario = ?, p_practica = ?, Fecha_ult_modificacion = ? WHERE p_contador = ?";
+                    string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ?, p_comentario = ?, p_practica = ?, Fecha_ult_modificacion = ? WHERE p_contador = ?";
 
                     // 1. Guardar todos los cambios de los integrantes junto con el comentario
                     foreach (RepeaterItem item in rptIntegrantes.Items)
@@ -371,16 +371,13 @@ namespace WebApplication2
                             // Encontrar los nuevos controles
                             RadioButtonList rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
                             RadioButtonList rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
-                            TextBox txtNombre = (TextBox)item.FindControl("txtNombre");
-                            TextBox txtApellido = (TextBox)item.FindControl("txtApellido");
                             TextBox txtAlergia = (TextBox)item.FindControl("txtAlergia");
+                            Label lblEditNombre = (Label)item.FindControl("lblEditNombre");
                             HiddenField hdnContador = (HiddenField)item.FindControl("hdnContador");
 
-                            if (txtNombre != null && txtApellido != null && rblAsistencia != null && rblTransporte != null && txtAlergia != null && hdnContador != null)
+                            if (rblAsistencia != null && rblTransporte != null && txtAlergia != null && hdnContador != null)
                             {
                                 int id = Convert.ToInt32(hdnContador.Value);
-                                string nombre = txtNombre.Text.Trim();
-                                string apellido = txtApellido.Text.Trim();
 
                                 // Extraer los strings en lugar de booleanos ("Si" o "No")
                                 string asistencia = rblAsistencia.SelectedValue;
@@ -392,7 +389,7 @@ namespace WebApplication2
                                     transporte = null;
                                     alergia = null;
                                 }
-                                string nombreIntegrante = (nombre + " " + apellido).Trim();
+                                string nombreIntegrante = lblEditNombre?.Text.Trim() ?? string.Empty;
 
                                 if (!string.IsNullOrEmpty(nombreIntegrante))
                                 {
@@ -405,8 +402,6 @@ namespace WebApplication2
                                 {
                                     // Los parámetros en OleDb se asignan estrictamente por orden posicional (?)
                                     // Usamos DBNull.Value en caso de que lleguen vacíos
-                                    cmd.Parameters.AddWithValue("@p_nombre", string.IsNullOrEmpty(nombre) ? (object)DBNull.Value : nombre);
-                                    cmd.Parameters.AddWithValue("@p_apellido", string.IsNullOrEmpty(apellido) ? (object)DBNull.Value : apellido);
                                     cmd.Parameters.AddWithValue("@p_asistencia", string.IsNullOrEmpty(asistencia) ? (object)DBNull.Value : asistencia);
                                     cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(transporte) ? (object)DBNull.Value : transporte);
                                     cmd.Parameters.AddWithValue("@p_alergia", string.IsNullOrEmpty(alergia) ? (object)DBNull.Value : alergia);
