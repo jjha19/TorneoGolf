@@ -513,6 +513,16 @@ h2 {
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
+.btn-enviar-comentario:disabled,
+.btn-enviar-comentario[disabled] {
+    background-color: #b0b0b0;
+    color: #f5f5f5;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.8;
+}
+
 @media (max-width: 768px) {
     .integrantes-lista {
         grid-template-columns: 1fr;

@@ -23,7 +23,7 @@
                     <asp:Label ID="lblComentarioTorneo" runat="server"></asp:Label>
                 </div>
                 <asp:Label ID="lblInvitacionCerrada" runat="server" CssClass="mensaje-validacion" Visible="false"
-                    Text="Invitacion cerrada - Si quiere modificar datos puede solicitarlo en el comentario"></asp:Label>
+                    Text="Invitacion cerrada - Si quiere modificar datos puede solicitarlo"></asp:Label>
             </div>
 
             <!-- Mensajes -->
