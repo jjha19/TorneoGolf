@@ -16,6 +16,12 @@ namespace WebApplication2
 {
     public partial class Principal : System.Web.UI.Page
     {
+        private bool InvitacionCerrada
+        {
+            get => ViewState["InvitacionCerrada"] as bool? ?? false;
+            set => ViewState["InvitacionCerrada"] = value;
+        }
+
         // Cadena de conexión - Base de datos Access en carpeta Database
         private string connectionString
         {
@@ -74,7 +80,7 @@ namespace WebApplication2
                     conn.Open();
 
                     // 1. Buscar primero en la tabla Equipo usando el e_contador
-                    string queryEquipo = "SELECT e_nombre, e_codigo, e_torneo FROM Equipo WHERE e_contador = ?";
+                    string queryEquipo = "SELECT e_nombre, e_codigo, e_torneo, e_cerrada FROM Equipo WHERE e_contador = ?";
                     using (OleDbCommand cmdEquipo = new OleDbCommand(queryEquipo, conn))
                     {
                         cmdEquipo.Parameters.AddWithValue("?", equipoContador);
@@ -85,6 +91,8 @@ namespace WebApplication2
                                 nombreEquipo = readerEquipo["e_nombre"].ToString().Trim();
                                 codigoEquipo = readerEquipo["e_codigo"]?.ToString().Trim();
                                 torneoVinculado = readerEquipo["e_torneo"]?.ToString().Trim();
+                                string cerradaValor = readerEquipo["e_cerrada"]?.ToString().Trim();
+                                InvitacionCerrada = cerradaValor == "1";
                                 
                                 Session["NombreEquipo"] = nombreEquipo;
                                 Session["CodigoEquipo"] = codigoEquipo; // Importante para CargarIntegrantes()
@@ -135,6 +143,8 @@ namespace WebApplication2
             lblTituloTorneo.Text = nombreTorneo; 
             lblTituloEquipo.Text = nombreEquipo; 
             lblComentarioTorneo.Text = comentarioTorneo; 
+            lblInvitacionCerrada.Visible = InvitacionCerrada;
+            AplicarEstadoEdicion();
         }
 
         private void CargarIntegrantes()
@@ -203,6 +213,10 @@ namespace WebApplication2
             }
 
             AplicarVisibilidadAsistencia(e.Item);
+            if (InvitacionCerrada)
+            {
+                DeshabilitarEdicionItem(e.Item);
+            }
         }
 
         protected void rblAsistencia_SelectedIndexChanged(object sender, EventArgs e)
@@ -270,6 +284,53 @@ namespace WebApplication2
                     txtAlergia.Text = string.Empty;
                 }
             }
+        }
+
+        private void DeshabilitarEdicionItem(RepeaterItem item)
+        {
+            var rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
+            var rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
+            var txtAlergia = (TextBox)item.FindControl("txtAlergia");
+            var rfvAsistencia = (RequiredFieldValidator)item.FindControl("rfvAsistencia");
+            var rfvTransporte = (RequiredFieldValidator)item.FindControl("rfvTransporte");
+
+            if (rblAsistencia != null)
+            {
+                rblAsistencia.Enabled = false;
+            }
+
+            if (rblTransporte != null)
+            {
+                rblTransporte.Enabled = false;
+            }
+
+            if (txtAlergia != null)
+            {
+                txtAlergia.ReadOnly = true;
+            }
+
+            if (rfvAsistencia != null)
+            {
+                rfvAsistencia.Enabled = false;
+            }
+
+            if (rfvTransporte != null)
+            {
+                rfvTransporte.Enabled = false;
+            }
+        }
+
+        private void AplicarEstadoEdicion()
+        {
+            if (!InvitacionCerrada)
+            {
+                return;
+            }
+
+            rblPractica.Enabled = false;
+            txtComentario.ReadOnly = true;
+            btnEnviarComentario.Enabled = false;
+            vsCamposFaltantes.Visible = false;
         }
 
         // Manejador para enviar comentarios Y guardar todos los cambios
