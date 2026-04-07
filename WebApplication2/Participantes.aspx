@@ -117,11 +117,11 @@
                                 </div>
                             </div>
 
-                            <div class="form-group" style="text-align:right; margin-top:10px;">
-                                <asp:Button
+                            <div class="form-group acciones-participante">
+                                <asp:LinkButton
                                     ID="btnEnviarWhatsapp"
                                     runat="server"
-                                    Text="Enviar Whatsapp"
+                                    Text="Enviar Whatsapp <img src='images/LogoWpp.png' alt='WhatsApp' class='icon-wpp' />"
                                     CssClass="btn-enviar-comentario"
                                     CommandName="EnviarWhatsapp"
                                     CommandArgument='<%# Eval("p_contador") %>' />
@@ -130,7 +130,7 @@
                                     ID="btnEliminarParticipante"
                                     runat="server"
                                     Text="Eliminar"
-                                    CssClass="btn-enviar-comentario"
+                                    CssClass="btn-enviar-comentario btn-eliminar"
                                     CommandName="EliminarParticipante"
                                     CommandArgument='<%# Eval("p_contador") %>'
                                     OnClientClick="return confirm('¿Seguro que quieres eliminar este participante?');" />

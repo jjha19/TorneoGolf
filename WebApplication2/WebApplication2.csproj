@@ -69,7 +69,6 @@
   <ItemGroup>
     <Content Include="Agradecimiento.aspx" />
     <Content Include="Content\styles.css" />
-    <Content Include="Database\Torneo.accdb" />
     <Content Include="images\tick.png" />
     <Content Include="Login.aspx" />
     <Content Include="Participantes.aspx" />
@@ -127,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
+    <Folder Include="Database\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
