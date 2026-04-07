@@ -107,7 +107,7 @@ namespace WebApplication2
                     using (OleDbCommand cmdTorneo = new OleDbCommand(queryTorneo, conn))
                     {
                         cmdTorneo.Parameters.AddWithValue("?", torneoCodigo);
-                        object nombreResultado = cmdTorneo.ExecuteScalar(); 
+                        object nombreResultado = cmdTorneo.ExecuteScalar();
                         if (nombreResultado != null)
                         {
                             lblNombreTorneo.Text = nombreResultado.ToString();
@@ -119,11 +119,11 @@ namespace WebApplication2
                     }
 
                     // 2. Extraer a los participantes
-                    DataTable dt = new DataTable(); 
+                    DataTable dt = new DataTable();
                     // Incluimos e_codigo en el SELECT y ordenamos por e_codigo y nombre
                     string queryParticipantes = "SELECT p_contador, e_codigo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica " +
                                                 "FROM Equipo_participa WHERE p_torneo = ? ORDER BY e_codigo ASC, p_nombre ASC";
-                    
+
                     using (OleDbCommand cmdPart = new OleDbCommand(queryParticipantes, conn))
                     {
                         cmdPart.Parameters.AddWithValue("?", torneoCodigo);
@@ -256,6 +256,61 @@ namespace WebApplication2
             }
         }
 
+        protected void rptParticipantes_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
+        {
+            if (!string.Equals(e.CommandName, "EliminarParticipante", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            string torneoCodigo = Request.QueryString["torneo"];
+            if (string.IsNullOrEmpty(torneoCodigo))
+            {
+                MostrarMensajeError("No se ha seleccionado ningún torneo válido.");
+                return;
+            }
+
+            int idParticipante;
+            if (!int.TryParse(Convert.ToString(e.CommandArgument), out idParticipante))
+            {
+                MostrarMensajeError("No se pudo identificar el participante a eliminar.");
+                return;
+            }
+
+            try
+            {
+                int filasAfectadas = 0;
+
+                using (OleDbConnection conn = new OleDbConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = "DELETE FROM Equipo_participa WHERE p_contador = ? AND p_torneo = ?";
+                    using (OleDbCommand cmd = new OleDbCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("?", idParticipante);
+                        cmd.Parameters.AddWithValue("?", torneoCodigo);
+                        filasAfectadas = cmd.ExecuteNonQuery();
+                    }
+                }
+
+                if (filasAfectadas > 0)
+                {
+                    MostrarMensajeExito("Participante eliminado correctamente.");
+                }
+                else
+                {
+                    MostrarMensajeError("No se eliminó ningún registro.");
+                }
+
+                CargarParticipantes();
+            }
+            catch (Exception ex)
+            {
+                MostrarMensajeError("Error al eliminar participante: " + ex.Message);
+            }
+        }
+
         private bool ExisteColumna(OleDbConnection conn, string tabla, string columna)
         {
             string query = "SELECT TOP 1 * FROM " + tabla;
@@ -286,7 +341,7 @@ namespace WebApplication2
             if (!Page.IsValid) return;
 
             string torneoCodigo = Request.QueryString["torneo"];
-            
+
             if (string.IsNullOrEmpty(torneoCodigo))
             {
                 MostrarMensajeError("No se puede guardar un participante sin un código de torneo válido.");
@@ -332,7 +387,7 @@ namespace WebApplication2
                         cmd.Parameters.AddWithValue("@e_codigo", codEquipoIngresado);
                         cmd.Parameters.AddWithValue("@p_nombre", txtAddNombre.Text.Trim());
                         cmd.Parameters.AddWithValue("@p_apellido", txtAddApellido.Text.Trim());
-                        
+
                         cmd.Parameters.AddWithValue("@p_movi", string.IsNullOrEmpty(txtAddMovil.Text.Trim()) ? (object)DBNull.Value : txtAddMovil.Text.Trim());
                         cmd.Parameters.AddWithValue("@p_asistencia", string.IsNullOrEmpty(rblAddAsistencia.SelectedValue) ? (object)DBNull.Value : rblAddAsistencia.SelectedValue);
                         cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(rblAddTransporte.SelectedValue) ? (object)DBNull.Value : rblAddTransporte.SelectedValue);
@@ -346,10 +401,10 @@ namespace WebApplication2
 
                 // Mostrar éxito
                 MostrarMensajeExito("¡El participante ha sido añadido con éxito!");
-                
+
                 // Limpiar el formulario
                 LimpiarFormularioAñadir();
-                
+
                 // Recargar el grid para que aparezca el nuevo registro en la pantalla
                 CargarParticipantes();
             }
@@ -363,11 +418,11 @@ namespace WebApplication2
         {
             txtAddNombre.Text = string.Empty;
             txtAddApellido.Text = string.Empty;
-            txtAddCodigoEquipo.Text = string.Empty; 
+            txtAddCodigoEquipo.Text = string.Empty;
             txtAddMovil.Text = string.Empty;
             txtAddAlergia.Text = string.Empty;
             txtAddComentario.Text = string.Empty;
-            
+
             rblAddAsistencia.ClearSelection();
             rblAddTransporte.ClearSelection();
             rblAddPractica.ClearSelection();

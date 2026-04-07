@@ -38,7 +38,7 @@
 
             <!-- Lista de participantes -->
             <div id="lista-container">
-                <asp:Repeater ID="rptParticipantes" runat="server">
+                <asp:Repeater ID="rptParticipantes" runat="server" OnItemCommand="rptParticipantes_ItemCommand">
                     <HeaderTemplate>
                         <ul class="integrantes-lista">
                     </HeaderTemplate>
@@ -115,6 +115,17 @@
                                     <asp:TextBox ID="txtEditComentario" runat="server" TextMode="MultiLine" Rows="3"
                                         CssClass="comentario-textbox campo-click-edit" ReadOnly="true" Text='<%# Eval("p_comentario") %>'></asp:TextBox>
                                 </div>
+                            </div>
+
+                            <div class="form-group" style="text-align:right; margin-top:10px;">
+                                <asp:Button
+                                    ID="btnEliminarParticipante"
+                                    runat="server"
+                                    Text="Eliminar"
+                                    CssClass="btn-enviar-comentario"
+                                    CommandName="EliminarParticipante"
+                                    CommandArgument='<%# Eval("p_contador") %>'
+                                    OnClientClick="return confirm('¿Seguro que quieres eliminar este participante?');" />
                             </div>
                         </li>
                     </ItemTemplate>
