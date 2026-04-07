@@ -262,11 +262,6 @@ namespace WebApplication2
 
         protected void rptParticipantes_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
         {
-            if (!string.Equals(e.CommandName, "EliminarParticipante", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
             string torneoCodigo = Request.QueryString["torneo"];
             if (string.IsNullOrEmpty(torneoCodigo))
             {
@@ -277,42 +272,113 @@ namespace WebApplication2
             int idParticipante;
             if (!int.TryParse(Convert.ToString(e.CommandArgument), out idParticipante))
             {
-                MostrarMensajeError("No se pudo identificar el participante a eliminar.");
+                MostrarMensajeError("No se pudo identificar el participante.");
                 return;
             }
 
-            try
+            if (string.Equals(e.CommandName, "EnviarWhatsapp", StringComparison.OrdinalIgnoreCase))
             {
-                int filasAfectadas = 0;
+                var txtEditMovil = (System.Web.UI.WebControls.TextBox)e.Item.FindControl("txtEditMovil");
+
+                string movilRaw = txtEditMovil != null ? txtEditMovil.Text : string.Empty;
+                string telefono = LimpiarTelefonoWhatsapp(movilRaw);
+
+                if (string.IsNullOrEmpty(telefono))
+                {
+                    MostrarMensajeError("Este participante no tiene móvil válido para WhatsApp.");
+                    return;
+                }
+
+                string mensaje;
 
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
                     conn.Open();
-
-                    string query = "DELETE FROM Equipo_participa WHERE p_contador = ? AND p_torneo = ?";
-                    using (OleDbCommand cmd = new OleDbCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("?", idParticipante);
-                        cmd.Parameters.AddWithValue("?", torneoCodigo);
-                        filasAfectadas = cmd.ExecuteNonQuery();
-                    }
+                    mensaje = ObtenerTextoWhatsappParticipante(conn, idParticipante, torneoCodigo);
                 }
 
-                if (filasAfectadas > 0)
+                if (string.IsNullOrWhiteSpace(mensaje))
                 {
-                    MostrarMensajeExito("Participante eliminado correctamente.");
-                }
-                else
-                {
-                    MostrarMensajeError("No se eliminó ningún registro.");
+                    MostrarMensajeError("El torneo no tiene texto de WhatsApp configurado (campo texto_ws).");
+                    return;
                 }
 
-                CargarParticipantes();
+                string url = "https://wa.me/" + telefono + "?text=" + Uri.EscapeDataString(mensaje);
+                Response.Redirect(url, false);
+                Context.ApplicationInstance.CompleteRequest();
+                return;
             }
-            catch (Exception ex)
+
+            if (string.Equals(e.CommandName, "EliminarParticipante", StringComparison.OrdinalIgnoreCase))
             {
-                MostrarMensajeError("Error al eliminar participante: " + ex.Message);
+                try
+                {
+                    int filasAfectadas = 0;
+
+                    using (OleDbConnection conn = new OleDbConnection(connectionString))
+                    {
+                        conn.Open();
+
+                        string query = "DELETE FROM Equipo_participa WHERE p_contador = ? AND p_torneo = ?";
+                        using (OleDbCommand cmd = new OleDbCommand(query, conn))
+                        {
+                            cmd.Parameters.AddWithValue("?", idParticipante);
+                            cmd.Parameters.AddWithValue("?", torneoCodigo);
+                            filasAfectadas = cmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    if (filasAfectadas > 0)
+                    {
+                        MostrarMensajeExito("Participante eliminado correctamente.");
+                    }
+                    else
+                    {
+                        MostrarMensajeError("No se eliminó ningún registro.");
+                    }
+
+                    CargarParticipantes();
+                }
+                catch (Exception ex)
+                {
+                    MostrarMensajeError("Error al eliminar participante: " + ex.Message);
+                }
             }
+        }
+
+        private static string LimpiarTelefonoWhatsapp(string telefono)
+        {
+            if (string.IsNullOrWhiteSpace(telefono))
+            {
+                return string.Empty;
+            }
+
+            telefono = telefono.Trim();
+            var sb = new StringBuilder();
+
+            for (int i = 0; i < telefono.Length; i++)
+            {
+                char c = telefono[i];
+                if (char.IsDigit(c))
+                {
+                    sb.Append(c);
+                }
+            }
+
+            string limpio = sb.ToString();
+
+            if (limpio.StartsWith("00"))
+            {
+                limpio = limpio.Substring(2);
+            }
+
+            // Si llega móvil nacional de 9 dígitos, asumimos España (34)
+            if (limpio.Length == 9)
+            {
+                limpio = "34" + limpio;
+            }
+
+            return limpio;
         }
 
         private bool ExisteColumna(OleDbConnection conn, string tabla, string columna)
@@ -503,6 +569,44 @@ namespace WebApplication2
             }
 
             return EscaparHtml(row[columna]);
+        }
+
+        private string ObtenerTextoWhatsappParticipante(OleDbConnection conn, int idParticipante, string torneoCodigo)
+        {
+            string mensaje = string.Empty;
+
+            // 1) Obtener texto_ws por el torneo real del participante
+            string query = @"SELECT TOP 1 t.texto_ws
+                             FROM Equipo_participa p
+                             INNER JOIN Torneos t ON p.p_torneo = t.t_codigo
+                             WHERE p.p_contador = ?";
+
+            using (OleDbCommand cmd = new OleDbCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("?", idParticipante);
+                object textoObj = cmd.ExecuteScalar();
+                if (textoObj != null && textoObj != DBNull.Value)
+                {
+                    mensaje = textoObj.ToString();
+                }
+            }
+
+            // 2) Fallback por código de torneo de la URL
+            if (string.IsNullOrWhiteSpace(mensaje))
+            {
+                query = "SELECT TOP 1 texto_ws FROM Torneos WHERE t_codigo = ?";
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("?", torneoCodigo);
+                    object textoObj = cmd.ExecuteScalar();
+                    if (textoObj != null && textoObj != DBNull.Value)
+                    {
+                        mensaje = textoObj.ToString();
+                    }
+                }
+            }
+
+            return mensaje;
         }
     }
 }

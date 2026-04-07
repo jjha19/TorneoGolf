@@ -119,6 +119,14 @@
 
                             <div class="form-group" style="text-align:right; margin-top:10px;">
                                 <asp:Button
+                                    ID="btnEnviarWhatsapp"
+                                    runat="server"
+                                    Text="Enviar Whatsapp"
+                                    CssClass="btn-enviar-comentario"
+                                    CommandName="EnviarWhatsapp"
+                                    CommandArgument='<%# Eval("p_contador") %>' />
+
+                                <asp:Button
                                     ID="btnEliminarParticipante"
                                     runat="server"
                                     Text="Eliminar"
