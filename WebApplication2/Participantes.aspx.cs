@@ -49,9 +49,13 @@ namespace WebApplication2
                 {
                     conn.Open();
 
+                    bool tieneFechaMod = ExisteColumna(conn, "Equipo_participa", "Fecha_ult_modificacion");
+                    string columnaFecha = tieneFechaMod ? ", p.Fecha_ult_modificacion" : string.Empty;
+
                     // Añadimos ORDER BY e_codigo ASC para el archivo descargado
-                    string queryParticipantes = "SELECT p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica " +
-                                                "FROM Equipo_participa WHERE p_torneo = ? ORDER BY e_codigo ASC, p_nombre ASC";
+                    string queryParticipantes = "SELECT e.e_nombre AS equipo_nombre, p.e_codigo, p.p_nombre, p.p_apellido, p.p_movi, p.p_asistencia, p.p_transporte, p.p_alergia, p.p_comentario, p.p_practica" +
+                                                columnaFecha +
+                                                " FROM Equipo_participa p LEFT JOIN Equipo e ON p.e_codigo = e.e_codigo WHERE p.p_torneo = ? ORDER BY p.e_codigo ASC, p.p_nombre ASC";
 
                     using (OleDbCommand cmdPart = new OleDbCommand(queryParticipantes, conn))
                     {
@@ -446,19 +450,34 @@ namespace WebApplication2
         {
             var sb = new StringBuilder();
             sb.AppendLine("<table border='1'>");
-            sb.AppendLine("<tr><th>Nombre</th><th>Apellido</th><th>Movil</th><th>Asistencia</th><th>Transporte</th><th>Alergia</th><th>Comentario</th><th>Practica</th></tr>");
+            sb.AppendLine("<tr><th>Equipo</th><th>Codigo Equipo</th><th>Nombre</th><th>Apellido</th><th>Movil</th><th>Asistencia</th><th>Transporte</th><th>Alergia</th><th>Comentario</th><th>Practica</th><th>Fecha Ult Modificacion</th></tr>");
+
+            const string colEquipoNombre = "equipo_nombre";
+            const string colEquipoCodigo = "e_codigo";
+            const string colNombre = "p_nombre";
+            const string colApellido = "p_apellido";
+            const string colMovil = "p_movi";
+            const string colAsistencia = "p_asistencia";
+            const string colTransporte = "p_transporte";
+            const string colAlergia = "p_alergia";
+            const string colComentario = "p_comentario";
+            const string colPractica = "p_practica";
+            const string colFechaMod = "Fecha_ult_modificacion";
 
             foreach (DataRow row in dt.Rows)
             {
                 sb.AppendLine("<tr>");
-                sb.AppendLine($"<td>{EscaparHtml(row["p_nombre"])}</td>");
-                sb.AppendLine($"<td>{EscaparHtml(row["p_apellido"])}</td>");
-                sb.AppendLine($"<td>{EscaparHtml(row["p_movi"])}</td>");
-                sb.AppendLine($"<td>{EscaparHtml(row["p_asistencia"])}</td>");
-                sb.AppendLine($"<td>{EscaparHtml(row["p_transporte"])}</td>");
-                sb.AppendLine($"<td>{EscaparHtml(row["p_alergia"])}</td>");
-                sb.AppendLine($"<td>{EscaparHtml(row["p_comentario"])}</td>");
-                sb.AppendLine($"<td>{EscaparHtml(row["p_practica"])}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colEquipoNombre)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colEquipoCodigo)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colNombre)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colApellido)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colMovil)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colAsistencia)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colTransporte)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colAlergia)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colComentario)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colPractica)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colFechaMod)}</td>");
                 sb.AppendLine("</tr>");
             }
 
@@ -474,6 +493,16 @@ namespace WebApplication2
             }
 
             return System.Net.WebUtility.HtmlEncode(valor.ToString());
+        }
+
+        private static string ObtenerCelda(DataRow row, string columna)
+        {
+            if (!row.Table.Columns.Contains(columna))
+            {
+                return string.Empty;
+            }
+
+            return EscaparHtml(row[columna]);
         }
     }
 }
