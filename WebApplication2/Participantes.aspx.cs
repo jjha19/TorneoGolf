@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Globalization;
@@ -127,8 +128,8 @@ namespace WebApplication2
                     // 2. Extraer a los participantes
                     DataTable dt = new DataTable();
                     // Incluimos e_codigo en el SELECT y ordenamos por e_codigo y nombre
-                    string queryParticipantes = "SELECT p_contador, e_codigo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica, fecha_ws " +
-                                                "FROM Equipo_participa WHERE p_torneo = ? ORDER BY e_codigo ASC, p_nombre ASC";
+                    string queryParticipantes = "SELECT p.p_contador, p.e_codigo, e.e_nombre AS equipo_nombre, e.e_cerrado, p.p_nombre, p.p_apellido, p.p_movi, p.p_asistencia, p.p_transporte, p.p_alergia, p.p_comentario, p.p_practica, p.fecha_ws " +
+                                                "FROM Equipo_participa p LEFT JOIN Equipo e ON p.e_codigo = e.e_codigo WHERE p.p_torneo = ? ORDER BY p.e_codigo ASC, p.p_nombre ASC";
 
                     using (OleDbCommand cmdPart = new OleDbCommand(queryParticipantes, conn))
                     {
@@ -140,6 +141,7 @@ namespace WebApplication2
                     // 3. Pintar los datos
                     if (dt.Rows.Count > 0)
                     {
+                        ViewState["EquipoActual"] = null;
                         rptParticipantes.DataSource = dt;
                         rptParticipantes.DataBind();
                         pnlNoData.Visible = false;
@@ -173,6 +175,27 @@ namespace WebApplication2
             }
 
             string equipoCodigo = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "e_codigo"))?.Trim();
+            string equipoNombre = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "equipo_nombre"))?.Trim();
+            var phEquipoHeader = e.Item.FindControl("phEquipoHeader") as System.Web.UI.WebControls.PlaceHolder;
+            string equipoAnterior = ViewState["EquipoActual"] as string;
+
+            if (phEquipoHeader != null && !string.Equals(equipoAnterior, equipoCodigo, StringComparison.OrdinalIgnoreCase))
+            {
+                string tituloEquipo = string.IsNullOrWhiteSpace(equipoNombre)
+                    ? $"Equipo: {equipoCodigo}"
+                    : $"{equipoNombre} ({equipoCodigo})";
+                string cerradoValor = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "e_cerrado"))?.Trim();
+                bool invitacionCerrada = string.Equals(cerradoValor, "1", StringComparison.OrdinalIgnoreCase);
+                string checkedAttr = invitacionCerrada ? "checked='checked'" : string.Empty;
+                string inputName = "chkCerrado_" + equipoCodigo;
+                string headerHtml = $"<li class='equipo-header'><div class='equipo-header-row'>" +
+                                    $"<span class='equipo-titulo'>{System.Net.WebUtility.HtmlEncode(tituloEquipo)}</span>" +
+                                    $"<div class='checkbox-con'><label>Invitacion Cerrada</label><input type='checkbox' name='{System.Net.WebUtility.HtmlEncode(inputName)}' {checkedAttr} /></div>" +
+                                    "</div></li>";
+                phEquipoHeader.Controls.Add(new LiteralControl(headerHtml));
+                ViewState["EquipoActual"] = equipoCodigo;
+            }
+
             if (string.IsNullOrEmpty(equipoCodigo))
             {
                 return;
@@ -236,6 +259,7 @@ namespace WebApplication2
                 {
                     conn.Open();
 
+                    var equiposProcesados = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     string query = @"UPDATE Equipo_participa
                              SET p_nombre = ?,
                                  p_apellido = ?,
@@ -315,6 +339,20 @@ namespace WebApplication2
                             cmd.Parameters.AddWithValue("@p_contador", id);
 
                             cambiosGuardados += cmd.ExecuteNonQuery();
+                        }
+
+                        if (!string.IsNullOrEmpty(equipo) && equiposProcesados.Add(equipo))
+                        {
+                            string inputName = "chkCerrado_" + equipo;
+                            bool invitacionCerrada = !string.IsNullOrEmpty(Request.Form[inputName]);
+
+                            string queryActualizarCerrado = "UPDATE Equipo SET e_cerrado = ? WHERE e_codigo = ?";
+                            using (OleDbCommand cmdActualizar = new OleDbCommand(queryActualizarCerrado, conn))
+                            {
+                                cmdActualizar.Parameters.AddWithValue("?", invitacionCerrada ? 1 : 0);
+                                cmdActualizar.Parameters.AddWithValue("?", equipo);
+                                cmdActualizar.ExecuteNonQuery();
+                            }
                         }
                     }
                 }

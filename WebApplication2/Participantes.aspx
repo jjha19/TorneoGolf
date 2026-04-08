@@ -43,6 +43,7 @@
                         <ul class="integrantes-lista participantes-lista">
                     </HeaderTemplate>
                     <ItemTemplate>
+                        <asp:PlaceHolder ID="phEquipoHeader" runat="server" />
                         <li id="itemContainer" runat="server" class="integrante-item">
                             <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
 
