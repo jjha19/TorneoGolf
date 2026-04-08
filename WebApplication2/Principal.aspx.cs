@@ -16,12 +16,6 @@ namespace WebApplication2
 {
     public partial class Principal : System.Web.UI.Page
     {
-        private bool InvitacionCerrada
-        {
-            get => ViewState["InvitacionCerrada"] as bool? ?? false;
-            set => ViewState["InvitacionCerrada"] = value;
-        }
-
         // Cadena de conexión - Base de datos Access en carpeta Database
         private string connectionString
         {
@@ -63,7 +57,7 @@ namespace WebApplication2
             string comentarioTorneo = "Sin comentario disponible";
             string nombreEquipo = "Equipo no encontrado";
             string codigoEquipo = "AB124"; // Valor por defecto
-            string torneoVinculado = "";        
+            string torneoVinculado = "";
 
             // Obtener el contador del equipo desde la URL (e_contador), por defecto 1
             int equipoContador = 1;
@@ -80,7 +74,7 @@ namespace WebApplication2
                     conn.Open();
 
                     // 1. Buscar primero en la tabla Equipo usando el e_contador
-                    string queryEquipo = "SELECT e_nombre, e_codigo, e_torneo, e_cerrada FROM Equipo WHERE e_contador = ?";
+                    string queryEquipo = "SELECT e_nombre, e_codigo, e_torneo FROM Equipo WHERE e_contador = ?";
                     using (OleDbCommand cmdEquipo = new OleDbCommand(queryEquipo, conn))
                     {
                         cmdEquipo.Parameters.AddWithValue("?", equipoContador);
@@ -91,9 +85,7 @@ namespace WebApplication2
                                 nombreEquipo = readerEquipo["e_nombre"].ToString().Trim();
                                 codigoEquipo = readerEquipo["e_codigo"]?.ToString().Trim();
                                 torneoVinculado = readerEquipo["e_torneo"]?.ToString().Trim();
-                                string cerradaValor = readerEquipo["e_cerrada"]?.ToString().Trim();
-                                InvitacionCerrada = cerradaValor == "1";
-                                
+
                                 Session["NombreEquipo"] = nombreEquipo;
                                 Session["CodigoEquipo"] = codigoEquipo; // Importante para CargarIntegrantes()
                             }
@@ -119,7 +111,7 @@ namespace WebApplication2
                                     // Asignamos el t_nombre a la variable que se mostrará
                                     nombreTorneo = readerTorneo["t_nombre"].ToString().Trim();
                                     comentarioTorneo = readerTorneo["t_comen"]?.ToString().Trim();
-                                    
+
                                     // Guardar en sesión para usarlo en otras partes si es necesario
                                     Session["NombreTorneo"] = nombreTorneo;
                                 }
@@ -133,18 +125,16 @@ namespace WebApplication2
                         }
                     }
                 }
-            }           
+            }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error al inicializar la página: {ex.Message}");
             }
 
             // Asignar valores a los labels del título
-            lblTituloTorneo.Text = nombreTorneo; 
-            lblTituloEquipo.Text = nombreEquipo; 
-            lblComentarioTorneo.Text = comentarioTorneo; 
-            lblInvitacionCerrada.Visible = InvitacionCerrada;
-            AplicarEstadoEdicion();
+            lblTituloTorneo.Text = nombreTorneo;
+            lblTituloEquipo.Text = nombreEquipo;
+            lblComentarioTorneo.Text = comentarioTorneo;
         }
 
         private void CargarIntegrantes()
@@ -213,10 +203,6 @@ namespace WebApplication2
             }
 
             AplicarVisibilidadAsistencia(e.Item);
-            if (InvitacionCerrada)
-            {
-                DeshabilitarEdicionItem(e.Item);
-            }
         }
 
         protected void rblAsistencia_SelectedIndexChanged(object sender, EventArgs e)
@@ -286,53 +272,6 @@ namespace WebApplication2
             }
         }
 
-        private void DeshabilitarEdicionItem(RepeaterItem item)
-        {
-            var rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
-            var rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
-            var txtAlergia = (TextBox)item.FindControl("txtAlergia");
-            var rfvAsistencia = (RequiredFieldValidator)item.FindControl("rfvAsistencia");
-            var rfvTransporte = (RequiredFieldValidator)item.FindControl("rfvTransporte");
-
-            if (rblAsistencia != null)
-            {
-                rblAsistencia.Enabled = false;
-            }
-
-            if (rblTransporte != null)
-            {
-                rblTransporte.Enabled = false;
-            }
-
-            if (txtAlergia != null)
-            {
-                txtAlergia.ReadOnly = true;
-            }
-
-            if (rfvAsistencia != null)
-            {
-                rfvAsistencia.Enabled = false;
-            }
-
-            if (rfvTransporte != null)
-            {
-                rfvTransporte.Enabled = false;
-            }
-        }
-
-        private void AplicarEstadoEdicion()
-        {
-            if (!InvitacionCerrada)
-            {
-                return;
-            }
-
-            rblPractica.Enabled = false;
-            txtComentario.ReadOnly = true;
-            btnEnviarComentario.Enabled = false;
-            vsCamposFaltantes.Visible = false;
-        }
-
         // Manejador para enviar comentarios Y guardar todos los cambios
         protected void btnEnviarComentario_Click(object sender, EventArgs e)
         {
@@ -361,7 +300,7 @@ namespace WebApplication2
                 {
                     conn.Open();
                     // Incluimos Fecha_ult_modificacion en el UPDATE
-                    string query = "UPDATE Equipo_participa SET p_asistencia = ?, p_transporte = ?, p_alergia = ?, p_comentario = ?, p_practica = ?, Fecha_ult_modificacion = ? WHERE p_contador = ?";
+                    string query = "UPDATE Equipo_participa SET p_nombre = ?, p_apellido = ?, p_asistencia = ?, p_transporte = ?, p_alergia = ?, p_comentario = ?, p_practica = ?, Fecha_ult_modificacion = ? WHERE p_contador = ?";
 
                     // 1. Guardar todos los cambios de los integrantes junto con el comentario
                     foreach (RepeaterItem item in rptIntegrantes.Items)
@@ -371,13 +310,16 @@ namespace WebApplication2
                             // Encontrar los nuevos controles
                             RadioButtonList rblAsistencia = (RadioButtonList)item.FindControl("rblAsistencia");
                             RadioButtonList rblTransporte = (RadioButtonList)item.FindControl("rblTransporte");
+                            TextBox txtNombre = (TextBox)item.FindControl("txtNombre");
+                            TextBox txtApellido = (TextBox)item.FindControl("txtApellido");
                             TextBox txtAlergia = (TextBox)item.FindControl("txtAlergia");
-                            Label lblEditNombre = (Label)item.FindControl("lblEditNombre");
                             HiddenField hdnContador = (HiddenField)item.FindControl("hdnContador");
 
-                            if (rblAsistencia != null && rblTransporte != null && txtAlergia != null && hdnContador != null)
+                            if (txtNombre != null && txtApellido != null && rblAsistencia != null && rblTransporte != null && txtAlergia != null && hdnContador != null)
                             {
                                 int id = Convert.ToInt32(hdnContador.Value);
+                                string nombre = txtNombre.Text.Trim();
+                                string apellido = txtApellido.Text.Trim();
 
                                 // Extraer los strings en lugar de booleanos ("Si" o "No")
                                 string asistencia = rblAsistencia.SelectedValue;
@@ -389,7 +331,7 @@ namespace WebApplication2
                                     transporte = null;
                                     alergia = null;
                                 }
-                                string nombreIntegrante = lblEditNombre?.Text.Trim() ?? string.Empty;
+                                string nombreIntegrante = (nombre + " " + apellido).Trim();
 
                                 if (!string.IsNullOrEmpty(nombreIntegrante))
                                 {
@@ -402,6 +344,8 @@ namespace WebApplication2
                                 {
                                     // Los parámetros en OleDb se asignan estrictamente por orden posicional (?)
                                     // Usamos DBNull.Value en caso de que lleguen vacíos
+                                    cmd.Parameters.AddWithValue("@p_nombre", string.IsNullOrEmpty(nombre) ? (object)DBNull.Value : nombre);
+                                    cmd.Parameters.AddWithValue("@p_apellido", string.IsNullOrEmpty(apellido) ? (object)DBNull.Value : apellido);
                                     cmd.Parameters.AddWithValue("@p_asistencia", string.IsNullOrEmpty(asistencia) ? (object)DBNull.Value : asistencia);
                                     cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(transporte) ? (object)DBNull.Value : transporte);
                                     cmd.Parameters.AddWithValue("@p_alergia", string.IsNullOrEmpty(alergia) ? (object)DBNull.Value : alergia);

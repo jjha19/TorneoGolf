@@ -51,15 +51,6 @@ namespace WebApplication2
         protected global::System.Web.UI.WebControls.Label lblComentarioTorneo;
 
         /// <summary>
-        /// Control lblInvitacionCerrada.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblInvitacionCerrada;
-
-        /// <summary>
         /// Control vsCamposFaltantes.
         /// </summary>
         /// <remarks>

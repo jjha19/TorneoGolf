@@ -40,7 +40,7 @@
             <div id="lista-container">
                 <asp:Repeater ID="rptParticipantes" runat="server" OnItemCommand="rptParticipantes_ItemCommand" OnItemDataBound="rptParticipantes_ItemDataBound">
                     <HeaderTemplate>
-                        <ul class="integrantes-lista">
+                        <ul class="integrantes-lista participantes-lista">
                     </HeaderTemplate>
                     <ItemTemplate>
                         <li id="itemContainer" runat="server" class="integrante-item">

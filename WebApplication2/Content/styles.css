@@ -186,7 +186,7 @@ h2 {
     overflow: hidden;
 }
 
-.integrante-item::after {
+.participantes-lista .integrante-item::after {
     content: "";
     position: absolute;
     right: 0px;
