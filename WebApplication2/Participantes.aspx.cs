@@ -334,11 +334,13 @@ namespace WebApplication2
                 }
 
                 string mensaje;
+                string linkPrincipal;
 
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
                     conn.Open();
                     mensaje = ObtenerTextoWhatsappParticipante(conn, idParticipante, torneoCodigo);
+                    linkPrincipal = ObtenerLinkPrincipalParticipante(conn, idParticipante);
                 }
 
                 if (string.IsNullOrWhiteSpace(mensaje))
@@ -347,7 +349,14 @@ namespace WebApplication2
                     return;
                 }
 
-                string url = "https://wa.me/" + telefono + "?text=" + Uri.EscapeDataString(mensaje);
+                string mensajeFinal = mensaje;
+
+                if (!string.IsNullOrWhiteSpace(linkPrincipal))
+                {
+                    mensajeFinal += "\n\nAccede aquí:\n" + linkPrincipal;
+                }
+
+                string url = "https://wa.me/" + telefono + "?text=" + Uri.EscapeDataString(mensajeFinal);
                 Response.Redirect(url, false);
                 Context.ApplicationInstance.CompleteRequest();
                 return;
@@ -651,6 +660,33 @@ namespace WebApplication2
             }
 
             return mensaje;
+        }
+
+        private string ObtenerLinkPrincipalParticipante(OleDbConnection conn, int idParticipante)
+        {
+            string query = @"SELECT TOP 1 e.e_contador
+                     FROM Equipo_participa p
+                     INNER JOIN Equipo e ON p.e_codigo = e.e_codigo
+                     WHERE p.p_contador = ?";
+
+            using (OleDbCommand cmd = new OleDbCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("?", idParticipante);
+
+                object resultado = cmd.ExecuteScalar();
+                if (resultado == null || resultado == DBNull.Value)
+                {
+                    return string.Empty;
+                }
+
+                int index;
+                if (!int.TryParse(resultado.ToString(), out index))
+                {
+                    return string.Empty;
+                }
+
+                return "https://localhost:44340/Principal.aspx?index=" + index;
+            }
         }
     }
 }
