@@ -36,18 +36,24 @@ namespace WebApplication2
                 return;
             }
 
-            // Verificamos si hay una sesión activa, de lo contrario lo mandamos a Login
-            /*
-                if (Session["Usuario"] == null)
-                {
-                    Response.Redirect("Login.aspx");
-                    return;
-                }
-            */
             if (!IsPostBack)
             {
                 InicializarPagina();
                 CargarIntegrantes();
+
+                if (InvitacionCerrada)
+                {
+                    BloquearCamposInvitacion();
+                    MostrarMensajeError("La invitación está cerrada.");
+                }
+            }
+            else
+            {
+                if (InvitacionCerrada)
+                {
+                    BloquearCamposInvitacion();
+                    MostrarMensajeError("La invitación está cerrada.");
+                }
             }
         }
 
@@ -58,6 +64,7 @@ namespace WebApplication2
             string nombreEquipo = "Equipo no encontrado";
             string codigoEquipo = "AB124"; // Valor por defecto
             string torneoVinculado = "";
+            bool invitacionCerrada = false;
 
             // Obtener el contador del equipo desde la URL (e_contador), por defecto 1
             int equipoContador = 1;
@@ -73,8 +80,8 @@ namespace WebApplication2
                 {
                     conn.Open();
 
-                    // 1. Buscar primero en la tabla Equipo usando el e_contador
-                    string queryEquipo = "SELECT e_nombre, e_codigo, e_torneo FROM Equipo WHERE e_contador = ?";
+                    // Ahora también leemos e_cerrado
+                    string queryEquipo = "SELECT e_nombre, e_codigo, e_torneo, e_cerrado FROM Equipo WHERE e_contador = ?";
                     using (OleDbCommand cmdEquipo = new OleDbCommand(queryEquipo, conn))
                     {
                         cmdEquipo.Parameters.AddWithValue("?", equipoContador);
@@ -83,23 +90,23 @@ namespace WebApplication2
                             if (readerEquipo.Read())
                             {
                                 nombreEquipo = readerEquipo["e_nombre"].ToString().Trim();
-                                codigoEquipo = readerEquipo["e_codigo"]?.ToString().Trim();
-                                torneoVinculado = readerEquipo["e_torneo"]?.ToString().Trim();
+                                codigoEquipo = readerEquipo["e_codigo"] == DBNull.Value ? "" : readerEquipo["e_codigo"].ToString().Trim();
+                                torneoVinculado = readerEquipo["e_torneo"] == DBNull.Value ? "" : readerEquipo["e_torneo"].ToString().Trim();
+                                invitacionCerrada = EsInvitacionCerrada(readerEquipo["e_cerrado"]);
 
                                 Session["NombreEquipo"] = nombreEquipo;
-                                Session["CodigoEquipo"] = codigoEquipo; // Importante para CargarIntegrantes()
+                                Session["CodigoEquipo"] = codigoEquipo;
                             }
                             else
                             {
-                                System.Diagnostics.Debug.WriteLine($"No existe el equipo con e_contador = {equipoContador}");
+                                System.Diagnostics.Debug.WriteLine("No existe el equipo con e_contador = " + equipoContador);
                             }
                         }
                     }
 
-                    // 2. Si encontramos el torneo vinculado (código del torneo), buscamos su información en la tabla Torneos
+                    // Si encontramos el torneo vinculado, buscamos su información
                     if (!string.IsNullOrEmpty(torneoVinculado))
                     {
-                        // IMPORTANTE: Buscamos por t_codigo usando el e_torneo
                         string queryTorneo = "SELECT t_nombre, t_comen FROM Torneos WHERE t_codigo = ?";
                         using (OleDbCommand cmdTorneo = new OleDbCommand(queryTorneo, conn))
                         {
@@ -108,18 +115,14 @@ namespace WebApplication2
                             {
                                 if (readerTorneo.Read())
                                 {
-                                    // Asignamos el t_nombre a la variable que se mostrará
                                     nombreTorneo = readerTorneo["t_nombre"].ToString().Trim();
-                                    comentarioTorneo = readerTorneo["t_comen"]?.ToString().Trim();
-
-                                    // Guardar en sesión para usarlo en otras partes si es necesario
+                                    comentarioTorneo = readerTorneo["t_comen"] == DBNull.Value ? "" : readerTorneo["t_comen"].ToString().Trim();
                                     Session["NombreTorneo"] = nombreTorneo;
                                 }
                                 else
                                 {
-                                    // Fallback: Si no está en la tabla Torneos
                                     nombreTorneo = "Código no encontrado: " + torneoVinculado;
-                                    System.Diagnostics.Debug.WriteLine($"No se encontró información extra para el torneo con código: {torneoVinculado}");
+                                    System.Diagnostics.Debug.WriteLine("No se encontró información extra para el torneo con código: " + torneoVinculado);
                                 }
                             }
                         }
@@ -128,8 +131,10 @@ namespace WebApplication2
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error al inicializar la página: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine("Error al inicializar la página: " + ex.Message);
             }
+
+            InvitacionCerrada = invitacionCerrada;
 
             // Asignar valores a los labels del título
             lblTituloTorneo.Text = nombreTorneo;
@@ -207,8 +212,14 @@ namespace WebApplication2
 
         protected void rblAsistencia_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var rblAsistencia = sender as RadioButtonList;
-            var item = rblAsistencia?.NamingContainer as RepeaterItem;
+            if (InvitacionCerrada)
+            {
+                MostrarMensajeError("La invitación está cerrada.");
+                return;
+            }
+
+            RadioButtonList rblAsistencia = sender as RadioButtonList;
+            RepeaterItem item = rblAsistencia != null ? rblAsistencia.NamingContainer as RepeaterItem : null;
 
             if (item == null)
             {
@@ -275,6 +286,12 @@ namespace WebApplication2
         // Manejador para enviar comentarios Y guardar todos los cambios
         protected void btnEnviarComentario_Click(object sender, EventArgs e)
         {
+            if (InvitacionCerrada)
+            {
+                MostrarMensajeError("La invitación está cerrada.");
+                return;
+            }
+
             if (!Page.IsValid)
             {
                 pnlMensajeError.Visible = false;
@@ -475,6 +492,60 @@ namespace WebApplication2
             lblMensajeError.Text = mensaje;
             pnlMensajeError.Visible = true;
             pnlMensajeExito.Visible = false;
+        }
+
+        private bool InvitacionCerrada
+        {
+            get
+            {
+                object valor = ViewState["InvitacionCerrada"];
+                return valor != null && (bool)valor;
+            }
+            set
+            {
+                ViewState["InvitacionCerrada"] = value;
+            }
+        }
+
+        private bool EsInvitacionCerrada(object valorCampo)
+        {
+            if (valorCampo == null || valorCampo == DBNull.Value)
+                return false;
+
+            bool valorBool;
+            if (bool.TryParse(valorCampo.ToString(), out valorBool))
+                return valorBool;
+
+            int valorInt;
+            if (int.TryParse(valorCampo.ToString(), out valorInt))
+                return valorInt == 1;
+
+            return false;
+        }
+
+        private void BloquearCamposInvitacion()
+        {
+            foreach (RepeaterItem item in rptIntegrantes.Items)
+            {
+                if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
+                {
+                    RadioButtonList rblAsistencia = item.FindControl("rblAsistencia") as RadioButtonList;
+                    RadioButtonList rblTransporte = item.FindControl("rblTransporte") as RadioButtonList;
+                    TextBox txtAlergia = item.FindControl("txtAlergia") as TextBox;
+                    RequiredFieldValidator rfvAsistencia = item.FindControl("rfvAsistencia") as RequiredFieldValidator;
+                    RequiredFieldValidator rfvTransporte = item.FindControl("rfvTransporte") as RequiredFieldValidator;
+
+                    if (rblAsistencia != null) rblAsistencia.Enabled = false;
+                    if (rblTransporte != null) rblTransporte.Enabled = false;
+                    if (txtAlergia != null) txtAlergia.ReadOnly = true;
+                    if (rfvAsistencia != null) rfvAsistencia.Enabled = false;
+                    if (rfvTransporte != null) rfvTransporte.Enabled = false;
+                }
+            }
+
+            if (rblPractica != null) rblPractica.Enabled = false;
+            if (txtComentario != null) txtComentario.ReadOnly = true;
+            if (btnEnviarComentario != null) btnEnviarComentario.Enabled = false;
         }
     }
 }
