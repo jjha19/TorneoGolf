@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.OleDb;
+using System.Globalization;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -126,7 +127,7 @@ namespace WebApplication2
                     // 2. Extraer a los participantes
                     DataTable dt = new DataTable();
                     // Incluimos e_codigo en el SELECT y ordenamos por e_codigo y nombre
-                    string queryParticipantes = "SELECT p_contador, e_codigo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica " +
+                    string queryParticipantes = "SELECT p_contador, e_codigo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_comentario, p_practica, fecha_ws " +
                                                 "FROM Equipo_participa WHERE p_torneo = ? ORDER BY e_codigo ASC, p_nombre ASC";
 
                     using (OleDbCommand cmdPart = new OleDbCommand(queryParticipantes, conn))
@@ -180,6 +181,24 @@ namespace WebApplication2
             string color = ObtenerColorEquipo(equipoCodigo);
             string estiloActual = itemContainer.Attributes["style"] ?? string.Empty;
             itemContainer.Attributes["style"] = $"{estiloActual}border-right: 8px solid {color}; --equipo-color: {color};";
+
+            var txtEditFechaWs = e.Item.FindControl("txtEditFechaWs") as System.Web.UI.WebControls.TextBox;
+            if (txtEditFechaWs != null)
+            {
+                string fechaRaw = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "fecha_ws"));
+                if (string.IsNullOrWhiteSpace(fechaRaw))
+                {
+                    txtEditFechaWs.Text = "Todavía no se ha enviado";
+                }
+                else if (DateTime.TryParseExact(fechaRaw, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var fechaValor))
+                {
+                    txtEditFechaWs.Text = fechaValor.ToString("dd/MM/yyyy HH:mm:ss");
+                }
+                else
+                {
+                    txtEditFechaWs.Text = fechaRaw;
+                }
+            }
         }
 
         private static string ObtenerColorEquipo(string equipoCodigo)
@@ -226,7 +245,8 @@ namespace WebApplication2
                                  p_asistencia = ?,
                                  p_alergia = ?,
                                  p_transporte = ?,
-                                 p_comentario = ?
+                                 p_comentario = ?,
+                                 fecha_ws = ?
                              WHERE p_contador = ?";
 
                     foreach (System.Web.UI.WebControls.RepeaterItem item in rptParticipantes.Items)
@@ -246,10 +266,11 @@ namespace WebApplication2
                         var rblEditAsistencia = (System.Web.UI.WebControls.RadioButtonList)item.FindControl("rblEditAsistencia");
                         var rblEditTransporte = (System.Web.UI.WebControls.RadioButtonList)item.FindControl("rblEditTransporte");
                         var txtEditComentario = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditComentario");
+                        var txtEditFechaWs = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditFechaWs");
 
                         if (hdnContador == null || txtEditNombre == null || txtEditApellido == null || txtEditEquipo == null ||
                             txtEditMovil == null || txtEditAlergias == null || rblEditAsistencia == null ||
-                            rblEditTransporte == null || txtEditComentario == null)
+                            rblEditTransporte == null || txtEditComentario == null || txtEditFechaWs == null)
                         {
                             continue;
                         }
@@ -268,6 +289,16 @@ namespace WebApplication2
                         string alergia = (Request.Form[txtEditAlergias.UniqueID] ?? txtEditAlergias.Text ?? string.Empty).Trim();
                         string transporte = rblEditTransporte.SelectedValue;
                         string comentario = (Request.Form[txtEditComentario.UniqueID] ?? txtEditComentario.Text ?? string.Empty).Trim();
+                        string fechaWsTexto = (Request.Form[txtEditFechaWs.UniqueID] ?? txtEditFechaWs.Text ?? string.Empty).Trim();
+                        object fechaWsValue = DBNull.Value;
+
+                        if (!string.IsNullOrEmpty(fechaWsTexto) && !string.Equals(fechaWsTexto, "Todavía no se ha enviado", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (DateTime.TryParseExact(fechaWsTexto, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+                            {
+                                fechaWsValue = fechaWsTexto;
+                            }
+                        }
 
                         using (OleDbCommand cmd = new OleDbCommand(query, conn))
                         {
@@ -280,6 +311,7 @@ namespace WebApplication2
                             cmd.Parameters.AddWithValue("@p_alergia", string.IsNullOrEmpty(alergia) ? (object)DBNull.Value : alergia);
                             cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(transporte) ? (object)DBNull.Value : transporte);
                             cmd.Parameters.AddWithValue("@p_comentario", string.IsNullOrEmpty(comentario) ? (object)DBNull.Value : comentario);
+                            cmd.Parameters.AddWithValue("@fecha_ws", fechaWsValue);
                             cmd.Parameters.AddWithValue("@p_contador", id);
 
                             cambiosGuardados += cmd.ExecuteNonQuery();
@@ -341,6 +373,16 @@ namespace WebApplication2
                     conn.Open();
                     mensaje = ObtenerTextoWhatsappParticipante(conn, idParticipante, torneoCodigo);
                     linkPrincipal = ObtenerLinkPrincipalParticipante(conn, idParticipante);
+
+                    string queryActualizarFecha = "UPDATE Equipo_participa SET fecha_ws = ? WHERE p_contador = ? AND p_torneo = ?";
+                    using (OleDbCommand cmdActualizar = new OleDbCommand(queryActualizarFecha, conn))
+                    {
+                        string fechaTexto = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                        cmdActualizar.Parameters.Add("?", OleDbType.VarWChar).Value = fechaTexto;
+                        cmdActualizar.Parameters.Add("?", OleDbType.Integer).Value = idParticipante;
+                        cmdActualizar.Parameters.Add("?", OleDbType.VarWChar).Value = torneoCodigo;
+                        cmdActualizar.ExecuteNonQuery();
+                    }
                 }
 
                 if (string.IsNullOrWhiteSpace(mensaje))

@@ -110,6 +110,12 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <strong>Fecha Mensaje Whatsapp:</strong>
+                                    <asp:TextBox ID="txtEditFechaWs" runat="server" CssClass="textbox-alergia campo-click-edit"
+                                        Text='<%# string.IsNullOrEmpty(Eval("fecha_ws")?.ToString()) ? "Todavía no se ha enviado" : Convert.ToDateTime(Eval("fecha_ws")).ToString("dd/MM/yyyy HH:mm:ss") %>'></asp:TextBox>
+                                </div>
+
                                 <div class="form-group grid-full-width">
                                     <strong>Comentarios:</strong>
                                     <asp:TextBox ID="txtEditComentario" runat="server" TextMode="MultiLine" Rows="3"
