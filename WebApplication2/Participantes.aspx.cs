@@ -395,7 +395,7 @@ namespace WebApplication2
 
                 if (!string.IsNullOrWhiteSpace(linkPrincipal))
                 {
-                    mensajeFinal += "\n\nAccede aquí:\n" + linkPrincipal;
+                    mensajeFinal += "\n\nConfirma la invitación desde aquí:\n" + linkPrincipal;
                 }
 
                 string url = "https://wa.me/" + telefono + "?text=" + Uri.EscapeDataString(mensajeFinal);
