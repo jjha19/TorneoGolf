@@ -38,12 +38,12 @@
 
             <!-- Lista de participantes -->
             <div id="lista-container">
-                <asp:Repeater ID="rptParticipantes" runat="server" OnItemCommand="rptParticipantes_ItemCommand">
+                <asp:Repeater ID="rptParticipantes" runat="server" OnItemCommand="rptParticipantes_ItemCommand" OnItemDataBound="rptParticipantes_ItemDataBound">
                     <HeaderTemplate>
                         <ul class="integrantes-lista">
                     </HeaderTemplate>
                     <ItemTemplate>
-                        <li class="integrante-item">
+                        <li id="itemContainer" runat="server" class="integrante-item">
                             <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
 
                             <div class="integrante-edit-grid participante-grid-detalles">

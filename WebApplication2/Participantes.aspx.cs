@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Text;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 
 namespace WebApplication2
 {
@@ -154,6 +155,49 @@ namespace WebApplication2
             {
                 MostrarMensajeError("Error al cargar los participantes: " + ex.Message);
             }
+        }
+
+        protected void rptParticipantes_ItemDataBound(object sender, System.Web.UI.WebControls.RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType != System.Web.UI.WebControls.ListItemType.Item &&
+                e.Item.ItemType != System.Web.UI.WebControls.ListItemType.AlternatingItem)
+            {
+                return;
+            }
+
+            var itemContainer = e.Item.FindControl("itemContainer") as HtmlGenericControl;
+            if (itemContainer == null)
+            {
+                return;
+            }
+
+            string equipoCodigo = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "e_codigo"))?.Trim();
+            if (string.IsNullOrEmpty(equipoCodigo))
+            {
+                return;
+            }
+
+            string color = ObtenerColorEquipo(equipoCodigo);
+            string estiloActual = itemContainer.Attributes["style"] ?? string.Empty;
+            itemContainer.Attributes["style"] = $"{estiloActual}border-right: 8px solid {color}; --equipo-color: {color};";
+        }
+
+        private static string ObtenerColorEquipo(string equipoCodigo)
+        {
+            string[] colores =
+            {
+                "#FFA500",
+                "#22C55E",
+                "#8B5CF6",
+                "#38BDF8",
+                "#EC4899",
+                "#2563EB",
+                "#EF4444"
+            };
+
+            int hash = equipoCodigo.GetHashCode();
+            int index = Math.Abs(hash) % colores.Length;
+            return colores[index];
         }
 
         protected void btnGuardarCambios_Click(object sender, EventArgs e)
