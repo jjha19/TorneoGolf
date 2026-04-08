@@ -183,7 +183,7 @@ namespace WebApplication2
             {
                 string tituloEquipo = string.IsNullOrWhiteSpace(equipoNombre)
                     ? $"Equipo: {equipoCodigo}"
-                    : $"{equipoNombre} ({equipoCodigo})";
+                    : $"{equipoNombre} - {equipoCodigo}";
                 string cerradoValor = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "e_cerrado"))?.Trim();
                 bool invitacionCerrada = string.Equals(cerradoValor, "1", StringComparison.OrdinalIgnoreCase);
                 string checkedAttr = invitacionCerrada ? "checked='checked'" : string.Empty;
