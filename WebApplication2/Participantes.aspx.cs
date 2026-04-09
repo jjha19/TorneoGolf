@@ -141,6 +141,74 @@ namespace WebApplication2
                     // 3. Pintar los datos
                     if (dt.Rows.Count > 0)
                     {
+                        int totalSi = 0;
+                        int totalNo = 0;
+                        int totalPendiente = 0;
+                        int totalPracticaSi = 0;
+                        int totalPracticaNo = 0;
+                        int totalPracticaPendiente = 0;
+                        int totalTransporteSi = 0;
+                        int totalTransporteNo = 0;
+                        int totalTransportePendiente = 0;
+
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            string asistencia = Convert.ToString(row["p_asistencia"])?.Trim();
+                            if (string.Equals(asistencia, "Si", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(asistencia, "Sí", StringComparison.OrdinalIgnoreCase))
+                            {
+                                totalSi++;
+                            }
+                            else if (string.Equals(asistencia, "No", StringComparison.OrdinalIgnoreCase))
+                            {
+                                totalNo++;
+                            }
+                            else
+                            {
+                                totalPendiente++;
+                            }
+
+                            string practica = Convert.ToString(row["p_practica"])?.Trim();
+                            if (string.Equals(practica, "Si", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(practica, "Sí", StringComparison.OrdinalIgnoreCase))
+                            {
+                                totalPracticaSi++;
+                            }
+                            else if (string.Equals(practica, "No", StringComparison.OrdinalIgnoreCase))
+                            {
+                                totalPracticaNo++;
+                            }
+                            else
+                            {
+                                totalPracticaPendiente++;
+                            }
+
+                            string transporte = Convert.ToString(row["p_transporte"])?.Trim();
+                            if (string.Equals(transporte, "Si", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(transporte, "Sí", StringComparison.OrdinalIgnoreCase))
+                            {
+                                totalTransporteSi++;
+                            }
+                            else if (string.Equals(transporte, "No", StringComparison.OrdinalIgnoreCase))
+                            {
+                                totalTransporteNo++;
+                            }
+                            else
+                            {
+                                totalTransportePendiente++;
+                            }
+                        }
+
+                        lblAsistenSi.Text = totalSi.ToString();
+                        lblAsistenNo.Text = totalNo.ToString();
+                        lblAsistenPendiente.Text = totalPendiente.ToString();
+                        lblPracticaSi.Text = totalPracticaSi.ToString();
+                        lblPracticaNo.Text = totalPracticaNo.ToString();
+                        lblPracticaPendiente.Text = totalPracticaPendiente.ToString();
+                        lblTransporteSi.Text = totalTransporteSi.ToString();
+                        lblTransporteNo.Text = totalTransporteNo.ToString();
+                        lblTransportePendiente.Text = totalTransportePendiente.ToString();
+
                         ViewState["EquipoActual"] = null;
                         rptParticipantes.DataSource = dt;
                         rptParticipantes.DataBind();
@@ -148,6 +216,15 @@ namespace WebApplication2
                     }
                     else
                     {
+                        lblAsistenSi.Text = "0";
+                        lblAsistenNo.Text = "0";
+                        lblAsistenPendiente.Text = "0";
+                        lblPracticaSi.Text = "0";
+                        lblPracticaNo.Text = "0";
+                        lblPracticaPendiente.Text = "0";
+                        lblTransporteSi.Text = "0";
+                        lblTransporteNo.Text = "0";
+                        lblTransportePendiente.Text = "0";
                         rptParticipantes.DataSource = null;
                         rptParticipantes.DataBind();
                         pnlNoData.Visible = true;

@@ -15,16 +15,66 @@
     <form id="form1" runat="server">
         <div class="container">
             
-            <!-- Botón de Volver -->
-            <div class="btn-volver-container">
-                <a href="Torneos.aspx" class="btn-volver">&larr; Volver a Mis Torneos</a>
-            </div>
-
             <!-- Título -->
             <div id="TitleText">
+                <!-- Botón de Volver -->
+                <div class="btn-volver-container">
+                    <a href="Torneos.aspx" class="btn-volver">
+                        &larr; <span class="btn-volver-texto">Volver a Mis Torneos</span>
+                    </a>
+                </div>
                 <h1>Invitados: <asp:Label ID="lblNombreTorneo" runat="server"></asp:Label></h1>
                 <div class="form-group" style="text-align: center; border: none; padding: 0;">
                     <asp:Button ID="btnDescargar" runat="server" Text="Descargar info" CssClass="btn-enviar-comentario" OnClick="btnDescargar_Click" />
+                    <asp:Button ID="btnMostrarEstadisticas" runat="server" Text="Mostrar Estadísticas" CssClass="btn-enviar-comentario" OnClientClick="toggleEstadisticas(); return false;" />
+                </div>
+            </div>
+
+            <div class="estadisticas" id="estadisticasContainer">
+                <div class="estadisticas-col">
+                    <div class="estadisticas-title">Asistencia</div>
+                    <div class="estadisticas-item">
+                        <span class="estadisticas-label">Asisten:</span>
+                        <asp:Label ID="lblAsistenSi" runat="server"></asp:Label>
+                    </div>
+                    <div class="estadisticas-item">
+                        <span class="estadisticas-label">No asisten:</span>
+                        <asp:Label ID="lblAsistenNo" runat="server"></asp:Label>
+                    </div>
+                    <div class="estadisticas-item">
+                        <span class="estadisticas-label">Sin confirmar:</span>
+                        <asp:Label ID="lblAsistenPendiente" runat="server"></asp:Label>
+                    </div>
+                </div>
+                <div class="estadisticas-col">
+                    <div class="estadisticas-title">Jornada de Práctica</div>
+                    <div class="estadisticas-item">
+                        <span class="estadisticas-label">Asisten:</span>
+                        <asp:Label ID="lblPracticaSi" runat="server"></asp:Label>
+                    </div>
+                    <div class="estadisticas-item">
+                        <span class="estadisticas-label">No asisten:</span>
+                        <asp:Label ID="lblPracticaNo" runat="server"></asp:Label>
+                    </div>
+                    <div class="estadisticas-item">
+                        <span class="estadisticas-label">Sin confirmar:</span>
+                        <asp:Label ID="lblPracticaPendiente" runat="server"></asp:Label>
+                    </div>
+                </div>
+                <div class="estadisticas-col">
+                    <div class="estadisticas-title">Autobús</div>
+                    <div class="estadisticas-item">
+                        <span class="estadisticas-label">Usa autobús:</span>
+                        <asp:Label ID="lblTransporteSi" runat="server"></asp:Label>
+                    </div>
+                    <div class="estadisticas-item">
+                        <span class="estadisticas-label">No usa:</span>
+                        <asp:Label ID="lblTransporteNo" runat="server"></asp:Label>
+                    </div>
+                    <div class="estadisticas-item">
+                        <span class="estadisticas-label">Sin confirmar:</span>
+                        <asp:Label ID="lblTransportePendiente" runat="server"></asp:Label>
+                    </div>
                 </div>
             </div>
 
@@ -237,6 +287,14 @@
         </div>
     </form>
     <script type="text/javascript">
+        function toggleEstadisticas() {
+            var container = document.getElementById("estadisticasContainer");
+            if (!container) {
+                return;
+            }
+            container.classList.toggle("mostrar");
+        }
+
         (function () {
             document.addEventListener("click", function (e) {
                 var target = e.target;
