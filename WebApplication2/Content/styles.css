@@ -380,8 +380,8 @@ h2 {
     }
 
     .integrante-item.asistencia-no {
-        border-color: #c53030;
-        background-color: rgba(254, 215, 215, 0.95);
+        border-color: #b91c1c;
+        background-color: rgba(239, 68, 68, 0.92);
     }
 
     .integrante-item:hover {

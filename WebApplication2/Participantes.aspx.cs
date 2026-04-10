@@ -258,6 +258,7 @@ namespace WebApplication2
 
             string equipoCodigo = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "e_codigo"))?.Trim();
             string equipoNombre = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "equipo_nombre"))?.Trim();
+            string asistenciaValor = Convert.ToString(DataBinder.Eval(e.Item.DataItem, "p_asistencia"))?.Trim();
             var phEquipoHeader = e.Item.FindControl("phEquipoHeader") as System.Web.UI.WebControls.PlaceHolder;
             string equipoAnterior = ViewState["EquipoActual"] as string;
 
@@ -286,6 +287,11 @@ namespace WebApplication2
             string color = ObtenerColorEquipo(equipoCodigo);
             string estiloActual = itemContainer.Attributes["style"] ?? string.Empty;
             itemContainer.Attributes["style"] = $"{estiloActual}border-right: 8px solid {color}; --equipo-color: {color};";
+
+            if (string.Equals(asistenciaValor, "No", StringComparison.OrdinalIgnoreCase))
+            {
+                itemContainer.Attributes["class"] = (itemContainer.Attributes["class"] + " asistencia-no").Trim();
+            }
 
             var txtEditFechaWs = e.Item.FindControl("txtEditFechaWs") as System.Web.UI.WebControls.TextBox;
             if (txtEditFechaWs != null)
@@ -851,7 +857,14 @@ namespace WebApplication2
                     return string.Empty;
                 }
 
-                return "https://localhost:44340/Principal.aspx?index=" + index;
+                // Link para pruebas internas
+                // return "https://localhost:44340/Principal.aspx?index=" + index;
+
+                // Link para pruebas externas
+                // (descomentar si se quiere usar en producción, pero asegurarse de que la IP
+                // y puerto son correctos y accesibles desde internet)
+
+                return "https://http://213.37.131.233:83/invitacion/Principal.aspx?index=" + index;
             }
         }
     }
