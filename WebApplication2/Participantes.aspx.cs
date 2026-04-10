@@ -11,6 +11,10 @@ namespace WebApplication2
 {
     public partial class Participantes : System.Web.UI.Page
     {
+        private const string MensajeExitoSessionKey = "Participantes.MensajeExito";
+        private const string MensajeErrorSessionKey = "Participantes.MensajeError";
+        private const string EstadisticasVisiblesViewStateKey = "Participantes.EstadisticasVisibles";
+
         private string connectionString
         {
             get
@@ -30,8 +34,69 @@ namespace WebApplication2
 
             if (!IsPostBack)
             {
+                ViewState[EstadisticasVisiblesViewStateKey] = true;
+                MostrarMensajesPersistidos();
                 CargarParticipantes();
+                ActualizarVisibilidadEstadisticas();
             }
+        }
+
+        protected void btnMostrarEstadisticas_Click(object sender, EventArgs e)
+        {
+            bool visibles = ViewState[EstadisticasVisiblesViewStateKey] as bool? ?? true;
+            ViewState[EstadisticasVisiblesViewStateKey] = !visibles;
+            ActualizarVisibilidadEstadisticas();
+        }
+
+        private void ActualizarVisibilidadEstadisticas()
+        {
+            bool visibles = ViewState[EstadisticasVisiblesViewStateKey] as bool? ?? true;
+            if (estadisticasContainer != null)
+            {
+                estadisticasContainer.Attributes["class"] = visibles ? "estadisticas mostrar" : "estadisticas";
+            }
+        }
+
+        private void MostrarMensajesPersistidos()
+        {
+            string mensajeExito = Session[MensajeExitoSessionKey] as string;
+            string mensajeError = Session[MensajeErrorSessionKey] as string;
+
+            Session.Remove(MensajeExitoSessionKey);
+            Session.Remove(MensajeErrorSessionKey);
+
+            if (!string.IsNullOrEmpty(mensajeError))
+            {
+                MostrarMensajeError(mensajeError);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(mensajeExito))
+            {
+                MostrarMensajeExito(mensajeExito);
+            }
+        }
+
+        private void GuardarMensajeEnSession(string mensajeExito, string mensajeError)
+        {
+            if (!string.IsNullOrEmpty(mensajeExito))
+            {
+                Session[MensajeExitoSessionKey] = mensajeExito;
+                Session.Remove(MensajeErrorSessionKey);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(mensajeError))
+            {
+                Session[MensajeErrorSessionKey] = mensajeError;
+                Session.Remove(MensajeExitoSessionKey);
+            }
+        }
+
+        private void RedirigirRecarga()
+        {
+            Response.Redirect(Request.RawUrl, false);
+            Context.ApplicationInstance.CompleteRequest();
         }
 
         protected void btnDescargar_Click(object sender, EventArgs e)
@@ -92,6 +157,7 @@ namespace WebApplication2
             Response.Flush();
             Response.End();
         }
+
 
         private void CargarParticipantes()
         {
@@ -456,18 +522,19 @@ namespace WebApplication2
 
                 if (cambiosGuardados > 0)
                 {
-                    MostrarMensajeExito("Cambios guardados correctamente: " + cambiosGuardados + " registro(s).");
+                    GuardarMensajeEnSession("Cambios guardados correctamente: " + cambiosGuardados + " registro(s).", null);
                 }
                 else
                 {
-                    MostrarMensajeError("No se actualizó ningún registro. Revisa que los IDs (p_contador) existan.");
+                    GuardarMensajeEnSession(null, "No se actualizó ningún registro. Revisa que los IDs (p_contador) existan.");
                 }
 
-                CargarParticipantes();
+                RedirigirRecarga();
             }
             catch (Exception ex)
             {
-                MostrarMensajeError("Error al guardar cambios: " + ex.Message);
+                GuardarMensajeEnSession(null, "Error al guardar cambios: " + ex.Message);
+                RedirigirRecarga();
             }
         }
 
@@ -560,18 +627,19 @@ namespace WebApplication2
 
                     if (filasAfectadas > 0)
                     {
-                        MostrarMensajeExito("Participante eliminado correctamente.");
+                        GuardarMensajeEnSession("Participante eliminado correctamente.", null);
                     }
                     else
                     {
-                        MostrarMensajeError("No se eliminó ningún registro.");
+                        GuardarMensajeEnSession(null, "No se eliminó ningún registro.");
                     }
 
-                    CargarParticipantes();
+                    RedirigirRecarga();
                 }
                 catch (Exception ex)
                 {
-                    MostrarMensajeError("Error al eliminar participante: " + ex.Message);
+                    GuardarMensajeEnSession(null, "Error al eliminar participante: " + ex.Message);
+                    RedirigirRecarga();
                 }
             }
         }
@@ -644,7 +712,8 @@ namespace WebApplication2
 
             if (string.IsNullOrEmpty(torneoCodigo))
             {
-                MostrarMensajeError("No se puede guardar un participante sin un código de torneo válido.");
+                GuardarMensajeEnSession(null, "No se puede guardar un participante sin un código de torneo válido.");
+                RedirigirRecarga();
                 return;
             }
 
@@ -671,7 +740,8 @@ namespace WebApplication2
                     // Si no existe no permitimos guardar el participante y mostramos un mensaje de error
                     if (!equipoExiste)
                     {
-                        MostrarMensajeError($"El código de equipo '{codEquipoIngresado}' no existe en este torneo. Por favor, introduzca uno válido.");
+                        GuardarMensajeEnSession(null, $"El código de equipo '{codEquipoIngresado}' no existe en este torneo. Por favor, introduzca uno válido.");
+                        RedirigirRecarga();
                         return;
                     }
 
@@ -700,16 +770,13 @@ namespace WebApplication2
 
                 // Mostrar éxito
                 MostrarMensajeExito("¡El participante ha sido añadido con éxito!");
-
-                // Limpiar el formulario
-                LimpiarFormularioAñadir();
-
-                // Recargar el grid para que aparezca el nuevo registro en la pantalla
-                CargarParticipantes();
+                GuardarMensajeEnSession("¡El participante ha sido añadido con éxito!", null);
+                RedirigirRecarga();
             }
             catch (Exception ex)
             {
-                MostrarMensajeError("Error al guardar el participante: " + ex.Message);
+                GuardarMensajeEnSession(null, "Error al guardar el participante: " + ex.Message);
+                RedirigirRecarga();
             }
         }
 

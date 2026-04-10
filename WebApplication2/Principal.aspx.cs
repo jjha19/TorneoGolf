@@ -44,7 +44,7 @@ namespace WebApplication2
                 if (InvitacionCerrada)
                 {
                     BloquearCamposInvitacion();
-                    MostrarMensajeError("La invitación está cerrada. Ya no se pueden modificar los datos");
+                    MostrarMensajeError("Sus datos ya han sido traspasados. Si quiere modificarlos por favor contáctenos");
                 }
             }
             else
@@ -52,7 +52,7 @@ namespace WebApplication2
                 if (InvitacionCerrada)
                 {
                     BloquearCamposInvitacion();
-                    MostrarMensajeError("La invitación está cerrada. Ya no se pueden modificar los datos");
+                    MostrarMensajeError("Sus datos ya han sido traspasados. Si quiere modificarlos por favor contáctenos");
                 }
             }
         }

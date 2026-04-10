@@ -711,6 +711,15 @@ h2 {
     background-color: #bb2d3b;
 }
 
+
+.btn-mostrar-estadisticas {
+    background-color: #2b6cb0;
+}
+
+.btn-mostrar-estadisticas:hover {
+    background-color: #245b96;
+}
+
 .icon-wpp {
     height: 22px;
     width: auto;

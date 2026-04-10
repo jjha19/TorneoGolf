@@ -27,11 +27,11 @@
                 <h1>Invitados: <asp:Label ID="lblNombreTorneo" runat="server"></asp:Label></h1>
                 <div class="form-group" style="text-align: center; border: none; padding: 0;">
                     <asp:Button ID="btnDescargar" runat="server" Text="Descargar info" CssClass="btn-enviar-comentario" OnClick="btnDescargar_Click" />
-                    <asp:Button ID="btnMostrarEstadisticas" runat="server" Text="Mostrar Estadísticas" CssClass="btn-enviar-comentario" OnClientClick="toggleEstadisticas(); return false;" />
+                    <asp:Button ID="btnMostrarEstadisticas" runat="server" Text="Mostrar Estadísticas" CssClass="btn-enviar-comentario btn-mostrar-estadisticas" OnClick="btnMostrarEstadisticas_Click" />
                 </div>
             </div>
 
-            <div class="estadisticas mostrar" id="estadisticasContainer">
+            <div class="estadisticas mostrar" id="estadisticasContainer" runat="server">
                 <div class="estadisticas-total">
                     Invitados en total: <asp:Label ID="lblInvitadosTotal" runat="server"></asp:Label>
                 </div>
@@ -104,32 +104,32 @@
                             <div class="integrante-edit-grid participante-grid-detalles">
                                 <div class="form-group">
                                     <strong>Nombre:</strong>
-                                    <asp:TextBox ID="txtEditNombre" runat="server" CssClass="textbox-alergia campo-click-edit"
-                                        ReadOnly="true" Text='<%# Eval("p_nombre") %>'></asp:TextBox>
+                                    <asp:TextBox ID="txtEditNombre" runat="server" CssClass="textbox-alergia"
+                                        Text='<%# Eval("p_nombre") %>'></asp:TextBox>
                                 </div>
 
                                 <div class="form-group">
                                     <strong>Apellido:</strong>
-                                    <asp:TextBox ID="txtEditApellido" runat="server" CssClass="textbox-alergia campo-click-edit"
-                                        ReadOnly="true" Text='<%# Eval("p_apellido") %>'></asp:TextBox>
+                                    <asp:TextBox ID="txtEditApellido" runat="server" CssClass="textbox-alergia"
+                                        Text='<%# Eval("p_apellido") %>'></asp:TextBox>
                                 </div>
 
                                 <div class="form-group">
                                     <strong>Equipo:</strong>
-                                    <asp:TextBox ID="txtEditEquipo" runat="server" CssClass="textbox-alergia campo-click-edit"
-                                        ReadOnly="true" Text='<%# Eval("e_codigo") %>'></asp:TextBox>
+                                    <asp:TextBox ID="txtEditEquipo" runat="server" CssClass="textbox-alergia"
+                                        Text='<%# Eval("e_codigo") %>'></asp:TextBox>
                                 </div>
 
                                 <div class="form-group">
                                     <strong>Móvil:</strong>
-                                    <asp:TextBox ID="txtEditMovil" runat="server" CssClass="textbox-alergia campo-click-edit"
-                                        ReadOnly="true" Text='<%# Eval("p_movi") %>'></asp:TextBox>
+                                    <asp:TextBox ID="txtEditMovil" runat="server" CssClass="textbox-alergia"
+                                        Text='<%# Eval("p_movi") %>'></asp:TextBox>
                                 </div>
 
                                 <div class="form-group">
                                     <strong>Alergias:</strong>
-                                    <asp:TextBox ID="txtEditAlergias" runat="server" CssClass="textbox-alergia campo-click-edit"
-                                        ReadOnly="true" Text='<%# Eval("p_alergia") %>'></asp:TextBox>
+                                    <asp:TextBox ID="txtEditAlergias" runat="server" CssClass="textbox-alergia"
+                                        Text='<%# Eval("p_alergia") %>'></asp:TextBox>
                                 </div>
 
                                 <div class="form-group">
@@ -167,14 +167,14 @@
 
                                 <div class="form-group">
                                     <strong>Fecha Mensaje Whatsapp:</strong>
-                                    <asp:TextBox ID="txtEditFechaWs" runat="server" CssClass="textbox-alergia campo-click-edit"
+                                    <asp:TextBox ID="txtEditFechaWs" runat="server" CssClass="textbox-alergia"
                                         Text='<%# string.IsNullOrEmpty(Eval("fecha_ws")?.ToString()) ? "Todavía no se ha enviado" : Convert.ToDateTime(Eval("fecha_ws")).ToString("dd/MM/yyyy HH:mm:ss") %>'></asp:TextBox>
                                 </div>
 
                                 <div class="form-group grid-full-width">
                                     <strong>Comentarios:</strong>
                                     <asp:TextBox ID="txtEditComentario" runat="server" TextMode="MultiLine" Rows="3"
-                                        CssClass="comentario-textbox campo-click-edit" ReadOnly="true" Text='<%# Eval("p_comentario") %>'></asp:TextBox>
+                                        CssClass="comentario-textbox" Text='<%# Eval("p_comentario") %>'></asp:TextBox>
                                 </div>
                             </div>
 
@@ -292,31 +292,5 @@
 
         </div>
     </form>
-    <script type="text/javascript">
-        function toggleEstadisticas() {
-            var container = document.getElementById("estadisticasContainer");
-            if (!container) {
-                return;
-            }
-            container.classList.toggle("mostrar");
-        }
-
-        (function () {
-            document.addEventListener("click", function (e) {
-                var target = e.target;
-                if (!target || !target.classList || !target.classList.contains("campo-click-edit")) {
-                    return;
-                }
-
-                if (target.readOnly) {
-                    target.readOnly = false;
-                    target.focus();
-                    if (typeof target.select === "function") {
-                        target.select();
-                    }
-                }
-            });
-        })();
-    </script>
 </body>
 </html>
