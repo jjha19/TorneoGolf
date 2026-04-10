@@ -71,6 +71,7 @@
     <Content Include="Content\styles.css" />
     <Content Include="images\tick.png" />
     <Content Include="Login.aspx" />
+    <Content Include="ModificarTorneo.aspx" />
     <Content Include="Participantes.aspx" />
     <Content Include="Torneos.aspx" />
     <Content Include="Web.config" />
@@ -90,6 +91,13 @@
     </Compile>
     <Compile Include="Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ModificarTorneo.aspx.cs">
+      <DependentUpon>ModificarTorneo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ModificarTorneo.aspx.designer.cs">
+      <DependentUpon>ModificarTorneo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Participantes.aspx.cs">
       <DependentUpon>Participantes.aspx</DependentUpon>

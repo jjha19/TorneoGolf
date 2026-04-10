@@ -41,9 +41,9 @@ namespace WebApplication2
 
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
-                    // Añadimos t_codigo a la consulta para poder mandarlo por la URL
-                    string query = "SELECT t_codigo, t_nombre FROM Torneos WHERE t_usuario = ?"; 
-                    
+                    // Importante: incluir t_contador para usarlo en el enlace de Modificar
+                    string query = "SELECT t_contador, t_codigo, t_nombre FROM Torneos WHERE t_usuario = ?";
+
                     using (OleDbCommand cmd = new OleDbCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("?", usuarioLogueado);
