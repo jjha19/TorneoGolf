@@ -44,7 +44,7 @@ namespace WebApplication2
                 if (InvitacionCerrada)
                 {
                     BloquearCamposInvitacion();
-                    MostrarMensajeError("La invitación está cerrada.");
+                    MostrarMensajeError("La invitación está cerrada. Ya no se pueden modificar los datos");
                 }
             }
             else
@@ -52,7 +52,7 @@ namespace WebApplication2
                 if (InvitacionCerrada)
                 {
                     BloquearCamposInvitacion();
-                    MostrarMensajeError("La invitación está cerrada.");
+                    MostrarMensajeError("La invitación está cerrada. Ya no se pueden modificar los datos");
                 }
             }
         }
