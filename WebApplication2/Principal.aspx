@@ -17,8 +17,14 @@
 
             <!-- Título -->
             <div id="TitleText">
-                <h1><asp:Label ID="lblTituloTorneo" runat="server"></asp:Label> - <asp:Label ID="lblTituloEquipo" runat="server"></asp:Label></h1>
-                        
+                <h1>
+                    <asp:Label ID="lblTituloEquipo" runat="server"></asp:Label>
+                </h1>
+
+                <h2 class="titulo-torneo">
+                    <asp:Label ID="lblTituloTorneo" runat="server"></asp:Label>
+                </h2>
+
                 <div class="torneo-comentario">
                     <asp:Label ID="lblComentarioTorneo" runat="server"></asp:Label>
                 </div>
