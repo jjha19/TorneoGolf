@@ -288,7 +288,12 @@ namespace WebApplication2
             string estiloActual = itemContainer.Attributes["style"] ?? string.Empty;
             itemContainer.Attributes["style"] = $"{estiloActual}border-right: 8px solid {color}; --equipo-color: {color};";
 
-            if (string.Equals(asistenciaValor, "No", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(asistenciaValor, "Si", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(asistenciaValor, "Sí", StringComparison.OrdinalIgnoreCase))
+            {
+                itemContainer.Attributes["class"] = (itemContainer.Attributes["class"] + " asistencia-si").Trim();
+            }
+            else if (string.Equals(asistenciaValor, "No", StringComparison.OrdinalIgnoreCase))
             {
                 itemContainer.Attributes["class"] = (itemContainer.Attributes["class"] + " asistencia-no").Trim();
             }
@@ -863,7 +868,7 @@ namespace WebApplication2
                 // (descomentar si se quiere usar en producción, pero asegurarse de que la IP
                 // y puerto son correctos y accesibles desde internet)
 
-                return "https://http://213.37.131.233:83/invitacion/Principal.aspx?index=" + index;
+                return "http://213.37.131.233:83/invitacion/Principal.aspx?index=" + index;
             }
         }
     }
