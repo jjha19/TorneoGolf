@@ -5,6 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Torneo de Golf - Participantes</title>
     <!-- Referencia única y centralizada a TODOS los estilos -->
     <link href="Content/styles.css" rel="stylesheet" type="text/css" />
@@ -30,7 +31,7 @@
                 </div>
             </div>
 
-            <div class="estadisticas" id="estadisticasContainer">
+            <div class="estadisticas mostrar" id="estadisticasContainer">
                 <div class="estadisticas-total">
                     Invitados en total: <asp:Label ID="lblInvitadosTotal" runat="server"></asp:Label>
                 </div>

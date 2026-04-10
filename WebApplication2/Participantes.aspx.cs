@@ -169,8 +169,7 @@ namespace WebApplication2
                                 totalPendiente++;
                             }
 
-                            if (string.Equals(asistencia, "Si", StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals(asistencia, "Sí", StringComparison.OrdinalIgnoreCase))
+                            if (!string.Equals(asistencia, "No", StringComparison.OrdinalIgnoreCase))
                             {
                                 string practica = Convert.ToString(row["p_practica"])?.Trim();
                                 if (string.Equals(practica, "Si", StringComparison.OrdinalIgnoreCase) ||
