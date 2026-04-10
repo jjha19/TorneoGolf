@@ -738,6 +738,14 @@ h2 {
     opacity: 0.8;
 }
 
+.btn-anadir-equipo {
+    background-color: #7b5fc9;
+}
+
+.btn-anadir-equipo:hover {
+    background-color: #684cb7;
+}
+
 @media (max-width: 768px) {
     .integrantes-lista {
         grid-template-columns: 1fr;

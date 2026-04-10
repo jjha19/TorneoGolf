@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Agradecimiento.aspx" />
+    <Content Include="AñadirEquipo.aspx" />
     <Content Include="Content\styles.css" />
     <Content Include="images\tick.png" />
     <Content Include="Login.aspx" />
@@ -84,6 +85,13 @@
     </Compile>
     <Compile Include="Agradecimiento.aspx.designer.cs">
       <DependentUpon>Agradecimiento.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AñadirEquipo.aspx.cs">
+      <DependentUpon>AñadirEquipo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AñadirEquipo.aspx.designer.cs">
+      <DependentUpon>AñadirEquipo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>

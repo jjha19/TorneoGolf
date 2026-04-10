@@ -653,21 +653,20 @@ namespace WebApplication2
                     string codEquipoIngresado = txtAddCodigoEquipo.Text.Trim().ToUpper();
                     bool equipoExiste = false;
 
-                    string queryValidarEquipo = "SELECT COUNT(*) FROM Equipo_participa WHERE e_codigo = ?";
+                    string queryValidarEquipo = "SELECT COUNT(*) FROM Equipo WHERE e_codigo = ? AND e_torneo = ?";
                     using (OleDbCommand cmdValidar = new OleDbCommand(queryValidarEquipo, conn))
                     {
                         cmdValidar.Parameters.AddWithValue("?", codEquipoIngresado);
+                        cmdValidar.Parameters.AddWithValue("?", torneoCodigo);
+
                         int count = Convert.ToInt32(cmdValidar.ExecuteScalar());
-                        if (count > 0)
-                        {
-                            equipoExiste = true;
-                        }
+                        equipoExiste = count > 0;
                     }
 
                     // Si no existe no permitimos guardar el participante y mostramos un mensaje de error
                     if (!equipoExiste)
                     {
-                        MostrarMensajeError($"El código de equipo '{codEquipoIngresado}' no existe en la base de datos. Por favor, introduzca uno válido.");
+                        MostrarMensajeError($"El código de equipo '{codEquipoIngresado}' no existe en este torneo. Por favor, introduzca uno válido.");
                         return;
                     }
 

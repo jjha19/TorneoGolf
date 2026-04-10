@@ -45,6 +45,9 @@
                                     <a href='ModificarTorneo.aspx?torneoId=<%# Eval("t_contador") %>' class="btn-enviar-comentario torneo-btn-link btn-modificar-torneo">
                                         Modificar torneo
                                     </a>
+                                    <a href='AñadirEquipo.aspx?torneo=<%# Eval("t_codigo") %>' class="btn-enviar-comentario torneo-btn-link btn-anadir-equipo">
+                                        Añadir equipo al torneo
+                                    </a>
                                 </div>
                             </div>
                         </li>
