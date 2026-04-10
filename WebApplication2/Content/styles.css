@@ -1231,6 +1231,51 @@ h2 {
         transform: scale(1);
         opacity: 1;
     }
+}
 
-    
-   
+/* Tarjetas de torneos */
+.torneo-item {
+    padding: 16px 20px;
+    text-align: left;
+}
+
+.torneo-item-contenido {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+}
+
+.torneo-item-titulo {
+    margin: 0;
+    color: #333;
+    text-align: left;
+}
+
+/* Botones a la derecha del todo */
+.torneo-acciones {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+/* 50% aprox. más pequeños que .btn-enviar-comentario */
+.torneo-btn-link {
+    display: inline-block;
+    text-decoration: none;
+    padding: 8px 20px;
+    font-size: 10px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+.btn-modificar-torneo {
+    background-color: #2b6cb0;
+}
+
+.btn-modificar-torneo:hover {
+    background-color: #245b96;
+}
