@@ -117,12 +117,12 @@ namespace WebApplication2
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
                     string query = @"UPDATE Torneos
-                                     SET t_codigo = ?, t_nombre = ?, t_contacto = ?, t_movil = ?, t_fecha = ?, t_usuario = ?, t_contra = ?, t_comen = ?, texto_ws = ?
+                                     SET t_nombre = ?, t_contacto = ?, t_movil = ?, t_fecha = ?, t_usuario = ?, t_contra = ?, t_comen = ?, texto_ws = ?
                                      WHERE t_contador = ? AND t_usuario = ?";
 
                     using (OleDbCommand cmd = new OleDbCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("?", string.IsNullOrWhiteSpace(txtCodigo.Text) ? (object)DBNull.Value : txtCodigo.Text.Trim());
+                        // OJO: ya NO se pasa txtCodigo
                         cmd.Parameters.AddWithValue("?", string.IsNullOrWhiteSpace(txtNombre.Text) ? (object)DBNull.Value : txtNombre.Text.Trim());
                         cmd.Parameters.AddWithValue("?", string.IsNullOrWhiteSpace(txtContacto.Text) ? (object)DBNull.Value : txtContacto.Text.Trim());
                         cmd.Parameters.AddWithValue("?", string.IsNullOrWhiteSpace(txtMovil.Text) ? (object)DBNull.Value : txtMovil.Text.Trim());

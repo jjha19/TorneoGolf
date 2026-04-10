@@ -71,6 +71,7 @@
     <Content Include="AñadirEquipo.aspx" />
     <Content Include="Content\styles.css" />
     <Content Include="images\tick.png" />
+    <Content Include="ListaEquipos.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="ModificarTorneo.aspx" />
     <Content Include="Participantes.aspx" />
@@ -92,6 +93,13 @@
     </Compile>
     <Compile Include="AñadirEquipo.aspx.designer.cs">
       <DependentUpon>AñadirEquipo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ListaEquipos.aspx.cs">
+      <DependentUpon>ListaEquipos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ListaEquipos.aspx.designer.cs">
+      <DependentUpon>ListaEquipos.aspx</DependentUpon>
     </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>

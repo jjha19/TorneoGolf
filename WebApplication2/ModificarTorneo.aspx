@@ -39,7 +39,7 @@
                 <div class="integrante-edit-grid">
                     <div class="form-group">
                         <label><strong>Código del torneo</strong></label>
-                        <asp:TextBox ID="txtCodigo" runat="server" CssClass="textbox-alergia"></asp:TextBox>
+                        <asp:TextBox ID="txtCodigo" runat="server" CssClass="textbox-alergia readonly-field" ReadOnly="true"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="rfvCodigo" runat="server" ControlToValidate="txtCodigo"
                             ErrorMessage="El código es obligatorio" Display="Dynamic" CssClass="mensaje-error">*</asp:RequiredFieldValidator>
                     </div>

@@ -48,6 +48,9 @@
                                     <a href='AñadirEquipo.aspx?torneo=<%# Eval("t_codigo") %>' class="btn-enviar-comentario torneo-btn-link btn-anadir-equipo">
                                         Añadir equipo al torneo
                                     </a>
+                                    <a href='ListaEquipos.aspx?torneo=<%# Eval("t_codigo") %>' class="btn-enviar-comentario torneo-btn-link btn-lista-equipos">
+                                        Equipos
+                                    </a>
                                 </div>
                             </div>
                         </li>
