@@ -42,8 +42,6 @@
                 <asp:Label ID="lblMensajeError" runat="server"></asp:Label>
             </asp:Panel>
 
-            <h2>Lista de Invitados</h2>
-
             <!-- Lista de integrantes -->
             <div id="lista-container">
                 <asp:Repeater ID="rptIntegrantes" runat="server" OnItemDataBound="rptIntegrantes_ItemDataBound">
