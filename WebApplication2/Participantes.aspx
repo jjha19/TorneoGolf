@@ -5,6 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Torneo de Golf - Participantes</title>
     <!-- Referencia única y centralizada a TODOS los estilos -->
     <link href="Content/styles.css" rel="stylesheet" type="text/css" />
@@ -30,7 +31,10 @@
                 </div>
             </div>
 
-            <div class="estadisticas" id="estadisticasContainer">
+            <div class="estadisticas mostrar" id="estadisticasContainer">
+                <div class="estadisticas-total">
+                    Invitados en total: <asp:Label ID="lblInvitadosTotal" runat="server"></asp:Label>
+                </div>
                 <div class="estadisticas-col">
                     <div class="estadisticas-title">Asistencia</div>
                     <div class="estadisticas-item">
@@ -184,6 +188,13 @@
                                     CommandArgument='<%# Eval("p_contador") %>' />
 
                                 <asp:Button
+                                    ID="btnGuardarCambiosItem"
+                                    runat="server"
+                                    Text="Guardar cambios"
+                                    CssClass="btn-enviar-comentario"
+                                    OnClick="btnGuardarCambios_Click" />
+
+                                <asp:Button
                                     ID="btnEliminarParticipante"
                                     runat="server"
                                     Text="Eliminar"
@@ -198,11 +209,6 @@
                         </ul>
                     </FooterTemplate>
                 </asp:Repeater>
-
-                <div class="form-group" style="text-align:center; margin-top:15px;">
-                    <asp:Button ID="btnGuardarCambios" runat="server" Text="Guardar cambios" CssClass="btn-enviar-comentario"
-                        OnClick="btnGuardarCambios_Click" />
-                </div>
 
                 <asp:Panel ID="pnlNoData" runat="server" CssClass="no-data" Visible="false">
                     No hay participantes registrados en este torneo.
