@@ -18,7 +18,7 @@
             <div id="TitleText">
                 <h1>Mis Torneos</h1>
                 <div class="torneo-comentario">
-                    <asp:Label ID="lblInstrucciones" runat="server" Text="Aquí tienes la lista de los torneos en los que participas."></asp:Label>
+                    <asp:Label ID="lblInstrucciones" runat="server" Text="Aquí tienes la lista de los torneos que puedes gestionar"></asp:Label>
                 </div>
             </div>
 
