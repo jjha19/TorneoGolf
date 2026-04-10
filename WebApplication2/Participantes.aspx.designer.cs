@@ -33,6 +33,15 @@ namespace WebApplication2
         protected global::System.Web.UI.WebControls.Label lblNombreTorneo;
 
         /// <summary>
+        /// Control lblInvitadosTotal.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblInvitadosTotal;
+
+        /// <summary>
         /// Control btnDescargar.
         /// </summary>
         /// <remarks>

@@ -141,6 +141,7 @@ namespace WebApplication2
                     // 3. Pintar los datos
                     if (dt.Rows.Count > 0)
                     {
+                        lblInvitadosTotal.Text = dt.Rows.Count.ToString();
                         int totalSi = 0;
                         int totalNo = 0;
                         int totalPendiente = 0;
@@ -168,34 +169,38 @@ namespace WebApplication2
                                 totalPendiente++;
                             }
 
-                            string practica = Convert.ToString(row["p_practica"])?.Trim();
-                            if (string.Equals(practica, "Si", StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals(practica, "Sí", StringComparison.OrdinalIgnoreCase))
+                            if (string.Equals(asistencia, "Si", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(asistencia, "Sí", StringComparison.OrdinalIgnoreCase))
                             {
-                                totalPracticaSi++;
-                            }
-                            else if (string.Equals(practica, "No", StringComparison.OrdinalIgnoreCase))
-                            {
-                                totalPracticaNo++;
-                            }
-                            else
-                            {
-                                totalPracticaPendiente++;
-                            }
+                                string practica = Convert.ToString(row["p_practica"])?.Trim();
+                                if (string.Equals(practica, "Si", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(practica, "Sí", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    totalPracticaSi++;
+                                }
+                                else if (string.Equals(practica, "No", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    totalPracticaNo++;
+                                }
+                                else
+                                {
+                                    totalPracticaPendiente++;
+                                }
 
-                            string transporte = Convert.ToString(row["p_transporte"])?.Trim();
-                            if (string.Equals(transporte, "Si", StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals(transporte, "Sí", StringComparison.OrdinalIgnoreCase))
-                            {
-                                totalTransporteSi++;
-                            }
-                            else if (string.Equals(transporte, "No", StringComparison.OrdinalIgnoreCase))
-                            {
-                                totalTransporteNo++;
-                            }
-                            else
-                            {
-                                totalTransportePendiente++;
+                                string transporte = Convert.ToString(row["p_transporte"])?.Trim();
+                                if (string.Equals(transporte, "Si", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(transporte, "Sí", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    totalTransporteSi++;
+                                }
+                                else if (string.Equals(transporte, "No", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    totalTransporteNo++;
+                                }
+                                else
+                                {
+                                    totalTransportePendiente++;
+                                }
                             }
                         }
 
@@ -216,6 +221,7 @@ namespace WebApplication2
                     }
                     else
                     {
+                        lblInvitadosTotal.Text = "0";
                         lblAsistenSi.Text = "0";
                         lblAsistenNo.Text = "0";
                         lblAsistenPendiente.Text = "0";
@@ -344,6 +350,7 @@ namespace WebApplication2
                                  e_codigo = ?,
                                  p_movi = ?,
                                  p_asistencia = ?,
+                                 p_practica = ?,
                                  p_alergia = ?,
                                  p_transporte = ?,
                                  p_comentario = ?,
@@ -366,12 +373,13 @@ namespace WebApplication2
                         var txtEditAlergias = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditAlergias");
                         var rblEditAsistencia = (System.Web.UI.WebControls.RadioButtonList)item.FindControl("rblEditAsistencia");
                         var rblEditTransporte = (System.Web.UI.WebControls.RadioButtonList)item.FindControl("rblEditTransporte");
+                        var rblEditPractica = (System.Web.UI.WebControls.RadioButtonList)item.FindControl("rblEditPractica");
                         var txtEditComentario = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditComentario");
                         var txtEditFechaWs = (System.Web.UI.WebControls.TextBox)item.FindControl("txtEditFechaWs");
 
                         if (hdnContador == null || txtEditNombre == null || txtEditApellido == null || txtEditEquipo == null ||
                             txtEditMovil == null || txtEditAlergias == null || rblEditAsistencia == null ||
-                            rblEditTransporte == null || txtEditComentario == null || txtEditFechaWs == null)
+                            rblEditTransporte == null || rblEditPractica == null || txtEditComentario == null || txtEditFechaWs == null)
                         {
                             continue;
                         }
@@ -387,6 +395,7 @@ namespace WebApplication2
                         string equipo = (Request.Form[txtEditEquipo.UniqueID] ?? txtEditEquipo.Text ?? string.Empty).Trim().ToUpper();
                         string movil = (Request.Form[txtEditMovil.UniqueID] ?? txtEditMovil.Text ?? string.Empty).Trim();
                         string asistencia = rblEditAsistencia.SelectedValue;
+                        string practica = rblEditPractica.SelectedValue;
                         string alergia = (Request.Form[txtEditAlergias.UniqueID] ?? txtEditAlergias.Text ?? string.Empty).Trim();
                         string transporte = rblEditTransporte.SelectedValue;
                         string comentario = (Request.Form[txtEditComentario.UniqueID] ?? txtEditComentario.Text ?? string.Empty).Trim();
@@ -409,6 +418,7 @@ namespace WebApplication2
                             cmd.Parameters.AddWithValue("@e_codigo", string.IsNullOrEmpty(equipo) ? (object)DBNull.Value : equipo);
                             cmd.Parameters.AddWithValue("@p_movi", string.IsNullOrEmpty(movil) ? (object)DBNull.Value : movil);
                             cmd.Parameters.AddWithValue("@p_asistencia", string.IsNullOrEmpty(asistencia) ? (object)DBNull.Value : asistencia);
+                            cmd.Parameters.AddWithValue("@p_practica", string.IsNullOrEmpty(practica) ? (object)DBNull.Value : practica);
                             cmd.Parameters.AddWithValue("@p_alergia", string.IsNullOrEmpty(alergia) ? (object)DBNull.Value : alergia);
                             cmd.Parameters.AddWithValue("@p_transporte", string.IsNullOrEmpty(transporte) ? (object)DBNull.Value : transporte);
                             cmd.Parameters.AddWithValue("@p_comentario", string.IsNullOrEmpty(comentario) ? (object)DBNull.Value : comentario);
