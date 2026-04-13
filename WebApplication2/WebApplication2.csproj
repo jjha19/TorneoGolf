@@ -75,6 +75,7 @@
     <Content Include="Login.aspx" />
     <Content Include="ModificarTorneo.aspx" />
     <Content Include="Participantes.aspx" />
+    <Content Include="Scripts\participantes-search.js" />
     <Content Include="Torneos.aspx" />
     <Content Include="Web.config" />
     <Content Include="Principal.aspx" />

@@ -3,6 +3,11 @@
     var searchInput = document.getElementById("searchInput");
     var searchButton = document.getElementById("searchButton");
     var searchScope = document.getElementById("lista-container");
+    var searchNav = document.getElementById("searchNav");
+    var searchPrev = document.getElementById("searchPrev");
+    var searchNext = document.getElementById("searchNext");
+    var currentMatches = [];
+    var currentIndex = 0;
 
     function clearHighlights() {
         var highlights = searchScope.querySelectorAll(".search-highlight");
@@ -14,7 +19,37 @@
         inputHighlights.forEach(function (input) {
             input.classList.remove("search-highlight-input");
         });
+        var currentHighlights = searchScope.querySelectorAll(".search-highlight-current");
+        currentHighlights.forEach(function (element) {
+            element.classList.remove("search-highlight-current");
+        });
         searchScope.normalize();
+        currentMatches = [];
+        currentIndex = 0;
+        updateNavVisibility();
+    }
+
+    function updateNavVisibility() {
+        if (searchNav) {
+            searchNav.style.display = currentMatches.length ? "flex" : "none";
+        }
+    }
+
+    function setCurrentMatch(index) {
+        if (!currentMatches.length) {
+            updateNavVisibility();
+            return;
+        }
+
+        if (currentMatches[currentIndex]) {
+            currentMatches[currentIndex].classList.remove("search-highlight-current");
+        }
+
+        currentIndex = (index + currentMatches.length) % currentMatches.length;
+        var current = currentMatches[currentIndex];
+        current.classList.add("search-highlight-current");
+        current.scrollIntoView({ behavior: "smooth", block: "center" });
+        updateNavVisibility();
     }
 
     function highlightMatches(query) {
@@ -82,16 +117,19 @@
         clearHighlights();
         var query = searchInput.value.trim();
         if (!query) {
+            currentMatches = [];
+            updateNavVisibility();
             return;
         }
 
-        var matches = highlightMatches(query);
-        if (!matches.length) {
+        currentMatches = highlightMatches(query);
+        if (!currentMatches.length) {
+            updateNavVisibility();
             alert("No hay coincidencias con su búsqueda");
             return;
         }
 
-        matches[0].scrollIntoView({ behavior: "smooth", block: "center" });
+        setCurrentMatch(0);
     }
 
     if (searchButton && searchInput && searchScope) {
@@ -100,6 +138,22 @@
             if (event.key === "Enter") {
                 event.preventDefault();
                 runSearch();
+            }
+        });
+    }
+
+    if (searchPrev) {
+        searchPrev.addEventListener("click", function () {
+            if (currentMatches.length) {
+                setCurrentMatch(currentIndex - 1);
+            }
+        });
+    }
+
+    if (searchNext) {
+        searchNext.addEventListener("click", function () {
+            if (currentMatches.length) {
+                setCurrentMatch(currentIndex + 1);
             }
         });
     }

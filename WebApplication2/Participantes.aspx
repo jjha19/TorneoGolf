@@ -313,6 +313,11 @@
         </div>
     </form>
 
+    <div id="searchNav" class="search-nav" style="display: none;">
+        <button type="button" class="search-nav-button" id="searchPrev">↑</button>
+        <button type="button" class="search-nav-button" id="searchNext">↓</button>
+    </div>
+
     <script src="Scripts/participantes-search.js"></script>
 </body>
 </html>
