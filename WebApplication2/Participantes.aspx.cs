@@ -101,7 +101,6 @@ namespace WebApplication2
                     bool tieneFechaMod = ExisteColumna(conn, "Equipo_participa", "Fecha_ult_modificacion");
                     string columnaFecha = tieneFechaMod ? ", p.Fecha_ult_modificacion" : string.Empty;
 
-                    // Añadimos ORDER BY e_codigo ASC para el archivo descargado
                     string queryParticipantes = "SELECT e.e_nombre AS equipo_nombre, p.e_codigo, p.p_nombre, p.p_apellido, p.p_movi, p.p_asistencia, p.p_transporte, p.p_alergia, p.p_comentario, p.p_practica, p.fecha_ws" +
                                                 columnaFecha +
                                                 " FROM Equipo_participa p LEFT JOIN Equipo e ON p.e_codigo = e.e_codigo WHERE p.p_torneo = ? ORDER BY p.e_codigo ASC, p.p_nombre ASC";
@@ -139,7 +138,6 @@ namespace WebApplication2
             Response.End();
         }
 
-
         private void CargarParticipantes()
         {
             string torneoCodigo = Request.QueryString["torneo"];
@@ -156,25 +154,15 @@ namespace WebApplication2
                 {
                     conn.Open();
 
-                    // 1. Obtener el nombre del torneo
                     string queryTorneo = "SELECT t_nombre FROM Torneos WHERE t_codigo = ?";
                     using (OleDbCommand cmdTorneo = new OleDbCommand(queryTorneo, conn))
                     {
                         cmdTorneo.Parameters.AddWithValue("?", torneoCodigo);
                         object nombreResultado = cmdTorneo.ExecuteScalar();
-                        if (nombreResultado != null)
-                        {
-                            lblNombreTorneo.Text = nombreResultado.ToString();
-                        }
-                        else
-                        {
-                            lblNombreTorneo.Text = "Torneo Desconocido";
-                        }
+                        lblNombreTorneo.Text = nombreResultado != null ? nombreResultado.ToString() : "Torneo Desconocido";
                     }
 
-                    // 2. Extraer a los participantes
                     DataTable dt = new DataTable();
-                    // Incluimos e_codigo en el SELECT y ordenamos por e_codigo y nombre
                     string queryParticipantes = "SELECT p.p_contador, p.e_codigo, e.e_nombre AS equipo_nombre, e.e_cerrado, p.p_nombre, p.p_apellido, p.p_movi, p.p_asistencia, p.p_transporte, p.p_alergia, p.p_comentario, p.p_practica, p.fecha_ws " +
                                                 "FROM Equipo_participa p LEFT JOIN Equipo e ON p.e_codigo = e.e_codigo WHERE p.p_torneo = ? ORDER BY p.e_codigo ASC, p.p_nombre ASC";
 
@@ -185,19 +173,12 @@ namespace WebApplication2
                         adapter.Fill(dt);
                     }
 
-                    // 3. Pintar los datos
                     if (dt.Rows.Count > 0)
                     {
                         lblInvitadosTotal.Text = dt.Rows.Count.ToString();
-                        int totalSi = 0;
-                        int totalNo = 0;
-                        int totalPendiente = 0;
-                        int totalPracticaSi = 0;
-                        int totalPracticaNo = 0;
-                        int totalPracticaPendiente = 0;
-                        int totalTransporteSi = 0;
-                        int totalTransporteNo = 0;
-                        int totalTransportePendiente = 0;
+                        int totalSi = 0, totalNo = 0, totalPendiente = 0;
+                        int totalPracticaSi = 0, totalPracticaNo = 0, totalPracticaPendiente = 0;
+                        int totalTransporteSi = 0, totalTransporteNo = 0, totalTransportePendiente = 0;
 
                         foreach (DataRow row in dt.Rows)
                         {
@@ -264,8 +245,8 @@ namespace WebApplication2
                         rptParticipantes.DataSource = dt;
                         rptParticipantes.DataBind();
 
-                        // TABLA COMPACTA
-                        gvResumenCompacto.DataSource = dt;
+                        DataTable dtResumen = FiltrarTablaResumen(dt);
+                        gvResumenCompacto.DataSource = dtResumen;
                         gvResumenCompacto.DataBind();
 
                         pnlNoData.Visible = false;
@@ -286,7 +267,6 @@ namespace WebApplication2
                         rptParticipantes.DataSource = null;
                         rptParticipantes.DataBind();
 
-                        // TABLA COMPACTA
                         gvResumenCompacto.DataSource = null;
                         gvResumenCompacto.DataBind();
 
@@ -377,17 +357,7 @@ namespace WebApplication2
 
         private static string ObtenerColorEquipo(string equipoCodigo)
         {
-            string[] colores =
-            {
-                "#FFA500",
-                "#22C55E",
-                "#8B5CF6",
-                "#38BDF8",
-                "#EC4899",
-                "#2563EB",
-                "#EF4444"
-            };
-
+            string[] colores = { "#FFA500", "#22C55E", "#8B5CF6", "#38BDF8", "#EC4899", "#2563EB", "#EF4444" };
             int hash = equipoCodigo.GetHashCode();
             int index = Math.Abs(hash) % colores.Length;
             return colores[index];
@@ -662,7 +632,6 @@ namespace WebApplication2
                 limpio = limpio.Substring(2);
             }
 
-            // Si llega móvil nacional de 9 dígitos, asumimos España (34)
             if (limpio.Length == 9)
             {
                 limpio = "34" + limpio;
@@ -715,7 +684,6 @@ namespace WebApplication2
                 {
                     conn.Open();
 
-                    // --- NUEVA VALIDACIÓN: COMPROBAR SI EL CÓDIGO DE EQUIPO EXISTE ---
                     string codEquipoIngresado = txtAddCodigoEquipo.Text.Trim().ToUpper();
                     bool equipoExiste = false;
 
@@ -729,7 +697,6 @@ namespace WebApplication2
                         equipoExiste = count > 0;
                     }
 
-                    // Si no existe no permitimos guardar el participante y mostramos un mensaje de error
                     if (!equipoExiste)
                     {
                         GuardarMensajeEnSession(null, $"El código de equipo '{codEquipoIngresado}' no existe en este torneo. Por favor, introduzca uno válido.");
@@ -737,7 +704,6 @@ namespace WebApplication2
                         return;
                     }
 
-                    // Consulta de inserción incluyendo e_codigo
                     string query = @"INSERT INTO Equipo_participa 
                                      (p_torneo, e_codigo, p_nombre, p_apellido, p_movi, p_asistencia, p_transporte, p_alergia, p_practica, p_comentario) 
                                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -760,7 +726,6 @@ namespace WebApplication2
                     }
                 }
 
-                // Mostrar éxito
                 MostrarMensajeExito("¡El participante ha sido añadido con éxito!");
                 GuardarMensajeEnSession("¡El participante ha sido añadido con éxito!", null);
                 RedirigirRecarga();
@@ -865,7 +830,6 @@ namespace WebApplication2
         {
             string mensaje = string.Empty;
 
-            // 1) Obtener texto_ws por el torneo real del participante
             string query = @"SELECT TOP 1 t.texto_ws
                              FROM Equipo_participa p
                              INNER JOIN Torneos t ON p.p_torneo = t.t_codigo
@@ -881,7 +845,6 @@ namespace WebApplication2
                 }
             }
 
-            // 2) Fallback por código de torneo de la URL
             if (string.IsNullOrWhiteSpace(mensaje))
             {
                 query = "SELECT TOP 1 texto_ws FROM Torneos WHERE t_codigo = ?";
@@ -922,13 +885,6 @@ namespace WebApplication2
                     return string.Empty;
                 }
 
-                // Link para pruebas internas
-                // return "https://localhost:44340/Principal.aspx?index=" + index;
-
-                // Link para pruebas externas
-                // (descomentar si se quiere usar en producción, pero asegurarse de que la IP
-                // y puerto son correctos y accesibles desde internet)
-
                 return "http://213.37.131.233:83/invitacion/Principal.aspx?index=" + index;
             }
         }
@@ -957,6 +913,66 @@ namespace WebApplication2
             {
                 e.Row.CssClass = (e.Row.CssClass + " tabla-si-asiste").Trim();
             }
+        }
+
+        protected void ddlFiltros_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CargarParticipantes();
+        }
+
+        private static string NormalizarValorFiltro(string valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                return "Pendiente";
+            }
+
+            valor = valor.Trim();
+
+            if (string.Equals(valor, "Si", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(valor, "Sí", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Si";
+            }
+
+            if (string.Equals(valor, "No", StringComparison.OrdinalIgnoreCase))
+            {
+                return "No";
+            }
+
+            return "Pendiente";
+        }
+
+        private DataTable FiltrarTablaResumen(DataTable origen)
+        {
+            if (origen == null)
+            {
+                return null;
+            }
+
+            string filtroAsiste = ddlFiltroAsiste != null ? ddlFiltroAsiste.SelectedValue : string.Empty;
+            string filtroBus = ddlFiltroBus != null ? ddlFiltroBus.SelectedValue : string.Empty;
+            string filtroPractica = ddlFiltroPractica != null ? ddlFiltroPractica.SelectedValue : string.Empty;
+
+            DataTable filtrada = origen.Clone();
+
+            foreach (DataRow row in origen.Rows)
+            {
+                string asiste = NormalizarValorFiltro(Convert.ToString(row["p_asistencia"]));
+                string bus = NormalizarValorFiltro(Convert.ToString(row["p_transporte"]));
+                string practica = NormalizarValorFiltro(Convert.ToString(row["p_practica"]));
+
+                bool cumpleAsiste = string.IsNullOrEmpty(filtroAsiste) || string.Equals(asiste, filtroAsiste, StringComparison.OrdinalIgnoreCase);
+                bool cumpleBus = string.IsNullOrEmpty(filtroBus) || string.Equals(bus, filtroBus, StringComparison.OrdinalIgnoreCase);
+                bool cumplePractica = string.IsNullOrEmpty(filtroPractica) || string.Equals(practica, filtroPractica, StringComparison.OrdinalIgnoreCase);
+
+                if (cumpleAsiste && cumpleBus && cumplePractica)
+                {
+                    filtrada.ImportRow(row);
+                }
+            }
+
+            return filtrada;
         }
     }
 }

@@ -86,9 +86,40 @@
                 </div>
             </div>
 
-            <!-- Resumen compacto tipo Excel (PASO 3: debajo de estadísticas) -->
+            <!-- Resumen compacto tipo Excel -->
             <div class="resumen-compacto">
                 <h3>Resumen rápido de equipos e integrantes</h3>
+
+                <!-- FILTROS (paso 1) -->
+                <div class="tabla-filtros">
+                    <asp:Label ID="lblFiltroAsiste" runat="server" AssociatedControlID="ddlFiltroAsiste" Text="Asiste:" />
+                    <asp:DropDownList ID="ddlFiltroAsiste" runat="server" CssClass="tabla-filtro-select"
+                        AutoPostBack="true" OnSelectedIndexChanged="ddlFiltros_SelectedIndexChanged">
+                        <asp:ListItem Text="Todos" Value=""></asp:ListItem>
+                        <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                        <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                        <asp:ListItem Text="Sin contestar" Value="Pendiente"></asp:ListItem>
+                    </asp:DropDownList>
+
+                    <asp:Label ID="lblFiltroBus" runat="server" AssociatedControlID="ddlFiltroBus" Text="Bus:" />
+                    <asp:DropDownList ID="ddlFiltroBus" runat="server" CssClass="tabla-filtro-select"
+                        AutoPostBack="true" OnSelectedIndexChanged="ddlFiltros_SelectedIndexChanged">
+                        <asp:ListItem Text="Todos" Value=""></asp:ListItem>
+                        <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                        <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                        <asp:ListItem Text="Sin contestar" Value="Pendiente"></asp:ListItem>
+                    </asp:DropDownList>
+
+                    <asp:Label ID="lblFiltroPractica" runat="server" AssociatedControlID="ddlFiltroPractica" Text="Práctica:" />
+                    <asp:DropDownList ID="ddlFiltroPractica" runat="server" CssClass="tabla-filtro-select"
+                        AutoPostBack="true" OnSelectedIndexChanged="ddlFiltros_SelectedIndexChanged">
+                        <asp:ListItem Text="Todos" Value=""></asp:ListItem>
+                        <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
+                        <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                        <asp:ListItem Text="Sin contestar" Value="Pendiente"></asp:ListItem>
+                    </asp:DropDownList>
+                </div>
+
                 <asp:GridView ID="gvResumenCompacto" runat="server" AutoGenerateColumns="false"
                     CssClass="tabla-compacta" GridLines="Both" ShowHeaderWhenEmpty="true" EmptyDataText="Sin datos"
                     OnRowDataBound="gvResumenCompacto_RowDataBound">
@@ -280,7 +311,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><strong>¿Tiene transporte?</strong></label>
+                        <label><strong>¿Usará autobús?</strong></label>
                         <div class="radio-wrapper-15 radio-list-responsive">
                             <asp:RadioButtonList ID="rblAddTransporte" runat="server" RepeatDirection="Horizontal">
                                 <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
@@ -290,7 +321,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label><strong>¿Asiste a práctica?</strong></label>
+                        <label><strong>¿Asiste a jornada de práctica?</strong></label>
                         <div class="radio-wrapper-15 radio-list-responsive">
                             <asp:RadioButtonList ID="rblAddPractica" runat="server" RepeatDirection="Horizontal">
                                 <asp:ListItem Text="Sí" Value="Si"></asp:ListItem>
