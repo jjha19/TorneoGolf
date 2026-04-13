@@ -102,7 +102,7 @@ namespace WebApplication2
                     string columnaFecha = tieneFechaMod ? ", p.Fecha_ult_modificacion" : string.Empty;
 
                     // Añadimos ORDER BY e_codigo ASC para el archivo descargado
-                    string queryParticipantes = "SELECT e.e_nombre AS equipo_nombre, p.e_codigo, p.p_nombre, p.p_apellido, p.p_movi, p.p_asistencia, p.p_transporte, p.p_alergia, p.p_comentario, p.p_practica" +
+                    string queryParticipantes = "SELECT e.e_nombre AS equipo_nombre, p.e_codigo, p.p_nombre, p.p_apellido, p.p_movi, p.p_asistencia, p.p_transporte, p.p_alergia, p.p_comentario, p.p_practica, p.fecha_ws" +
                                                 columnaFecha +
                                                 " FROM Equipo_participa p LEFT JOIN Equipo e ON p.e_codigo = e.e_codigo WHERE p.p_torneo = ? ORDER BY p.e_codigo ASC, p.p_nombre ASC";
 
@@ -804,7 +804,7 @@ namespace WebApplication2
         {
             var sb = new StringBuilder();
             sb.AppendLine("<table border='1'>");
-            sb.AppendLine("<tr><th>Equipo</th><th>Codigo Equipo</th><th>Nombre</th><th>Apellido</th><th>Movil</th><th>Asistencia</th><th>Transporte</th><th>Alergia</th><th>Comentario</th><th>Practica</th><th>Fecha Ult Modificacion</th></tr>");
+            sb.AppendLine("<tr><th>Equipo</th><th>Codigo Equipo</th><th>Nombre</th><th>Apellido</th><th>Movil</th><th>Asistencia</th><th>Transporte</th><th>Alergia</th><th>Comentario</th><th>Practica</th><th>Fecha WhatsApp</th><th>Fecha Ult Modificacion</th></tr>");
 
             const string colEquipoNombre = "equipo_nombre";
             const string colEquipoCodigo = "e_codigo";
@@ -816,6 +816,7 @@ namespace WebApplication2
             const string colAlergia = "p_alergia";
             const string colComentario = "p_comentario";
             const string colPractica = "p_practica";
+            const string colFechaWs = "fecha_ws";
             const string colFechaMod = "Fecha_ult_modificacion";
 
             foreach (DataRow row in dt.Rows)
@@ -831,6 +832,7 @@ namespace WebApplication2
                 sb.AppendLine($"<td>{ObtenerCelda(row, colAlergia)}</td>");
                 sb.AppendLine($"<td>{ObtenerCelda(row, colComentario)}</td>");
                 sb.AppendLine($"<td>{ObtenerCelda(row, colPractica)}</td>");
+                sb.AppendLine($"<td>{ObtenerCelda(row, colFechaWs)}</td>");
                 sb.AppendLine($"<td>{ObtenerCelda(row, colFechaMod)}</td>");
                 sb.AppendLine("</tr>");
             }

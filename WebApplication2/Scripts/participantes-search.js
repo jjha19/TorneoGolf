@@ -1,4 +1,9 @@
+
+
+
+// IMPORTANTE:
 // Estos scripts son para evitar postbacks, así no se sobreescribe accidentalmente nada en la Base de Datos
+
 (function () {
     var searchInput = document.getElementById("searchInput");
     var searchButton = document.getElementById("searchButton");
