@@ -282,6 +282,11 @@ namespace WebApplication2
                         ViewState["EquipoActual"] = null;
                         rptParticipantes.DataSource = dt;
                         rptParticipantes.DataBind();
+
+                        // TABLA COMPACTA
+                        gvResumenCompacto.DataSource = dt;
+                        gvResumenCompacto.DataBind();
+
                         pnlNoData.Visible = false;
                     }
                     else
@@ -296,8 +301,14 @@ namespace WebApplication2
                         lblTransporteSi.Text = "0";
                         lblTransporteNo.Text = "0";
                         lblTransportePendiente.Text = "0";
+
                         rptParticipantes.DataSource = null;
                         rptParticipantes.DataBind();
+
+                        // TABLA COMPACTA
+                        gvResumenCompacto.DataSource = null;
+                        gvResumenCompacto.DataBind();
+
                         pnlNoData.Visible = true;
                     }
                 }

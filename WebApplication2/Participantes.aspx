@@ -7,7 +7,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Torneo de Golf - Participantes</title>
-    <!-- Referencia única y centralizada a TODOS los estilos -->
     <link href="Content/styles.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -16,9 +15,7 @@
     <form id="form1" runat="server">
         <div class="container">
             
-            <!-- Título -->
             <div id="TitleText">
-                <!-- Botón de Volver -->
                 <div class="btn-volver-container">
                     <a href="Torneos.aspx" class="btn-volver">
                         &larr; <span class="btn-volver-texto">Volver a Mis Torneos</span>
@@ -82,7 +79,25 @@
                 </div>
             </div>
 
-            <!-- Mensajes Globales -->
+            <!-- Resumen compacto tipo Excel (PASO 3: debajo de estadísticas) -->
+            <div class="resumen-compacto">
+                <h3>Resumen rápido de equipos e integrantes</h3>
+                <asp:GridView ID="gvResumenCompacto" runat="server" AutoGenerateColumns="false"
+                    CssClass="tabla-compacta" GridLines="Both" ShowHeaderWhenEmpty="true" EmptyDataText="Sin datos">
+                    <Columns>
+                        <asp:BoundField DataField="e_codigo" HeaderText="Equipo" />
+                        <asp:BoundField DataField="equipo_nombre" HeaderText="Nombre equipo" />
+                        <asp:BoundField DataField="p_nombre" HeaderText="Nombre" />
+                        <asp:BoundField DataField="p_apellido" HeaderText="Apellido" />
+                        <asp:BoundField DataField="p_asistencia" HeaderText="Asiste" />
+                        <asp:BoundField DataField="p_transporte" HeaderText="Bus" />
+                        <asp:BoundField DataField="p_practica" HeaderText="Práctica" />
+                        <asp:BoundField DataField="fecha_ws" HeaderText="Fecha mensaje WhatsApp" />
+                        <asp:BoundField DataField="p_comentario" HeaderText="Comentarios" />
+                    </Columns>
+                </asp:GridView>
+            </div>
+
             <asp:Panel ID="pnlMensajeExito" runat="server" CssClass="mensaje mensaje-exito" Visible="false">
                 <asp:Label ID="lblMensajeExito" runat="server"></asp:Label>
             </asp:Panel>
@@ -90,7 +105,6 @@
                 <asp:Label ID="lblMensajeError" runat="server"></asp:Label>
             </asp:Panel>
 
-            <!-- Lista de participantes -->
             <div id="lista-container">
                 <asp:Repeater ID="rptParticipantes" runat="server" OnItemCommand="rptParticipantes_ItemCommand" OnItemDataBound="rptParticipantes_ItemDataBound">
                     <HeaderTemplate>
@@ -215,7 +229,6 @@
                 </asp:Panel>
             </div>
 
-            <!-- Este es el formulario para añadir un nuevo participante -->
             <div class="form-add-container">
                 <h3>Añadir Nuevo Participante</h3>
                 <div class="integrante-edit-grid participante-grid-add">
