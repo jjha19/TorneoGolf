@@ -1473,6 +1473,27 @@ h2 {
     color: #2c5f2d;
 }
 
+/* Nuevos estilos para filas que no asisten */
+.tabla-compacta tr.tabla-no-asiste td {
+    background-color: rgba(239, 68, 68, 0.18) !important;
+    color: #8b0000 !important;
+    font-weight: 600;
+}
+
+.tabla-compacta tr.tabla-no-asiste td:first-child {
+    color: #8b0000 !important;
+}
+
+.tabla-compacta tr.tabla-si-asiste td {
+    background-color: rgba(34, 197, 94, 0.16) !important;
+    color: #166534 !important;
+    font-weight: 600;
+}
+
+.tabla-compacta tr.tabla-si-asiste td:first-child {
+    color: #166534 !important;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .resumen-compacto {

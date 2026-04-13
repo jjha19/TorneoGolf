@@ -930,5 +930,25 @@ namespace WebApplication2
                 return "http://213.37.131.233:83/invitacion/Principal.aspx?index=" + index;
             }
         }
+
+        protected void gvResumenCompacto_RowDataBound(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
+{
+    if (e.Row.RowType != System.Web.UI.WebControls.DataControlRowType.DataRow)
+    {
+        return;
+    }
+
+    string asistencia = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "p_asistencia"))?.Trim();
+
+    if (string.Equals(asistencia, "No", StringComparison.OrdinalIgnoreCase))
+    {
+        e.Row.CssClass = (e.Row.CssClass + " tabla-no-asiste").Trim();
+    }
+    else if (string.Equals(asistencia, "Si", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(asistencia, "Sí", StringComparison.OrdinalIgnoreCase))
+    {
+        e.Row.CssClass = (e.Row.CssClass + " tabla-si-asiste").Trim();
+    }
+}
     }
 }

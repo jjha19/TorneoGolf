@@ -90,7 +90,8 @@
             <div class="resumen-compacto">
                 <h3>Resumen rápido de equipos e integrantes</h3>
                 <asp:GridView ID="gvResumenCompacto" runat="server" AutoGenerateColumns="false"
-                    CssClass="tabla-compacta" GridLines="Both" ShowHeaderWhenEmpty="true" EmptyDataText="Sin datos">
+                    CssClass="tabla-compacta" GridLines="Both" ShowHeaderWhenEmpty="true" EmptyDataText="Sin datos"
+                    OnRowDataBound="gvResumenCompacto_RowDataBound">
                     <Columns>
                         <asp:BoundField DataField="e_codigo" HeaderText="Equipo" />
                         <asp:BoundField DataField="equipo_nombre" HeaderText="Nombre equipo" />
