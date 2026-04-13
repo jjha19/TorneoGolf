@@ -11,6 +11,7 @@
     var searchNav = document.getElementById("searchNav");
     var searchPrev = document.getElementById("searchPrev");
     var searchNext = document.getElementById("searchNext");
+    var resumenTabla = document.querySelector(".tabla-compacta");
     var currentMatches = [];
     var currentIndex = 0;
 
@@ -159,6 +160,25 @@
         searchNext.addEventListener("click", function () {
             if (currentMatches.length) {
                 setCurrentMatch(currentIndex + 1);
+            }
+        });
+    }
+
+    if (resumenTabla && searchScope) {
+        resumenTabla.addEventListener("click", function (event) {
+            var row = event.target.closest("tr[data-participante-id]");
+            if (!row) {
+                return;
+            }
+
+            var participanteId = row.getAttribute("data-participante-id");
+            if (!participanteId) {
+                return;
+            }
+
+            var target = searchScope.querySelector("[data-participante-id='" + participanteId + "']");
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth", block: "center" });
             }
         });
     }

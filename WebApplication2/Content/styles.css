@@ -309,6 +309,14 @@ body {
     background-color: #3b7a3d;
 }
 
+.tabla-compacta tr[data-participante-id] {
+    cursor: pointer;
+}
+
+.tabla-compacta tr[data-participante-id]:hover {
+    background-color: #f3f7f3;
+}
+
     #TitleText h1 {
         color: #2c5f2d;
         border-bottom: none;

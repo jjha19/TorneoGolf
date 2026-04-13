@@ -120,7 +120,7 @@
                     </HeaderTemplate>
                     <ItemTemplate>
                         <asp:PlaceHolder ID="phEquipoHeader" runat="server" />
-                        <li id="itemContainer" runat="server" class="integrante-item">
+                        <li id="itemContainer" runat="server" class="integrante-item" data-participante-id='<%# Eval("p_contador") %>'>
                             <asp:HiddenField ID="hdnContador" runat="server" Value='<%# Eval("p_contador") %>' />
 
                             <div class="integrante-edit-grid participante-grid-detalles">

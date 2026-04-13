@@ -934,23 +934,29 @@ namespace WebApplication2
         }
 
         protected void gvResumenCompacto_RowDataBound(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
-{
-    if (e.Row.RowType != System.Web.UI.WebControls.DataControlRowType.DataRow)
-    {
-        return;
-    }
+        {
+            if (e.Row.RowType != System.Web.UI.WebControls.DataControlRowType.DataRow)
+            {
+                return;
+            }
 
-    string asistencia = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "p_asistencia"))?.Trim();
+            string participanteId = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "p_contador"))?.Trim();
+            if (!string.IsNullOrWhiteSpace(participanteId))
+            {
+                e.Row.Attributes["data-participante-id"] = participanteId;
+            }
 
-    if (string.Equals(asistencia, "No", StringComparison.OrdinalIgnoreCase))
-    {
-        e.Row.CssClass = (e.Row.CssClass + " tabla-no-asiste").Trim();
-    }
-    else if (string.Equals(asistencia, "Si", StringComparison.OrdinalIgnoreCase) ||
-             string.Equals(asistencia, "Sí", StringComparison.OrdinalIgnoreCase))
-    {
-        e.Row.CssClass = (e.Row.CssClass + " tabla-si-asiste").Trim();
-    }
-}
+            string asistencia = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "p_asistencia"))?.Trim();
+
+            if (string.Equals(asistencia, "No", StringComparison.OrdinalIgnoreCase))
+            {
+                e.Row.CssClass = (e.Row.CssClass + " tabla-no-asiste").Trim();
+            }
+            else if (string.Equals(asistencia, "Si", StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(asistencia, "Sí", StringComparison.OrdinalIgnoreCase))
+            {
+                e.Row.CssClass = (e.Row.CssClass + " tabla-si-asiste").Trim();
+            }
+        }
     }
 }
