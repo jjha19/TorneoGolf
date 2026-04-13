@@ -42,24 +42,6 @@ namespace WebApplication2
         protected global::System.Web.UI.WebControls.Button btnDescargar;
 
         /// <summary>
-        /// Control btnMostrarEstadisticas.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnMostrarEstadisticas;
-
-        /// <summary>
-        /// Control estadisticasContainer.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl estadisticasContainer;
-
-        /// <summary>
         /// Control lblInvitadosTotal.
         /// </summary>
         /// <remarks>

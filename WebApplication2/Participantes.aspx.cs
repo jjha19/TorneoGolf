@@ -13,7 +13,6 @@ namespace WebApplication2
     {
         private const string MensajeExitoSessionKey = "Participantes.MensajeExito";
         private const string MensajeErrorSessionKey = "Participantes.MensajeError";
-        private const string EstadisticasVisiblesViewStateKey = "Participantes.EstadisticasVisibles";
 
         private string connectionString
         {
@@ -34,26 +33,8 @@ namespace WebApplication2
 
             if (!IsPostBack)
             {
-                ViewState[EstadisticasVisiblesViewStateKey] = true;
                 MostrarMensajesPersistidos();
                 CargarParticipantes();
-                ActualizarVisibilidadEstadisticas();
-            }
-        }
-
-        protected void btnMostrarEstadisticas_Click(object sender, EventArgs e)
-        {
-            bool visibles = ViewState[EstadisticasVisiblesViewStateKey] as bool? ?? true;
-            ViewState[EstadisticasVisiblesViewStateKey] = !visibles;
-            ActualizarVisibilidadEstadisticas();
-        }
-
-        private void ActualizarVisibilidadEstadisticas()
-        {
-            bool visibles = ViewState[EstadisticasVisiblesViewStateKey] as bool? ?? true;
-            if (estadisticasContainer != null)
-            {
-                estadisticasContainer.Attributes["class"] = visibles ? "estadisticas mostrar" : "estadisticas";
             }
         }
 

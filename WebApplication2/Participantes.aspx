@@ -24,11 +24,18 @@
                 <h1>Invitados: <asp:Label ID="lblNombreTorneo" runat="server"></asp:Label></h1>
                 <div class="form-group" style="text-align: center; border: none; padding: 0;">
                     <asp:Button ID="btnDescargar" runat="server" Text="Descargar info" CssClass="btn-enviar-comentario" OnClick="btnDescargar_Click" />
-                    <asp:Button ID="btnMostrarEstadisticas" runat="server" Text="Mostrar Estadísticas" CssClass="btn-enviar-comentario btn-mostrar-estadisticas" OnClick="btnMostrarEstadisticas_Click" />
+                </div>
+                <div class="search-bar-container">
+                    <div class="search-bar">
+                        <input type="text" class="search-input" placeholder="Buscar" id="searchInput" />
+                        <button type="button" class="search-button" id="searchButton">
+                            <img src="images/lupa.png" alt="Buscar" class="search-icon" />
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="estadisticas mostrar" id="estadisticasContainer" runat="server">
+            <div class="estadisticas" id="estadisticasContainer">
                 <div class="estadisticas-total">
                     Invitados en total: <asp:Label ID="lblInvitadosTotal" runat="server"></asp:Label>
                 </div>
@@ -305,5 +312,7 @@
 
         </div>
     </form>
+
+    <script src="Scripts/participantes-search.js"></script>
 </body>
 </html>
