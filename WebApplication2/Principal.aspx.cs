@@ -29,7 +29,8 @@ namespace WebApplication2
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(Request.QueryString["index"]))
+            string indiceCodificado = Request.QueryString["index"];
+            if (string.IsNullOrEmpty(indiceCodificado))
             {
                 Response.StatusCode = 404;
                 Response.End();
@@ -70,7 +71,7 @@ namespace WebApplication2
             int equipoContador = 1;
             if (!string.IsNullOrEmpty(Request.QueryString["index"]))
             {
-                int.TryParse(Request.QueryString["index"], out equipoContador);
+                int.TryParse(DecodificarIndice(Request.QueryString["index"]), out equipoContador);
                 if (equipoContador < 1) equipoContador = 1;
             }
 
@@ -541,6 +542,33 @@ namespace WebApplication2
             if (rblPractica != null) rblPractica.Enabled = false;
             if (txtComentario != null) txtComentario.ReadOnly = true;
             if (btnEnviarComentario != null) btnEnviarComentario.Enabled = false;
+        }
+
+        private static string DecodificarIndice(string indiceCodificado)
+        {
+            try
+            {
+                string normalizado = indiceCodificado.Replace('-', '+').Replace('_', '/');
+                switch (normalizado.Length % 4)
+                {
+                    case 2:
+                        normalizado += "==";
+                        break;
+                    case 3:
+                        normalizado += "=";
+                        break;
+                }
+
+                byte[] bytes = Convert.FromBase64String(normalizado);
+                string hex = Encoding.UTF8.GetString(bytes);
+                return int.TryParse(hex, System.Globalization.NumberStyles.HexNumber, null, out var resultado)
+                    ? resultado.ToString()
+                    : string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 }

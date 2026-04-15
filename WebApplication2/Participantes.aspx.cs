@@ -885,8 +885,17 @@ namespace WebApplication2
                     return string.Empty;
                 }
 
-                return "http://213.37.131.233:83/invitacion/Principal.aspx?index=" + index;
+                string indiceCodificado = CodificarIndice(index);
+                return "http://213.37.131.233:83/invitacion/Principal.aspx?index=" + Uri.EscapeDataString(indiceCodificado);
             }
+        }
+
+        private static string CodificarIndice(int index)
+        {
+            string hex = index.ToString("X");
+            byte[] bytes = Encoding.UTF8.GetBytes(hex);
+            string base64 = Convert.ToBase64String(bytes);
+            return base64.TrimEnd('=').Replace('+', '-').Replace('/', '_');
         }
 
         protected void gvResumenCompacto_RowDataBound(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
