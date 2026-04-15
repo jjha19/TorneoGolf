@@ -92,8 +92,14 @@ namespace WebApplication2
             {
                 using (OleDbConnection conn = new OleDbConnection(connectionString))
                 {
-                    string query = @"INSERT INTO Equipo (e_codigo, e_nombre, e_movil, e_contacto, e_torneo)
-                                     VALUES (?, ?, ?, ?, ?)";
+                    conn.Open();
+                    bool tieneToken = ExisteColumna(conn, "Equipo", "e_token");
+                    string token = tieneToken ? GenerarTokenEquipo() : string.Empty;
+                    string query = tieneToken
+                        ? @"INSERT INTO Equipo (e_codigo, e_nombre, e_movil, e_contacto, e_torneo, e_token)
+                           VALUES (?, ?, ?, ?, ?, ?)"
+                        : @"INSERT INTO Equipo (e_codigo, e_nombre, e_movil, e_contacto, e_torneo)
+                           VALUES (?, ?, ?, ?, ?)";
 
                     using (OleDbCommand cmd = new OleDbCommand(query, conn))
                     {
@@ -102,8 +108,11 @@ namespace WebApplication2
                         cmd.Parameters.AddWithValue("?", string.IsNullOrWhiteSpace(txtMovilEquipo.Text) ? (object)DBNull.Value : txtMovilEquipo.Text.Trim());
                         cmd.Parameters.AddWithValue("?", string.IsNullOrWhiteSpace(txtContactoEquipo.Text) ? (object)DBNull.Value : txtContactoEquipo.Text.Trim());
                         cmd.Parameters.AddWithValue("?", CodigoTorneo);
+                        if (tieneToken)
+                        {
+                            cmd.Parameters.AddWithValue("?", token);
+                        }
 
-                        conn.Open();
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -137,6 +146,36 @@ namespace WebApplication2
             lblMensajeError.Text = mensaje;
             pnlMensajeError.Visible = true;
             pnlMensajeExito.Visible = false;
+        }
+
+        private static string GenerarTokenEquipo()
+        {
+            return Guid.NewGuid().ToString("N");
+        }
+
+        private bool ExisteColumna(OleDbConnection conn, string tabla, string columna)
+        {
+            string query = "SELECT TOP 1 * FROM " + tabla;
+            using (OleDbCommand cmd = new OleDbCommand(query, conn))
+            using (OleDbDataReader reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly))
+            {
+                DataTable schema = reader?.GetSchemaTable();
+                if (schema == null)
+                {
+                    return false;
+                }
+
+                foreach (DataRow fila in schema.Rows)
+                {
+                    string nombreColumna = Convert.ToString(fila["ColumnName"]);
+                    if (string.Equals(nombreColumna, columna, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

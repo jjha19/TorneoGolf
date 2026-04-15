@@ -71,7 +71,16 @@ namespace WebApplication2
             int equipoContador = 1;
             if (!string.IsNullOrEmpty(Request.QueryString["index"]))
             {
-                int.TryParse(DecodificarIndice(Request.QueryString["index"]), out equipoContador);
+                equipoContador = ObtenerEquipoContadorDesdeToken(Request.QueryString["index"]);
+
+                // Pruebas internas: descomentar si se quiere acceder con índice numérico sin token.
+                // int.TryParse(Request.QueryString["index"], out equipoContador);
+
+                if (equipoContador < 1)
+                {
+                    int.TryParse(DecodificarIndice(Request.QueryString["index"]), out equipoContador);
+                }
+
                 if (equipoContador < 1) equipoContador = 1;
             }
 
@@ -542,6 +551,70 @@ namespace WebApplication2
             if (rblPractica != null) rblPractica.Enabled = false;
             if (txtComentario != null) txtComentario.ReadOnly = true;
             if (btnEnviarComentario != null) btnEnviarComentario.Enabled = false;
+        }
+
+        private int ObtenerEquipoContadorDesdeToken(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return 0;
+            }
+
+            try
+            {
+                using (OleDbConnection conn = new OleDbConnection(connectionString))
+                {
+                    conn.Open();
+
+                    if (!ExisteColumna(conn, "Equipo", "e_token"))
+                    {
+                        return 0;
+                    }
+
+                    string query = "SELECT TOP 1 e_contador FROM Equipo WHERE e_token = ?";
+                    using (OleDbCommand cmd = new OleDbCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("?", token);
+                        object resultado = cmd.ExecuteScalar();
+                        if (resultado == null || resultado == DBNull.Value)
+                        {
+                            return 0;
+                        }
+
+                        int equipoContador;
+                        return int.TryParse(resultado.ToString(), out equipoContador) ? equipoContador : 0;
+                    }
+                }
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private bool ExisteColumna(OleDbConnection conn, string tabla, string columna)
+        {
+            string query = "SELECT TOP 1 * FROM " + tabla;
+            using (OleDbCommand cmd = new OleDbCommand(query, conn))
+            using (OleDbDataReader reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly))
+            {
+                DataTable schema = reader?.GetSchemaTable();
+                if (schema == null)
+                {
+                    return false;
+                }
+
+                foreach (DataRow fila in schema.Rows)
+                {
+                    string nombreColumna = Convert.ToString(fila["ColumnName"]);
+                    if (string.Equals(nombreColumna, columna, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private static string DecodificarIndice(string indiceCodificado)

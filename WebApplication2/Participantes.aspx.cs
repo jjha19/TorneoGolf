@@ -864,29 +864,37 @@ namespace WebApplication2
 
         private string ObtenerLinkPrincipalParticipante(OleDbConnection conn, int idParticipante)
         {
-            string query = @"SELECT TOP 1 e.e_contador
-                     FROM Equipo_participa p
-                     INNER JOIN Equipo e ON p.e_codigo = e.e_codigo
-                     WHERE p.p_contador = ?";
+            bool tieneToken = ExisteColumna(conn, "Equipo", "e_token");
+            string columnaToken = tieneToken ? ", e.e_token" : string.Empty;
+            string query = "SELECT TOP 1 e.e_contador" + columnaToken +
+                           " FROM Equipo_participa p INNER JOIN Equipo e ON p.e_codigo = e.e_codigo WHERE p.p_contador = ?";
 
             using (OleDbCommand cmd = new OleDbCommand(query, conn))
             {
                 cmd.Parameters.AddWithValue("?", idParticipante);
 
-                object resultado = cmd.ExecuteScalar();
-                if (resultado == null || resultado == DBNull.Value)
+                using (OleDbDataReader reader = cmd.ExecuteReader())
                 {
-                    return string.Empty;
-                }
+                    if (reader == null || !reader.Read())
+                    {
+                        return string.Empty;
+                    }
 
-                int index;
-                if (!int.TryParse(resultado.ToString(), out index))
-                {
-                    return string.Empty;
-                }
+                    string token = tieneToken ? Convert.ToString(reader["e_token"]) : string.Empty;
+                    if (!string.IsNullOrWhiteSpace(token))
+                    {
+                        return "http://213.37.131.233:83/invitacion/Principal.aspx?index=" + Uri.EscapeDataString(token);
+                    }
 
-                string indiceCodificado = CodificarIndice(index);
-                return "http://213.37.131.233:83/invitacion/Principal.aspx?index=" + Uri.EscapeDataString(indiceCodificado);
+                    int index;
+                    if (!int.TryParse(Convert.ToString(reader["e_contador"]), out index))
+                    {
+                        return string.Empty;
+                    }
+
+                    string indiceCodificado = CodificarIndice(index);
+                    return "http://213.37.131.233:83/invitacion/Principal.aspx?index=" + Uri.EscapeDataString(indiceCodificado);
+                }
             }
         }
 
