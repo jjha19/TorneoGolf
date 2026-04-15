@@ -491,7 +491,7 @@ namespace WebApplication2
                     GuardarMensajeEnSession(null, "No se actualizó ningún registro. Revisa que los IDs (p_contador) existan.");
                 }
 
-                RedirigirRecarga();
+                RedirigirRecarga(); 
             }
             catch (Exception ex)
             {
@@ -528,7 +528,7 @@ namespace WebApplication2
                     MostrarMensajeError("Este participante no tiene móvil válido para WhatsApp.");
                     return;
                 }
-
+                
                 string mensaje;
                 string linkPrincipal;
 
@@ -657,7 +657,7 @@ namespace WebApplication2
                     string nombreColumna = Convert.ToString(fila["ColumnName"]);
                     if (string.Equals(nombreColumna, columna, StringComparison.OrdinalIgnoreCase))
                     {
-                        return true;
+                        return true;    
                     }
                 }
             }
