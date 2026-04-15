@@ -92,7 +92,7 @@
 
                 <!-- FILTROS (paso 1) -->
                 <div class="tabla-filtros">
-                    <asp:Label ID="lblFiltroAsiste" runat="server" AssociatedControlID="ddlFiltroAsiste" Text="Asiste:" />
+                    <asp:Label ID="lblFiltroAsiste" runat="server" CssClass="tabla-filtro-label" AssociatedControlID="ddlFiltroAsiste" Text="Asiste:" />
                     <asp:DropDownList ID="ddlFiltroAsiste" runat="server" CssClass="tabla-filtro-select"
                         AutoPostBack="true" OnSelectedIndexChanged="ddlFiltros_SelectedIndexChanged">
                         <asp:ListItem Text="Todos" Value=""></asp:ListItem>
@@ -101,7 +101,7 @@
                         <asp:ListItem Text="Sin contestar" Value="Pendiente"></asp:ListItem>
                     </asp:DropDownList>
 
-                    <asp:Label ID="lblFiltroBus" runat="server" AssociatedControlID="ddlFiltroBus" Text="Bus:" />
+                    <asp:Label ID="lblFiltroBus" runat="server" CssClass="tabla-filtro-label" AssociatedControlID="ddlFiltroBus" Text="Bus:" />
                     <asp:DropDownList ID="ddlFiltroBus" runat="server" CssClass="tabla-filtro-select"
                         AutoPostBack="true" OnSelectedIndexChanged="ddlFiltros_SelectedIndexChanged">
                         <asp:ListItem Text="Todos" Value=""></asp:ListItem>
@@ -110,7 +110,7 @@
                         <asp:ListItem Text="Sin contestar" Value="Pendiente"></asp:ListItem>
                     </asp:DropDownList>
 
-                    <asp:Label ID="lblFiltroPractica" runat="server" AssociatedControlID="ddlFiltroPractica" Text="Práctica:" />
+                    <asp:Label ID="lblFiltroPractica" runat="server" CssClass="tabla-filtro-label" AssociatedControlID="ddlFiltroPractica" Text="Práctica:" />
                     <asp:DropDownList ID="ddlFiltroPractica" runat="server" CssClass="tabla-filtro-select"
                         AutoPostBack="true" OnSelectedIndexChanged="ddlFiltros_SelectedIndexChanged">
                         <asp:ListItem Text="Todos" Value=""></asp:ListItem>
@@ -120,21 +120,23 @@
                     </asp:DropDownList>
                 </div>
 
-                <asp:GridView ID="gvResumenCompacto" runat="server" AutoGenerateColumns="false"
-                    CssClass="tabla-compacta" GridLines="Both" ShowHeaderWhenEmpty="true" EmptyDataText="Sin datos"
-                    OnRowDataBound="gvResumenCompacto_RowDataBound">
-                    <Columns>
-                        <asp:BoundField DataField="e_codigo" HeaderText="Equipo" />
-                        <asp:BoundField DataField="equipo_nombre" HeaderText="Nombre equipo" />
-                        <asp:BoundField DataField="p_nombre" HeaderText="Nombre" />
-                        <asp:BoundField DataField="p_apellido" HeaderText="Apellido" />
-                        <asp:BoundField DataField="p_asistencia" HeaderText="Asiste" />
-                        <asp:BoundField DataField="p_transporte" HeaderText="Bus" />
-                        <asp:BoundField DataField="p_practica" HeaderText="Práctica" />
-                        <asp:BoundField DataField="fecha_ws" HeaderText="Fecha mensaje WhatsApp" />
-                        <asp:BoundField DataField="p_comentario" HeaderText="Comentarios" />
-                    </Columns>
-                </asp:GridView>
+                <div class="tabla-compacta-wrapper">
+                    <asp:GridView ID="gvResumenCompacto" runat="server" AutoGenerateColumns="false"
+                        CssClass="tabla-compacta" GridLines="Both" ShowHeaderWhenEmpty="true" EmptyDataText="Sin datos"
+                        OnRowDataBound="gvResumenCompacto_RowDataBound">
+                        <Columns>
+                            <asp:BoundField DataField="e_codigo" HeaderText="Equipo" />
+                            <asp:BoundField DataField="equipo_nombre" HeaderText="Nombre equipo" />
+                            <asp:BoundField DataField="p_nombre" HeaderText="Nombre" />
+                            <asp:BoundField DataField="p_apellido" HeaderText="Apellido" />
+                            <asp:BoundField DataField="p_asistencia" HeaderText="Asiste" />
+                            <asp:BoundField DataField="p_transporte" HeaderText="Bus" />
+                            <asp:BoundField DataField="p_practica" HeaderText="Práctica" />
+                            <asp:BoundField DataField="fecha_ws" HeaderText="Fecha mensaje WhatsApp" />
+                            <asp:BoundField DataField="p_comentario" HeaderText="Comentarios" />
+                        </Columns>
+                    </asp:GridView>
+                </div>
             </div>
 
             <asp:Panel ID="pnlMensajeExito" runat="server" CssClass="mensaje mensaje-exito" Visible="false">

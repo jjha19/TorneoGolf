@@ -532,7 +532,7 @@ namespace WebApplication2
                 string mensaje;
                 string linkPrincipal;
 
-                using (OleDbConnection conn = new OleDbConnection(connectionString))
+                using (OleDbConnection conn = new OleDbConnection(connectionString)) 
                 {
                     conn.Open();
                     mensaje = ObtenerTextoWhatsappParticipante(conn, idParticipante, torneoCodigo);
