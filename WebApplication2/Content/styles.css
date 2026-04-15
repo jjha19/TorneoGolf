@@ -263,6 +263,26 @@ body {
     height: 18px;
 }
 
+@media (max-width: 768px) {
+    .search-bar-container {
+        position: static;
+        transform: none;
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .search-bar {
+        width: 100%;
+        max-width: 320px;
+        justify-content: space-between;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+}
+
 .search-highlight {
     background-color: #fff2a8;
     color: #2c5f2d;
