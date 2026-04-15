@@ -1433,16 +1433,68 @@ h2 {
     text-align: center;
 }
 
-.tabla-compacta {
+.tabla-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+    margin: 0 0 12px 0;
+    padding: 10px 12px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.tabla-filtro-label {
+    font-weight: 700;
+    color: #2c5f2d;
+    margin: 0;
+    font-size: 14px;
+}
+
+.tabla-filtro-select {
+    min-width: 150px;
+    padding: 8px 10px;
+    border: 2px solid #d9e4d9;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #2c5f2d;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tabla-filtro-select:focus {
+    outline: none;
+    border-color: #2c5f2d;
+    box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.15);
+}
+
+.tabla-filtro-select:hover {
+    border-color: #8fb68f;
+}
+
+/* Responsive real: mantiene estilo + scroll horizontal */
+.tabla-compacta-wrapper {
     width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+}
+
+.tabla-compacta {
+    width: max-content;
+    min-width: 980px;
     border-collapse: separate;
     border-spacing: 0;
     font-size: 13px;
     color: #333;
-    background-color: white;
+    background-color: #fff;
     border: 1px solid #dfe7df;
     border-radius: 8px;
-    overflow: hidden;
 }
 
 .tabla-compacta th {
@@ -1466,7 +1518,6 @@ h2 {
     vertical-align: middle;
 }
 
-/* Zebra suave como el resto visual de la app */
 .tabla-compacta tr:nth-child(even) td {
     background-color: #f8fbf8;
 }
@@ -1475,13 +1526,11 @@ h2 {
     background-color: #eef6ee;
 }
 
-/* Primera columna más destacada (código equipo) */
 .tabla-compacta td:first-child {
     font-weight: 700;
     color: #2c5f2d;
 }
 
-/* Nuevos estilos para filas que no asisten */
 .tabla-compacta tr.tabla-no-asiste td {
     background-color: rgba(239, 68, 68, 0.18) !important;
     color: #8b0000 !important;
@@ -1502,53 +1551,31 @@ h2 {
     color: #166534 !important;
 }
 
-.tabla-filtros {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px 12px;
-    margin: 0 0 12px 0;
-    padding: 10px 12px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-}
+@media (max-width: 1024px) {
+    .tabla-compacta {
+        min-width: 920px;
+        font-size: 12px;
+    }
 
-.tabla-filtros label {
-    font-weight: 700;
-    color: #2c5f2d;
-    margin: 0;
-    font-size: 14px;
-}
-
-.tabla-filtro-select {
-    min-width: 140px;
-    padding: 8px 10px;
-    border: 2px solid #d9e4d9;
-    border-radius: 6px;
-    background-color: #ffffff;
-    color: #2c5f2d;
-    font-size: 14px;
-    font-family: inherit;
-    cursor: pointer;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.tabla-filtro-select:focus {
-    outline: none;
-    border-color: #2c5f2d;
-    box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.15);
-}
-
-.tabla-filtro-select:hover {
-    border-color: #8fb68f;
+    .tabla-compacta th,
+    .tabla-compacta td {
+        padding: 6px 8px;
+    }
 }
 
 @media (max-width: 768px) {
+    .resumen-compacto {
+        padding: 10px;
+    }
+
+    .tabla-compacta {
+        min-width: 860px;
+        font-size: 11px;
+    }
+
     .tabla-filtros {
         flex-direction: column;
         align-items: stretch;
-        gap: 8px;
     }
 
     .tabla-filtro-select {
